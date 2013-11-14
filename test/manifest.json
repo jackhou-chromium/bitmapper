@@ -1,0 +1,15 @@
+{
+  "name": "bitmapper tests",
+  "description": "",
+  "version": "0.1",
+  "app": {
+    "background": {
+      "scripts": [
+        "background.js"
+      ]
+    }
+  },
+  "permissions": [
+    {"fileSystem": ["directory"]}
+  ]
+}
