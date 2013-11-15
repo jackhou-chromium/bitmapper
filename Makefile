@@ -40,7 +40,7 @@ CLOSURE_LINT_ARGS := --warning_level VERBOSE \
 
 
 # 'all' builds everything.
-all : $(OUTDIR)/$(PROJECT).zip test_app
+all : $(OUTDIR)/$(PROJECT).zip test
 
 # Zip the built app.
 $(OUTDIR)/$(PROJECT).zip : app
@@ -70,7 +70,7 @@ $(OUT_EXTERNS) : $(EXTERNS)
 	$(LINT) --unix_mode $< && cp $< $@
 
 # The test app requires all test files and linted test sources.
-test_app : copy_test_files $(OUT_TEST_SRCS)
+test : copy_test_files $(OUT_TEST_SRCS)
 
 # Copy files from the test directory into the output.
 copy_test_files : $(TEST_FILES)
@@ -98,4 +98,12 @@ $(OUTDIR)/compiler.jar :
 		http://closure-compiler.googlecode.com/files/compiler-latest.zip
 	unzip $(OUTDIR)/compiler-latest.zip compiler.jar -d $(OUTDIR)
 	rm $(OUTDIR)/compiler-latest.zip
+
+# Run the app in Chrome
+run_app : all
+	google-chrome --load-and-launch-app=$(OUTDIR)/$(APPDIR)
+
+# Run the tests in Chrome
+run_test : all
+	google-chrome --load-and-launch-app=$(OUTDIR)/$(TESTDIR)
 
