@@ -42,6 +42,9 @@ CLOSURE_LINT_ARGS := --warning_level VERBOSE \
 # 'all' builds everything.
 all : $(OUTDIR)/$(PROJECT).zip test
 
+# Lints all .js files.
+lint : $(OUT_APP_SRCS) $(OUT_TEST_SRCS) $(OUT_EXTERNS)
+
 # Zip the built app.
 $(OUTDIR)/$(PROJECT).zip : app
 	rm -f $@
