@@ -4,7 +4,7 @@ TESTDIR := test
 SRCDIR := js
 OUTDIR := out
 
-# SRCS ordered by dependency order
+# SRCS ordered by dependency order.
 SRCS := namespace.js imageFile.js
 APP_SRCS := $(SRCS) main.js
 TEST_SRCS := $(SRCS) imageFile_test.js
@@ -59,9 +59,8 @@ copy_app_files : $(APP_FILES)
 	cp $^ $(OUTDIR)/$(APPDIR)
 
 # The compiled source requires the compiler, externs file, and all app sources.
-# Also rebuild this when the makefile changes.
 $(OUTDIR)/$(APPDIR)/$(PROJECT).js : \
-$(OUTDIR)/compiler.jar $(OUT_EXTERNS) $(OUT_APP_SRCS) Makefile
+$(OUTDIR)/compiler.jar $(OUT_EXTERNS) $(OUT_APP_SRCS)
 	$(CLOSURE) $(CLOSURE_ARGS) \
 		--externs $(OUT_EXTERNS) \
 		$(patsubst %,--js %,$(OUT_APP_SRCS)) \
@@ -102,11 +101,11 @@ $(OUTDIR)/compiler.jar :
 	unzip $(OUTDIR)/compiler-latest.zip compiler.jar -d $(OUTDIR)
 	rm $(OUTDIR)/compiler-latest.zip
 
-# Run the app in Chrome
+# Run the app in Chrome.
 run_app : all
-	google-chrome --load-and-launch-app=$(OUTDIR)/$(APPDIR)
+	google-chrome --load-and-launch-app='$(CURDIR)/$(OUTDIR)/$(APPDIR)'
 
-# Run the tests in Chrome
+# Run the tests in Chrome.
 run_test : all
-	google-chrome --load-and-launch-app=$(OUTDIR)/$(TESTDIR)
+	google-chrome --load-and-launch-app='$(CURDIR)/$(OUTDIR)/$(TESTDIR)'
 
