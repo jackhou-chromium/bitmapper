@@ -3,8 +3,8 @@ bitmapper
 
 Pixel art editor Chrome App
 
-Instructions
-------------
+Build
+-----
 
 Install the linter:
 
@@ -20,12 +20,19 @@ Build and test:
     make run_app
     make run_test
 
+Contribute
+----------
+
 Install depot_tools for git-cl:
 
     git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
     export PATH="$PATH:$HOME/depot_tools"
 
 You should add the export line to your `~/.bashrc`.
+
+Have git automatically set the upstream branch when creating new branches:
+
+    git config branch.autosetupmerge always
 
 Upload a change:
 
@@ -37,3 +44,6 @@ upstream.
 Push your change (after getting an lgtm):
 
     git cl push
+
+The presubmit will prompt you to set the current branch's remote to 'origin' so
+that the change will be pushed to this GitHub repo.
