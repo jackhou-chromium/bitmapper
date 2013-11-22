@@ -23,7 +23,7 @@ TEST_FILES := $(shell find $(TESTDIR) -type f -not -name '.*') \
 
 # Compilation_level options:
 #   WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS, ADVANCED_OPTIMIZATIONS
-LINT := /usr/local/bin/gjslint
+LINT := gjslint
 CLOSURE := java -jar $(OUTDIR)/compiler.jar
 
 CLOSURE_ARGS := --warning_level VERBOSE \
@@ -97,15 +97,15 @@ $(OUTDIR)/$(SRCDIR)/%.js : $(SRCDIR)/%.js
 # Download and extract the compiler.
 $(OUTDIR)/compiler.jar :
 	curl -o $(OUTDIR)/compiler-latest.zip \
-		http://closure-compiler.googlecode.com/files/compiler-latest.zip
+		http://dl.google.com/closure-compiler/compiler-latest.zip	
 	unzip $(OUTDIR)/compiler-latest.zip compiler.jar -d $(OUTDIR)
 	rm $(OUTDIR)/compiler-latest.zip
 
 # Run the app in Chrome.
-run_app : all
+run_app : app
 	google-chrome --load-and-launch-app='$(CURDIR)/$(OUTDIR)/$(APPDIR)'
 
 # Run the tests in Chrome.
-run_test : all
+run_test : test
 	google-chrome --load-and-launch-app='$(CURDIR)/$(OUTDIR)/$(TESTDIR)'
 
