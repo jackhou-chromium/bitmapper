@@ -1,5 +1,5 @@
 /**
- * @license Copyright 2013 Google Inc. All rights reserved.
+ * Copyright 2013 Google Inc. All rights reserved.
  * Use of this source code is governed by the Apache license that can be
  * found in the LICENSE file.
  */
@@ -10,7 +10,7 @@
  * Encapsulates data related to one image file.
  * @constructor
  * @param {FileEntry} fileEntry
- * @param {function(FileEntry)} callback
+ * @param {function()} callback
  */
 function ImageFile(fileEntry, callback) {
   /** @type {FileEntry} */

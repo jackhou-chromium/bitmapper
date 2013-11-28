@@ -29,7 +29,7 @@ bitmapper.setCanvasToImage = function() {
 
 /**
  * Loads an image given by a FileEntry and sets the canvas.
- * @param {FileEntry} entry
+ * @param {Entry=} entry
  */
 bitmapper.loadImage = function(entry) {
   bitmapper.imageFile = new bitmapper.ImageFile(
@@ -38,7 +38,7 @@ bitmapper.loadImage = function(entry) {
 
 /**
  * Displays a file picker and loads the file.
- * @param {function(FileEntry)} callback
+ * @param {function (Entry=)} callback
  */
 bitmapper.openFile = function(callback) {
   chrome.fileSystem.chooseEntry(
