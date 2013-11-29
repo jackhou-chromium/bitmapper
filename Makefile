@@ -1,31 +1,26 @@
+# Project name
 PROJECT := bitmapper
-APPDIR := app
-TESTDIR := test
-SRCDIR := js
-OUTDIR := out
-BUILDDIR := build
 
 # URLs for auto-collected resources.
 CLOSURE_URL := http://dl.google.com/closure-compiler/compiler-latest.zip
 
-# SRCS ordered by dependency order.
-SRCS := namespace.js imageFile.js main.js
-TEST_SRCS := imageFile_test.js
-EXTERNS := build/externs.js
+# Directory structure.
+APPDIR := app
+TESTDIR := test
+OUTDIR := out
+BUILDDIR := build
+SRCDIR := js
 
-# Paths to the above sources in the output directory.
-OUT_SRCS := $(patsubst %,$(OUTDIR)/$(APPDIR)/$(SRCDIR)/%,$(SRCS))
-OUT_TEST_SRCS := $(patsubst %,$(OUTDIR)/$(TESTDIR)/$(SRCDIR)/%,$(TEST_SRCS))
+# Javascript source files to edit.
+APP_SRCS := $(shell find $(APPDIR)/$(SRCDIR) -type f -name '*.js')
+TEST_SRCS := $(shell find $(TESTDIR)/$(SRCDIR) -type f -name '*.js')
+ALL_SRCS := $(APP_SRCS) $(TEST_SRCS)
 
-# All files in these directories.
-APP_FILES := $(shell find $(APPDIR) -type f -not -name '.*')
-TEST_FILES := $(shell find $(TESTDIR) -type f -not -name '.*')
-
-# Style checker for JavaScript files.
-LINT := gjslint
+# Externs files (required for closure compilation).
+EXTERNS := $(BUILDDIR)/externs.js
 
 # Closure compiler and arguments.
-CLOSURE_COMPILER := $(BUILDDIR)/compiler.jar
+CLOSURE_COMPILER := $(CURDIR)/$(BUILDDIR)/compiler.jar
 CLOSURE := java -jar $(CLOSURE_COMPILER)
 
 # --compilation_level options:
@@ -33,64 +28,56 @@ CLOSURE := java -jar $(CLOSURE_COMPILER)
 CLOSURE_ARGS := --warning_level VERBOSE \
   --compilation_level ADVANCED_OPTIMIZATIONS \
   --language_in ECMASCRIPT5_STRICT \
-  --formatting=pretty_print \
-  --summary_detail_level 3
-CLOSURE_LINT_ARGS := --warning_level VERBOSE \
-  --compilation_level WHITESPACE_ONLY \
-  --language_in ECMASCRIPT5_STRICT \
-  --formatting=pretty_print \
-  --summary_detail_level 3
-
+  --summary_detail_level 3 \
+  --externs $(CURDIR)/$(EXTERNS)
 
 # 'all' builds everything.
-all : $(OUTDIR)/$(PROJECT).zip test
+all : app test
 
-# Lints all .js files.
-lint : $(OUT_SRCS) $(OUT_TEST_SRCS) $(OUT_EXTERNS)
 
-# Zip the built app.
-$(OUTDIR)/$(PROJECT).zip : app
-	rm -f $@
-	zip --junk-paths $@ $(OUTDIR)/$(APPDIR)/*
-
-# The main app requires all app files and the compiled source.
-app : copy_app_files $(OUTDIR)/$(APPDIR)/$(PROJECT).js
-
-# Copy files from the app directory into the output.
-copy_app_files : $(APP_FILES)
+# Compile a $(PROJECT).js file using advanced optimizations.
+app : $(BUILDDIR) $(APP_SRCS)
+	# Copy the $(APPDIR) into $(OUTDIR)/$(APPDIR).
+	rm -rf $(OUTDIR)/$(APPDIR)
 	mkdir -p $(OUTDIR)/$(APPDIR)
 	cp -r $(APPDIR)/* $(OUTDIR)/$(APPDIR)
-
-# The compiled source requires the compiler, externs file, and all app sources.
-$(OUTDIR)/$(APPDIR)/$(PROJECT).js : \
-$(CLOSURE_COMPILER) $(OUT_SRCS)
+	
+	# Compile the $(OUTDIR)/$(APPDIR)/$(SRCDIR)/*.js files
+	# into a single $(OUTDIR)/$(APPDIR)/$(PROJECT).js source.
+	cd $(OUTDIR)/$(APPDIR) && \
 	$(CLOSURE) $(CLOSURE_ARGS) \
-		--externs $(EXTERNS) \
-		$(patsubst %,--js %,$(OUT_SRCS)) \
-		--js_output_file $@
+		$(patsubst %, --js $(SRCDIR)/%, $(notdir $(APP_SRCS))) \
+		--js_output_file $(PROJECT).js
+	
+	# Remove the original source files.
+	rm -rf $(OUTDIR)/$(APPDIR)/$(SRCDIR)
+	
+	# Create a zipped copy of the $(OUTDIR)/$(APPDIR) directory.
+	rm -f $(OUTDIR)/$(PROJECT).zip
+	zip --junk-paths $(OUTDIR)/$(PROJECT).zip $(OUTDIR)/$(APPDIR)/*
 
-# Lint the externs file and copy to output directory.
-$(OUT_EXTERNS) : $(EXTERNS)
-	$(LINT) --unix_mode $< 
 
-# The test app requires all test files and linted test sources.
-test : copy_test_files $(OUT_TEST_SRCS)
-
-# Copy files from the test directory into the output.
-copy_test_files : $(OUT_SRCS) $(TEST_FILES)
-	mkdir -p $(OUTDIR)/$(TESTDIR)/$(SRCDIR)
+# Compile the test app.
+test : $(BUILDDIR) $(ALL_SRCS)
+	# Copy the $(TESTDIR) into $(OUTDIR)/$(TESTDIR)
+	rm -rf $(OUTDIR)/$(TESTDIR)
+	mkdir -p $(OUTDIR)/$(TESTDIR)
 	cp -r $(TESTDIR)/* $(OUTDIR)/$(TESTDIR)
-	cp $(APP_SRCS) $(OUTDIR)/$(TESTDIR)/$(SRCDIR)
+	
+	# Add in all the original source files to be tested.
+	cp $(APP_SRCS) $(OUTDIR)/$(TESTDIR)/$(SRCDIR)/
+	
+	# Compile the $(OUTDIR)/$(TESTDIR)/$(SRCDIR)/*.js files
+	# into a single $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js source.
+	cd $(OUTDIR)/$(TESTDIR) && \
+	$(CLOSURE) $(CLOSURE_ARGS) \
+		$(patsubst %, --js $(SRCDIR)/%, $(notdir $(ALL_SRCS))) \
+		--js_output_file $(PROJECT)_test.js \
 
-# For any target in the output source directory, get the corresponding source
-# and lint it.
-$(OUTDIR)/$(APPDIR)/$(SRCDIR)/%.js : $(APPDIR)/$(SRCDIR)/%.js
-	mkdir -p $(OUTDIR)/$(SRCDIR)
-	$(LINT) --unix_mode $<
-	$(CLOSURE) $(CLOSURE_LINT_ARGS) --js $< --js_output_file $@
 
-# Always rebuild these targets.
-.PHONY : copy_app_files copy_test_files
+# Prepare the $(BUILD) directory.
+$(BUILDDIR) : $(CLOSURE_COMPILER) 
+
 
 # Download the closure compiler.
 $(CLOSURE_COMPILER) :
@@ -99,9 +86,21 @@ $(CLOSURE_COMPILER) :
 	unzip $(BUILDDIR)/compiler-latest.zip compiler.jar -d $(BUILDDIR)
 	rm $(BUILDDIR)/compiler-latest.zip
 
+
+# Lints all .js files.
+lint :
+	gjslint $(ALL_SRCS) $(EXTERNS)
+
+
+# Clean up output files.
+clean :
+	rm -rf $(OUTDIR)
+
+
 # Run the app in Chrome.
 run_app : app
 	google-chrome --load-and-launch-app='$(CURDIR)/$(OUTDIR)/$(APPDIR)'
+
 
 # Run the tests in Chrome.
 run_test : test

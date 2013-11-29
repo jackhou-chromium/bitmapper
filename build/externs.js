@@ -10,9 +10,6 @@ chrome.fileSystem = {
   chooseEntry: function(a, b) {}
 };
 
-var console = {
-  log: function(s) {}
-};
 
 /** @constructor */
 function RenderingContext() {}
