@@ -6,6 +6,11 @@
 // about. More info here:
 // http://developers.google.com/closure/compiler/docs/api-tutorial3#externs
 
+chrome.fileSystem = {
+  chooseEntry: function(a, b) {}
+};
+
+
 /** @constructor */
 function RenderingContext() {}
 
