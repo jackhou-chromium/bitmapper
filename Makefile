@@ -159,3 +159,7 @@ run_release : release
 # Run the tests in Chrome.
 run_test : test
 	google-chrome --load-and-launch-app="$(CURDIR)/$(OUTDIR)/$(TESTDIR)"
+
+
+.PHONY : run_debug run_release run_test clean lint setup debug release test \
+				 copy_debug_files copy_release_files copy_test_files all
