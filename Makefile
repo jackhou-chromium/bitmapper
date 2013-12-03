@@ -45,7 +45,7 @@ all : debug release test
 
 
 # Closure compiled output js for Debug.
-$(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js : $(APP_SRCS)
+$(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
 	# Compile the $(OUTDIR)/$(DEBUGDIR)/$(SRCDIR)/*.js files
 	# into a single $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js source.
 	cd $(OUTDIR)/$(DEBUGDIR) && \
@@ -67,7 +67,7 @@ copy_debug_files :
 debug : setup copy_debug_files $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js
 
 # Closure compiled output js for Release.
-$(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js : $(APP_SRCS)
+$(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
 	# Compile the $(CURDIR)/$(APPDIR)/$(SRCDIR)/*.js files
 	# into a single $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js source.
 	cd $(OUTDIR)/$(RELEASEDIR) && \
@@ -91,7 +91,7 @@ release : setup copy_release_files $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js
 
 
 # Closure compiled output js for Test.
-$(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js : $(APP_SRCS) $(TEST_SRCS)
+$(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js : $(APP_SRCS) $(TEST_SRCS) $(EXTERNS)
 	# Compile the $(OUTDIR)/$(TESTDIR)/$(SRCDIR)/*.js files
 	# into a single $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js source.
 	cd $(OUTDIR)/$(TESTDIR) && \
