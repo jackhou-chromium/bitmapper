@@ -11,9 +11,10 @@ APPDIR := app
 SRCDIR := js
 TESTDIR := test
 OUTDIR := out
-DEBUGDIR := Debug
-RELEASEDIR := Release
+DEBUGDIR := debug
+RELEASEDIR := release
 BUILDDIR := build
+TEST_EXCLUDES := main.js
 
 # Javascript source files to edit.
 APP_SRCS := $(shell find $(APPDIR)/$(SRCDIR) -type f -name '*.js')
@@ -40,72 +41,82 @@ CLOSURE_ARGS := --warning_level VERBOSE \
 # 'all' builds everything.
 all : debug release test
 
-# Compile a debug build.
-debug : setup
-	# Copy the $(APPDIR) into $(OUTDIR)/$(DEBUGDIR).
-	rm -rf $(OUTDIR)/$(DEBUGDIR)
-	mkdir -p $(OUTDIR)/$(DEBUGDIR)
-	cp -r $(APPDIR)/* $(OUTDIR)/$(DEBUGDIR)
-	
+
+# Closure compiled output js for Debug.
+$(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js : $(APP_SRCS)
 	# Compile the $(OUTDIR)/$(DEBUGDIR)/$(SRCDIR)/*.js files
 	# into a single $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js source.
 	cd $(OUTDIR)/$(DEBUGDIR) && \
 	$(CLOSURE) $(CLOSURE_ARGS) \
-		$(patsubst %, --js $(SRCDIR)/%, $(notdir $(APP_SRCS))) \
+		$(patsubst %, --js $(CURDIR)/$(APPDIR)/$(SRCDIR)/%, $(notdir $(APP_SRCS))) \
 		--js_output_file $(PROJECT).js \
 		--create_source_map $(PROJECT).js.map
 	
 	# Tell $(PROJECT).js where the source map is.
-	echo "//@ sourceMappingURL=$(PROJECT).js.map" >> $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js
+	echo "//@ sourceMappingURL=$(PROJECT).js.map" >> \
+		$(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js
 
+copy_debug_files :
+	# Copy the $(APPDIR) into $(OUTDIR)/$(DEBUGDIR).
+	mkdir -p $(OUTDIR)
+	cp -rT $(APPDIR) $(OUTDIR)/$(DEBUGDIR)
 
-# Compile a release build.
-release : setup
-	# Copy the $(APPDIR) into $(OUTDIR)/$(RELEASEDIR).
-	rm -rf $(OUTDIR)/$(RELEASEDIR)
-	mkdir -p $(OUTDIR)/$(RELEASEDIR)
-	cp -r $(APPDIR)/* $(OUTDIR)/$(RELEASEDIR)
-	
-	# Compile the $(OUTDIR)/$(RELEASEDIR)/$(SRCDIR)/*.js files
+# Compile a debug build.
+debug : setup copy_debug_files $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js
+
+# Closure compiled output js for Release.
+$(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js : $(APP_SRCS)
+	# Compile the $(CURDIR)/$(APPDIR)/$(SRCDIR)/*.js files
 	# into a single $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js source.
 	cd $(OUTDIR)/$(RELEASEDIR) && \
 	$(CLOSURE) $(CLOSURE_ARGS) \
-		$(patsubst %, --js $(SRCDIR)/%, $(notdir $(APP_SRCS))) \
+		$(patsubst %, --js $(CURDIR)/$(APPDIR)/$(SRCDIR)/%, $(notdir $(APP_SRCS))) \
 		--js_output_file $(PROJECT).js
+
+copy_release_files :
+	# Copy the $(APPDIR) into $(OUTDIR)/$(RELEASEDIR).
+	mkdir -p $(OUTDIR)
+	cp -rT $(APPDIR) $(OUTDIR)/$(RELEASEDIR)
 	
 	# Remove the original source files.
-	rm -rf $(OUTDIR)/$(APPDIR)/$(SRCDIR)
-	
+	rm -rf $(OUTDIR)/$(RELEASEDIR)/$(SRCDIR)
+
+# Compile a release build.
+release : setup copy_release_files $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js
 	# Create a zipped copy of the $(OUTDIR)/$(APPDIR) directory.
 	rm -f $(OUTDIR)/$(PROJECT).zip
 	zip --junk-paths $(OUTDIR)/$(PROJECT).zip $(OUTDIR)/$(RELEASEDIR)/*
 
 
-# Compile the test app.
-test : setup
-	# Copy the $(TESTDIR) into $(OUTDIR)/$(TESTDIR)
-	rm -rf $(OUTDIR)/$(TESTDIR)
-	mkdir -p $(OUTDIR)/$(TESTDIR)
-	cp -r $(TESTDIR)/* $(OUTDIR)/$(TESTDIR)
-	
-	# Add in all the original source files to be tested.
-	cp $(APP_SRCS) $(OUTDIR)/$(TESTDIR)/$(SRCDIR)/
-	
+# Closure compiled output js for Test.
+$(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js : $(APP_SRCS) $(TEST_SRCS)
 	# Compile the $(OUTDIR)/$(TESTDIR)/$(SRCDIR)/*.js files
 	# into a single $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js source.
 	cd $(OUTDIR)/$(TESTDIR) && \
 	$(CLOSURE) $(CLOSURE_ARGS) \
-		$(patsubst %, --js $(SRCDIR)/%, $(notdir $(ALL_SRCS))) \
+		$(patsubst %, --js $(SRCDIR)/%, \
+			$(filter-out $(TEST_EXCLUDES), $(notdir $(ALL_SRCS)))) \
 		--js_output_file $(PROJECT)_test.js \
-		--create_source_map $(PROJECT).js.map
+		--create_source_map $(PROJECT)_test.js.map
 
 	# Tell $(PROJECT).js where the source map is.
-	echo "//@ sourceMappingURL=$(PROJECT).js.map" >> $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js
+	echo "//@ sourceMappingURL=$(PROJECT)_test.js.map" >> \
+		$(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js
+
+copy_test_files :
+	# Copy the $(TESTDIR) into $(OUTDIR)/$(TESTDIR)
+	mkdir -p $(OUTDIR)
+	cp -rT $(TESTDIR) $(OUTDIR)/$(TESTDIR)
+
+	# Add in all the original source files to be tested.
+	cp $(APP_SRCS) $(OUTDIR)/$(TESTDIR)/$(SRCDIR)/
+
+# Compile the test app.
+test : setup copy_test_files $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js
 
 
 # Prepare the $(BUILD) directory.
 setup : $(CLOSURE_COMPILER) $(CHROME_EXTERNS) $(QUNIT_EXTERNS)
-
 
 # Download the closure compiler.
 $(CLOSURE_COMPILER) :
@@ -114,12 +125,10 @@ $(CLOSURE_COMPILER) :
 	unzip $(BUILDDIR)/compiler-latest.zip compiler.jar -d $(BUILDDIR)
 	rm $(BUILDDIR)/compiler-latest.zip
 
-
 # Download externs for the chrome.* APIs.
 $(CHROME_EXTERNS) :
 	mkdir -p $(BUILDDIR)
 	curl $(CHROME_EXTERNS_URL) -o $(CHROME_EXTERNS)
-
 
 # Download externs for QUnit.
 $(QUNIT_EXTERNS) :
@@ -138,15 +147,15 @@ clean :
 
 
 # Run the debug build in Chrome.
-run_debug : 
+run_debug : debug
 	google-chrome --load-and-launch-app="$(CURDIR)/$(OUTDIR)/$(DEBUGDIR)"
 
 
-# Run the debug build in Chrome.
-run_release : 
+# Run the release build in Chrome.
+run_release : release
 	google-chrome --load-and-launch-app="$(CURDIR)/$(OUTDIR)/$(RELEASEDIR)"
 
 
 # Run the tests in Chrome.
-run_test : 
+run_test : test
 	google-chrome --load-and-launch-app="$(CURDIR)/$(OUTDIR)/$(TESTDIR)"
