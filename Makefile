@@ -17,7 +17,9 @@ BUILDDIR := build
 TEST_EXCLUDES := main.js
 
 # Javascript source files to edit.
-APP_SRCS := $(shell find $(APPDIR)/$(SRCDIR) -type f -name '*.js')
+# IMPORTANT: These must be in dependency order.
+SRCS := namespace.js imageFile.js main.js
+APP_SRCS := $(patsubst %,$(APPDIR)/$(SRCDIR)/%,$(SRCS))
 TEST_SRCS := $(shell find $(TESTDIR)/$(SRCDIR) -type f -name '*.js')
 ALL_SRCS := $(APP_SRCS) $(TEST_SRCS)
 
@@ -48,7 +50,7 @@ $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js : $(APP_SRCS)
 	# into a single $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js source.
 	cd $(OUTDIR)/$(DEBUGDIR) && \
 	$(CLOSURE) $(CLOSURE_ARGS) \
-		$(patsubst %, --js $(CURDIR)/$(APPDIR)/$(SRCDIR)/%, $(notdir $(APP_SRCS))) \
+		$(patsubst %, --js $(CURDIR)/%, $(APP_SRCS)) \
 		--js_output_file $(PROJECT).js \
 		--create_source_map $(PROJECT).js.map
 	
@@ -70,7 +72,7 @@ $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js : $(APP_SRCS)
 	# into a single $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js source.
 	cd $(OUTDIR)/$(RELEASEDIR) && \
 	$(CLOSURE) $(CLOSURE_ARGS) \
-		$(patsubst %, --js $(CURDIR)/$(APPDIR)/$(SRCDIR)/%, $(notdir $(APP_SRCS))) \
+		$(patsubst %, --js $(CURDIR)/%, $(APP_SRCS)) \
 		--js_output_file $(PROJECT).js
 
 copy_release_files :
