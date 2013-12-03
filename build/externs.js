@@ -6,10 +6,10 @@
 // about. More info here:
 // http://developers.google.com/closure/compiler/docs/api-tutorial3#externs
 
-chrome.fileSystem = {
-  chooseEntry: function(a, b) {}
-};
-
+/**
+ * @param {function(Entry)} callback callback
+ */
+chrome.runtime.getPackageDirectoryEntry = function(callback) {};
 
 /** @constructor */
 function RenderingContext() {}
