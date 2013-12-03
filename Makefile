@@ -164,4 +164,4 @@ run_test : test
 
 
 .PHONY : run_debug run_release run_test clean lint setup debug release test \
-				 copy_debug_files copy_release_files copy_test_files all
+         copy_debug_files copy_release_files copy_test_files all
