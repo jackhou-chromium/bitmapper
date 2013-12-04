@@ -50,7 +50,7 @@ $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
 	# into a single $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js source.
 	cd $(OUTDIR)/$(DEBUGDIR) && \
 	$(CLOSURE) $(CLOSURE_ARGS) \
-		$(patsubst %, --js $(CURDIR)/%, $(APP_SRCS)) \
+		$(patsubst %, --js $(SRCDIR)/%, $(SRCS)) \
 		--js_output_file $(PROJECT).js \
 		--create_source_map $(PROJECT).js.map
 	
