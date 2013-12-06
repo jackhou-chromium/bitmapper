@@ -50,6 +50,24 @@ bitmapper.openFile = function(callback) {
 };
 
 /**
+ * Opens save dialog box and allows user to save image.
+ */
+bitmapper.saveFile = function() {
+  chrome.fileSystem.chooseEntry(
+    {
+      'type': 'saveFile'
+    },
+    function(entry) {
+      if (!entry) {
+        // TODO(dadisusila): Output errors via bitmapper.errorMessage.
+        document.getElementById('output').textContent = 'Nothing selected.';
+      } else {
+        bitmapper.writeFileEntry(bitmapper.canvas, entry);
+      }
+    });
+};
+
+/**
  * Entry point.
  */
 bitmapper.start = function() {
@@ -60,8 +78,10 @@ bitmapper.start = function() {
   bitmapper.canvas = document.getElementById('imageCanvas');
   bitmapper.canvas.addEventListener('mousedown', bitmapper.drawOnCanvas, false);
   bitmapper.canvas.addEventListener('mousemove', bitmapper.drawOnCanvas, false);
+
+  var save = document.getElementById('saveButton');
+  save.addEventListener('click', bitmapper.saveFile, false);
 };
 
 /** Closure called when the window finishes loading. */
 window.onload = bitmapper.start;
-

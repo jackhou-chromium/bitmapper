@@ -11,6 +11,11 @@
  */
 chrome.runtime.getPackageDirectoryEntry = function(callback) {};
 
+/**
+ * @param {string} data data
+ */
+var atob = function(data) {};
+
 /** @constructor */
 function RenderingContext() {}
 

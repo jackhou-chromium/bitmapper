@@ -18,7 +18,7 @@ TEST_EXCLUDES := main.js
 
 # Javascript source files to edit.
 # IMPORTANT: These must be in dependency order.
-SRCS := namespace.js imagefile.js main.js
+SRCS := namespace.js imagefile.js savefile.js main.js
 APP_SRCS := $(patsubst %,$(APPDIR)/$(SRCDIR)/%,$(SRCS))
 TEST_SRCS := $(shell find $(TESTDIR)/$(SRCDIR) -type f -name '*.js')
 ALL_SRCS := $(APP_SRCS) $(TEST_SRCS)
