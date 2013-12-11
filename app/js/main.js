@@ -28,52 +28,67 @@ bitmapper.setCanvasToImage = function() {
 };
 
 /**
- * Loads an image given by a FileEntry and sets the canvas.
- * @param {Entry=} entry
- */
-bitmapper.loadImage = function(entry) {
-  bitmapper.imageFile = new bitmapper.ImageFile(
-      entry, bitmapper.setCanvasToImage);
-};
-
-/**
  * Displays a file picker and loads the file.
- * @param {function (Entry=)} callback
+ * Set file entry then load file.
  */
-bitmapper.openFile = function(callback) {
+bitmapper.openFile = function() {
   chrome.fileSystem.chooseEntry(
       {
-        'type': 'openFile',
+        'type': 'openWritableFile',
         'accepts': [{'extensions': ['png']}]
       },
-      callback);
+      function(entry) {
+        if (!bitmapper.imageFile) {
+          bitmapper.imageFile = new bitmapper.ImageFile();
+        }
+        bitmapper.imageFile.loadFile(entry, bitmapper.setCanvasToImage);
+      });
+  // TODO(dadisusila): Make saveButton attribute of bitmapper.
+  document.getElementById('saveButton').disabled = false;
 };
 
 /**
  * Opens save dialog box and allows user to save image.
+ * Set the file entry then save.
+ */
+bitmapper.saveAsFile = function() {
+  chrome.fileSystem.chooseEntry(
+      {'type': 'saveFile'},
+      function(entry) {
+        if (!entry) {
+          bitmapper.statusMessage('Nothing selected.');
+        } else {
+          if (!bitmapper.imageFile)
+            bitmapper.imageFile = new bitmapper.ImageFile();
+          bitmapper.imageFile.setFileEntry(entry);
+          bitmapper.saveFile();
+          document.getElementById('saveButton').disabled = false;
+        }
+      });
+};
+
+/**
+ * Saves to current file entry.
  */
 bitmapper.saveFile = function() {
-  chrome.fileSystem.chooseEntry(
-    {
-      'type': 'saveFile'
-    },
-    function(entry) {
-      if (!entry) {
-        // TODO(dadisusila): Output errors via bitmapper.errorMessage.
-        document.getElementById('output').textContent = 'Nothing selected.';
-      } else {
-        bitmapper.writeFileEntry(bitmapper.canvas, entry);
-      }
-    });
+  bitmapper.imageFile.saveFile(bitmapper.canvas);
+  bitmapper.statusMessage(bitmapper.imageFile.fileEntry.name + ' saved.');
+};
+
+/**
+ * Outputs status message.
+ * @param {string} status
+ */
+bitmapper.statusMessage = function(status) {
+  document.getElementById('output').textContent = status;
 };
 
 /**
  * Entry point.
  */
 bitmapper.start = function() {
-  document.getElementById('openButton').onclick = function() {
-    bitmapper.openFile(bitmapper.loadImage);
-  };
+  var open = document.getElementById('openButton');
+  open.addEventListener('click', bitmapper.openFile, false);
 
   bitmapper.canvas = document.getElementById('imageCanvas');
   bitmapper.canvas.addEventListener('mousedown', bitmapper.drawOnCanvas, false);
@@ -81,6 +96,9 @@ bitmapper.start = function() {
 
   var save = document.getElementById('saveButton');
   save.addEventListener('click', bitmapper.saveFile, false);
+
+  var saveAs = document.getElementById('saveAsButton');
+  saveAs.addEventListener('click', bitmapper.saveAsFile, false);
 };
 
 /** Closure called when the window finishes loading. */
