@@ -4,17 +4,6 @@
  * found in the LICENSE file.
  */
 
-/**
- * Sets the pixel currently under the mouse to black.
- * @param {Event} e
- */
-bitmapper.drawOnCanvas = function(e) {
-  if (e.which !== 1) {
-    return;
-  }
-  var context = bitmapper.canvas.getContext('2d');
-  context.fillRect(e.offsetX, e.offsetY, 1, 1);
-};
 
 /**
  * Draws the image file to the canvas.
@@ -84,15 +73,28 @@ bitmapper.statusMessage = function(status) {
 };
 
 /**
+ * Clears the canvas.
+ */
+bitmapper.clearCanvas = function() {
+  var context = bitmapper.canvas.getContext('2d');
+  context.clearRect(0, 0, bitmapper.canvas.width, bitmapper.canvas.height);
+};
+
+/**
  * Entry point.
  */
 bitmapper.start = function() {
+  document.getElementById('clearButton').onclick = function() {
+    bitmapper.clearCanvas();
+  };
   var open = document.getElementById('openButton');
   open.addEventListener('click', bitmapper.openFile, false);
 
   bitmapper.canvas = document.getElementById('imageCanvas');
-  bitmapper.canvas.addEventListener('mousedown', bitmapper.drawOnCanvas, false);
-  bitmapper.canvas.addEventListener('mousemove', bitmapper.drawOnCanvas, false);
+  bitmapper.canvas.addEventListener('mousedown', bitmapper.mousedown, false);
+  bitmapper.canvas.addEventListener('mousemove', bitmapper.mousemove, false);
+  bitmapper.canvas.addEventListener('mouseup', bitmapper.mouseup, false);
+  bitmapper.canvas.addEventListener('mouseleave', bitmapper.mouseup, false);
 
   var save = document.getElementById('saveButton');
   save.addEventListener('click', bitmapper.saveFile, false);
