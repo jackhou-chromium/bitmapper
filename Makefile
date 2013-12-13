@@ -35,7 +35,6 @@ CLOSURE := java -jar $(CLOSURE_COMPILER)
 # --compilation_level options:
 #   WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS, ADVANCED_OPTIMIZATIONS
 CLOSURE_ARGS := --warning_level VERBOSE \
-  --compilation_level ADVANCED_OPTIMIZATIONS \
   --language_in ECMASCRIPT5_STRICT \
   --summary_detail_level 3 \
   --externs $(EXTERNS) --externs $(CHROME_EXTERNS) --externs $(QUNIT_EXTERNS)
@@ -44,12 +43,13 @@ CLOSURE_ARGS := --warning_level VERBOSE \
 all : debug release test
 
 
-# Closure compiled output js for Debug.
+# Closure compiled output js for Debug. WHITESPACE_ONLY for ease of debugging.
 $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
 	# Compile the $(OUTDIR)/$(DEBUGDIR)/$(SRCDIR)/*.js files
 	# into a single $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js source.
 	cd $(OUTDIR)/$(DEBUGDIR) && \
 	$(CLOSURE) $(CLOSURE_ARGS) \
+		--compilation_level WHITESPACE_ONLY \
 		$(patsubst %, --js $(SRCDIR)/%, $(SRCS)) \
 		--js_output_file $(PROJECT).js \
 		--create_source_map $(PROJECT).js.map
@@ -63,15 +63,19 @@ copy_debug_files :
 	mkdir -p $(OUTDIR)
 	cp -rT $(APPDIR) $(OUTDIR)/$(DEBUGDIR)
 
-# Compile a debug build.
-debug : setup copy_debug_files $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js
+# Compile a debug build. This depends on the release build so the debug build
+# gets type checking.
+debug : setup $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js copy_debug_files \
+        $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js
 
 # Closure compiled output js for Release.
 $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
+	mkdir -p $(OUTDIR)/$(RELEASEDIR)
 	# Compile the $(CURDIR)/$(APPDIR)/$(SRCDIR)/*.js files
 	# into a single $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js source.
 	cd $(OUTDIR)/$(RELEASEDIR) && \
 	$(CLOSURE) $(CLOSURE_ARGS) \
+		--compilation_level ADVANCED_OPTIMIZATIONS \
 		$(patsubst %, --js $(CURDIR)/%, $(APP_SRCS)) \
 		--js_output_file $(PROJECT).js
 
@@ -90,12 +94,13 @@ release : setup copy_release_files $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js
 	zip --junk-paths $(OUTDIR)/$(PROJECT).zip $(OUTDIR)/$(RELEASEDIR)/*
 
 
-# Closure compiled output js for Test.
+# Closure compiled output js for Test. WHITESPACE_ONLY for ease of debugging.
 $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js : $(APP_SRCS) $(TEST_SRCS) $(EXTERNS)
 	# Compile the $(OUTDIR)/$(TESTDIR)/$(SRCDIR)/*.js files
 	# into a single $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js source.
 	cd $(OUTDIR)/$(TESTDIR) && \
 	$(CLOSURE) $(CLOSURE_ARGS) \
+		--compilation_level WHITESPACE_ONLY \
 		$(patsubst %, --js $(SRCDIR)/%, \
 			$(filter-out $(TEST_EXCLUDES), $(notdir $(ALL_SRCS)))) \
 		--js_output_file $(PROJECT)_test.js \
