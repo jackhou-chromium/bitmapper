@@ -20,7 +20,8 @@ TEST_EXCLUDES := main.js
 # IMPORTANT: These must be in dependency order.
 SRCS := namespace.js imagefile.js draw.js main.js
 APP_SRCS := $(patsubst %,$(APPDIR)/$(SRCDIR)/%,$(SRCS))
-TEST_SRCS := $(shell find $(TESTDIR)/$(SRCDIR) -type f -name '*.js')
+TEST_SRCS := $(TESTDIR)/$(SRCDIR)/setup.js \
+    $(shell find $(TESTDIR)/$(SRCDIR) -type f -name '*_test.js')
 ALL_SRCS := $(APP_SRCS) $(TEST_SRCS)
 
 # Externs files (required for closure compilation).
@@ -101,6 +102,7 @@ $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js : $(APP_SRCS) $(TEST_SRCS) $(EXTERNS)
 	cd $(OUTDIR)/$(TESTDIR) && \
 	$(CLOSURE) $(CLOSURE_ARGS) \
 		--compilation_level WHITESPACE_ONLY \
+		--formatting=pretty_print \
 		$(patsubst %, --js $(SRCDIR)/%, \
 			$(filter-out $(TEST_EXCLUDES), $(notdir $(ALL_SRCS)))) \
 		--js_output_file $(PROJECT)_test.js \
