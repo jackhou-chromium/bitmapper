@@ -27,9 +27,8 @@ bitmapper.openFile = function() {
         'accepts': [{'extensions': ['png']}]
       },
       function(entry) {
-        if (!bitmapper.imageFile) {
+        if (!bitmapper.imageFile)
           bitmapper.imageFile = new bitmapper.ImageFile();
-        }
         bitmapper.imageFile.loadFile(entry, bitmapper.setCanvasToImage);
       });
   // TODO(dadisusila): Make saveButton attribute of bitmapper.

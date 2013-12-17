@@ -66,7 +66,7 @@ ImageFile.prototype.loadFile = function(fileEntry, callback) {
  * @param {HTMLElement} canvas
  */
 ImageFile.prototype.saveFile = function(canvas) {
-  var pngBlob = dataURItoBlob(canvas.toDataURL());
+  var pngBlob = this.dataURItoBlob(canvas.toDataURL());
   this.fileEntry.createWriter(function(writer) {
     writer.seek(0);
     writer.write(pngBlob);
@@ -77,7 +77,7 @@ ImageFile.prototype.saveFile = function(canvas) {
  * Converts URI (canvas image as base64 data) to binary.
  * @param {string} dataURI
  */
-function dataURItoBlob(dataURI) {
+ImageFile.prototype.dataURItoBlob = function(dataURI) {
   // Convert base64 to binary. The bytes are represented with Unicode code
   // points from 0x00 to 0xFF.
   var byteString = atob(dataURI.split(',')[1]);

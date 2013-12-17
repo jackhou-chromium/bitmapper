@@ -33,26 +33,31 @@ bitmapper_test.getLocalFileEntry = function(fileName, callback) {
   });
 };
 
-asyncTest('ImageFile', function() {
-  // This tells the test that there should will be 7 expectations. If there are
-  // not, the test will fail. Expectations are any calls to ok(), equal(), or
-  // deepEqual().
-  expect(7);
-
+asyncTest('Open File', function() {
+  expect(6);
   bitmapper_test.getLocalFileEntry('test-image.png', function(entry) {
     ok(true, 'Got test-image.png FileEntry');
+    var imageFile = new bitmapper.ImageFile();
     var callback = function() {
-      ok(true, 'Loaded image');
-      equal(imageFile.loaded, true);
-      ok(imageFile.image.src);
-
-      // Despite being called start() this actually called at the end to verify
-      // the expect() called at the start of the test.
+      ok(true, 'Loading image');
+      equal(imageFile.loaded, true, 'Successfully loaded');
+      ok(imageFile.image.src, 'Image source valid');
       start();
     };
-    var imageFile = new bitmapper.ImageFile(entry, callback);
-    equal(imageFile.fileEntry, entry);
-    equal(imageFile.callback, callback);
-    ok(!imageFile.image.src);
+    imageFile.loadFile(entry, callback);
+    equal(imageFile.fileEntry, entry,
+       'Chosen file entry and global entry equal');
+    ok(!imageFile.image.src, 'Starts with no image');
   });
+});
+
+test('Save File', function() {
+  var blob1 = bitmapper.ImageFile.prototype.dataURItoBlob(
+      'data:image/png;base64,iV');
+  equal(blob1.size, 1, 'Blob correct size');
+  equal(blob1.type, 'image/png', 'Blob correct type (image/png)');
+  var blob2 = bitmapper.ImageFile.prototype.dataURItoBlob(
+      'data:image/png;base64,iVbe');
+  equal(blob2.size, 3, 'Blob correct size');
+  equal(blob2.type, 'image/png', 'Blob correct type (image/png)');
 });
