@@ -33,7 +33,9 @@ bitmapper_test.getLocalFileEntry = function(fileName, callback) {
   });
 };
 
-asyncTest('Open File', function() {
+module('ImageFile');
+
+asyncTest('openFile', function() {
   expect(6);
   bitmapper_test.getLocalFileEntry('test-image.png', function(entry) {
     ok(true, 'Got test-image.png FileEntry');
@@ -51,7 +53,7 @@ asyncTest('Open File', function() {
   });
 });
 
-test('Save File', function() {
+test('saveFile', function() {
   var blob1 = bitmapper.ImageFile.prototype.dataURItoBlob(
       'data:image/png;base64,iV');
   equal(blob1.size, 1, 'Blob correct size');
