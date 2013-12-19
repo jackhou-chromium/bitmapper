@@ -1,38 +1,12 @@
 /**
- * Looks for a file in the app bundle and calls the callback passing in the
- * FileEntry.
- * @param {string} fileName
- * @param {function(FileEntry)} callback
+ * @license Copyright 2013 Google Inc. All rights reserved.
+ * Use of this source code is governed by the Apache license that can be
+ * found in the LICENSE file.
  */
-bitmapper_test.getLocalFileEntry = function(fileName, callback) {
-  var endsWith = function(string, suffix) {
-    return string.indexOf(suffix, string.length - suffix.length) !== -1;
-  };
 
-  chrome.runtime.getPackageDirectoryEntry(function(entry) {
-    var dirReader = entry.createReader();
-    var readEntries = function() {
-      dirReader.readEntries(
-          function(results) {
-            if (!results.length) {
-              return;
-            }
-            var found = false;
-            results.forEach(function(fileEntry) {
-              if (endsWith(fileEntry.fullPath, fileName)) {
-                found = true;
-                callback(fileEntry);
-              }
-            });
-            if (!found) {
-              readEntries();
-            }
-          });
-    };
-    readEntries();
-  });
-};
-
+/**
+ * Tests loading, opening and saving imageFile.
+ */
 module('ImageFile');
 
 asyncTest('openFile', function() {

@@ -10,7 +10,10 @@
     </div>
     <div id="output"></div>
     <div>
-      <canvas id="imageCanvas"></canvas>
+      <canvas hidden id="sourceCanvas"></canvas>
+    </div>
+    <div>
+      <canvas id="imageCanvas" style="border: 1px solid black;"></canvas>
     </div>
     <div>
       <button id = "clearButton">Clear</button>
@@ -20,6 +23,11 @@
     </div>
     <div>
       <button id="saveAsButton">Save As</button>
+    </div>
+    <div>
+      Zoom:
+      <button id="zoomInButton">+</button>
+      <button id="zoomOutButton">-</button>
     </div>
   </body>
 </html>

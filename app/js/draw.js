@@ -23,36 +23,40 @@ var radius = 1;
 var dragging = false;
 
 /**
- * Draws on the canvas.
- * @param {Event} e
+ * Draws on source canvas.
+ * @param {number} sourceX
+ * @param {number} sourceY
  */
-function draw(e) {
+function draw(sourceX, sourceY) {
   if (!dragging) {
     return;
   }
-  var ctx = bitmapper.canvas.getContext('2d');
+  var ctx = bitmapper.sourceCanvas.getContext('2d');
   ctx.lineWidth = radius * 2;
-  ctx.lineTo(e.offsetX, e.offsetY);
+  ctx.lineTo(sourceX, sourceY);
   ctx.stroke();
   ctx.beginPath();
   // The circles drawn represent individual points/ mouse clicks
   // and the circles are joined when the mouse is dragged to
   // make a smooth line.
-  ctx.arc(e.offsetX, e.offsetY, radius, 0, Math.PI * 2);
+  ctx.arc(sourceX, sourceY, radius, 0, Math.PI * 2);
   ctx.fill();
   ctx.beginPath();
-  ctx.moveTo(e.offsetX, e.offsetY);
+  ctx.moveTo(sourceX, sourceY);
+
+  bitmapper.zoomManager.drawDisplayCanvas();
 };
 
 /**
- * Starts drawing when the mouse is pressed.
- * @param {Event} e
+ * Starts drawing on source canvas when the mouse is pressed.
+ * @param {number} sourceX
+ * @param {number} sourceY
  */
-bitmapper.mousedown = function(e) {
-  var ctx = bitmapper.canvas.getContext('2d');
+bitmapper.mousedown = function(sourceX, sourceY) {
+  var ctx = bitmapper.sourceCanvas.getContext('2d');
   ctx.beginPath();
   dragging = true;
-  draw(e);
+  draw(sourceX, sourceY);
 };
 
 /**
