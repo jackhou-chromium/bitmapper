@@ -2,32 +2,36 @@
 <!-- Copyright 2013 Google Inc. All Rights Reserved. -->
 <html>
   <head>
+    <link href="style.css" rel="stylesheet">
     <script type="text/javascript" src="bitmapper.js"></script>
+    <header>
+      <ul>
+        <li>Bitmapper</li>
+        <li><button id="openButton">Open</button></li>
+        <li><button disabled id="saveButton">Save</button></li>
+        <li><button id="saveAsButton">Save As</button></li>
+        <li><button id = "clearButton">Clear</button></li>
+      </ul>
+    </header>
   </head>
   <body>
-    <div>
-      <button id="openButton">Open</button>
-    </div>
     <div id="output"></div>
-    <div>
-      <canvas hidden id="sourceCanvas"></canvas>
+    <div id="content">
+      <div id="leftToolBar">
+        <div class="tools">[+] Pencil</div>
+        <div class="tools">[+] Brush Type</div>
+        <div class="tools">[+] Paint Bucket</div>
+      </div>
+      <div id="canvasContainer">
+        <canvas hidden id="sourceCanvas"></canvas>
+        <canvas id="imageCanvas"></canvas>
+      </div>
+      <div id="rightToolBar">
+        Zoom:
+        <button id="zoomInButton">+</button>
+        <button id="zoomOutButton">-</button>
+      </div>
     </div>
-    <div>
-      <canvas id="imageCanvas" style="border: 1px solid black;"></canvas>
-    </div>
-    <div>
-      <button id = "clearButton">Clear</button>
-    </div>
-    <div>
-      <button disabled id="saveButton">Save</button>
-    </div>
-    <div>
-      <button id="saveAsButton">Save As</button>
-    </div>
-    <div>
-      Zoom:
-      <button id="zoomInButton">+</button>
-      <button id="zoomOutButton">-</button>
-    </div>
+    <footer></footer> 
   </body>
 </html>
