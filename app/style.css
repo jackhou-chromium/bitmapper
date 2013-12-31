@@ -74,3 +74,8 @@ footer {
   font-size: 15px;
   margin: 15px;
 }
+
+.paletteCell {
+  border: 1px solid white;
+  float: left;
+}

@@ -107,7 +107,8 @@ bitmapper.zoomOut = function() {
 bitmapper.mouseMoveCoordinates = function(mouseEvent) {
   bitmapper.mousemove(
       bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetX),
-      bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetY));
+      bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetY),
+      bitmapper.colorPalette.getSelectedColor());
 };
 
 /**
@@ -117,7 +118,25 @@ bitmapper.mouseMoveCoordinates = function(mouseEvent) {
 bitmapper.mouseDownCoordinates = function(mouseEvent) {
   bitmapper.mousedown(
       bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetX),
-      bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetY));
+      bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetY),
+      bitmapper.colorPalette.getSelectedColor());
+};
+
+/**
+ * Set background color of selected color box to selected color.
+ */
+bitmapper.setSelectedColorBox = function() {
+  document.getElementById('colorSelector').value =
+      bitmapper.rgbToHex(bitmapper.colorPalette.getSelectedColor());
+};
+
+/**
+ * Changes background of selected cell in palette to selected color.
+ * @this {HTMLElement}
+ */
+bitmapper.updatePalette = function() {
+  bitmapper.colorPalette.updateCellColor(
+      this.value, bitmapper.colorPalette.getSelectedIndex());
 };
 
 /**
@@ -157,6 +176,20 @@ bitmapper.start = function() {
       .addEventListener('click', bitmapper.zoomIn, false);
   document.getElementById('zoomOutButton')
       .addEventListener('click', bitmapper.zoomOut, false);
+
+  // Create color palette at start.
+  // Callback sets the color selector box to the selected color.
+  bitmapper.colorPalette = new bitmapper.ColorPalette(
+      document.getElementById('paletteContainer'),
+            bitmapper.setSelectedColorBox);
+  var initialColors = ['#000000', '#ffff00', '#0000ff', '#ff00ff',
+                      '#cc00ff', '#9900ff', '#ff6600', '#0099ff'];
+  bitmapper.colorPalette.generatePalette(30, 30, initialColors);
+  // Set color selector as first color in palette.
+  bitmapper.setSelectedColorBox();
+
+  document.getElementById('colorSelector')
+     .addEventListener('change', bitmapper.updatePalette, false);
 };
 
 /** Closure called when the window finishes loading. */
