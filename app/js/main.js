@@ -86,17 +86,19 @@ bitmapper.clearCanvas = function() {
  * Scales to double.
  */
 bitmapper.zoomIn = function() {
-  var currentZoomFactor = bitmapper.zoomManager.getZoomFactor();
-  bitmapper.zoomManager.setZoomFactor(currentZoomFactor * 2);
-  bitmapper.zoomManager.drawDisplayCanvas();
+  if (!bitmapper.zoomManager.exceededZoomLimit()) {
+    bitmapper.zoomManager.setZoomFactor(
+        bitmapper.zoomManager.getZoomFactor() * 2);
+    bitmapper.zoomManager.drawDisplayCanvas();
+  }
 };
 
 /**
  * Scales to half.
  */
 bitmapper.zoomOut = function() {
-  var currentZoomFactor = bitmapper.zoomManager.getZoomFactor();
-  bitmapper.zoomManager.setZoomFactor(currentZoomFactor * 0.5);
+  bitmapper.zoomManager.setZoomFactor(
+      bitmapper.zoomManager.getZoomFactor() * 0.5);
   bitmapper.zoomManager.drawDisplayCanvas();
 };
 

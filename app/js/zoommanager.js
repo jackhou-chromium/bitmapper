@@ -6,6 +6,9 @@
 
 (function() {
 
+/** @const {number} MAX_AREA */
+var MAX_AREA = 15000000;
+
 /**
  * Encapsulates data related to the zoom manager.
  * @constructor
@@ -52,6 +55,13 @@ ZoomManager.prototype.getZoomFactor = function() {
  */
 ZoomManager.prototype.getSourceCoordinate = function(displayCoordinate) {
   return displayCoordinate / this.zoomFactor;
+};
+
+/**
+ * Returns true if display canvas is too large.
+ */
+ZoomManager.prototype.exceededZoomLimit = function() {
+  return (this.displayCanvas.height * this.displayCanvas.width) > MAX_AREA;
 };
 
 bitmapper.ZoomManager = ZoomManager;
