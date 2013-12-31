@@ -7,6 +7,8 @@
 /**
  * Tests zoom.
  */
+(function() {
+
 module('ZoomManager');
 
 test('zoomRectangle', function() {
@@ -201,3 +203,4 @@ test('clearCanvas', function() {
   equal(expectedCanvas2.toDataURL(), displayCanvas.toDataURL(),
     'Redraw after clear successful');
 });
+})();

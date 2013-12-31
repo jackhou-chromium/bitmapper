@@ -7,6 +7,8 @@
 /**
  * Tests loading, opening and saving imageFile.
  */
+(function() {
+
 module('ImageFile');
 
 asyncTest('openFile', function() {
@@ -37,3 +39,4 @@ test('saveFile', function() {
   equal(blob2.size, 3, 'Blob correct size');
   equal(blob2.type, 'image/png', 'Blob correct type (image/png)');
 });
+})();
