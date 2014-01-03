@@ -54,7 +54,7 @@ footer {
 }
 
 #imageCanvas {
-  background: white;
+  background-image: url('images/transparent_bg_4squares.png');
 }
 
 #leftToolBar {
