@@ -186,7 +186,7 @@ bitmapper.start = function() {
             bitmapper.setSelectedColorBox);
   var initialColors = ['#000000', '#ffff00', '#0000ff', '#ff00ff',
                       '#cc00ff', '#9900ff', '#ff6600', '#0099ff'];
-  bitmapper.colorPalette.generatePalette(30, 30, initialColors);
+  bitmapper.colorPalette.generatePalette(initialColors);
   // Set color selector as first color in palette.
   bitmapper.setSelectedColorBox();
 

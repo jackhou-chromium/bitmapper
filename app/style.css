@@ -75,7 +75,17 @@ footer {
   margin: 15px;
 }
 
+.paletteContainer {
+  display: flex;
+  flex-wrap: wrap;
+  width: 130px;
+  background: white;
+  margin: auto;
+  padding-bottom: 2px;
+}
 .paletteCell {
-  border: 1px solid white;
-  float: left;
+  height: 30px;
+  width: 30px;
+  margin-left: 2px;
+  margin-top: 2px;
 }

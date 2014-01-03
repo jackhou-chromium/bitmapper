@@ -24,19 +24,15 @@ function ColorPalette(divContainer, callback) {
 
 /**
  * Generates html for color palette.
- * @param {number} cellWidth
- * @param {number} cellHeight
  * @param {Array.<string>} colorArray
  */
-ColorPalette.prototype.generatePalette = function(
-    cellWidth, cellHeight, colorArray) {
+ColorPalette.prototype.generatePalette = function(colorArray) {
   for (var i = 0; i < colorArray.length; i++) {
     // Styling.
     var cellDiv = document.createElement('div');
     cellDiv.className = 'paletteCell';
-    cellDiv.style.width = cellWidth + 'px';
-    cellDiv.style.height = cellHeight + 'px';
     cellDiv.style.backgroundColor = colorArray[i];
+    this.divContainer.className = 'paletteContainer';
     this.divContainer.appendChild(cellDiv);
     this.colorDivs[i] = cellDiv;
     // Mouse event.

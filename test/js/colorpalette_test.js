@@ -19,7 +19,12 @@ function initialiseTestPalette(callback) {
   var colorPalette = new bitmapper.ColorPalette(currentTestDiv, callback);
   var initialColors = ['#ff0000', '#ffff00', '#0000ff', '#ff00ff',
                       '#cc00ff', '#9900ff', '#ff6600', '#0099ff'];
-  colorPalette.generatePalette(30, 30, initialColors);
+  colorPalette.generatePalette(initialColors);
+  // Allow palette to be seen for visual debugging.
+  for (var i = 0; i < initialColors.length; i++) {
+    colorPalette.colorDivs[i].style.height = '30px';
+    colorPalette.colorDivs[i].style.width = '30px';
+  }
   return colorPalette;
 }
 
@@ -43,10 +48,6 @@ test('convertRgbToHex', function() {
 test('generateColorPalette', function() {
   var colorPalette = initialiseTestPalette(function() {});
   // Testing a generated div.
-  equal(colorPalette.colorDivs[7].style.width, '30px',
-        'Div has correct width');
-  equal(colorPalette.colorDivs[7].style.height, '30px',
-        'Div has correct height');
   equal(colorPalette.colorDivs[7].style.backgroundColor, 'rgb(0, 153, 255)',
         'Div has correct background color');
 });
