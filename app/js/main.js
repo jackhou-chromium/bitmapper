@@ -24,16 +24,20 @@ bitmapper.openFile = function() {
   chrome.fileSystem.chooseEntry(
       {
         'type': 'openWritableFile',
-        'accepts': [{'extensions': ['png']}]
+        'accepts': [{'description': '*.png', 'extensions': ['png']}]
       },
       function(entry) {
-        if (!bitmapper.imageFile)
+        if (!entry) {
+          bitmapper.statusMessage('Nothing selected.');
+        } else if (!bitmapper.imageFile) {
           bitmapper.imageFile = new bitmapper.ImageFile();
+        } else {
+          // Enable save button only if user opens file and doesn't cancel.
+          document.getElementById('saveButton').disabled = false;
+        }
         bitmapper.zoomManager.setZoomFactor(1);
         bitmapper.imageFile.loadFile(entry, bitmapper.setCanvasToImage);
       });
-  // TODO(dadisusila): Make saveButton attribute of bitmapper.
-  document.getElementById('saveButton').disabled = false;
 };
 
 /**

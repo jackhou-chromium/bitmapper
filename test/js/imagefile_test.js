@@ -16,16 +16,19 @@ asyncTest('openFile', function() {
   bitmapper_test.getLocalFileEntry('test-image.png', function(entry) {
     ok(true, 'Got test-image.png FileEntry');
     var imageFile = new bitmapper.ImageFile();
-    var callback = function() {
+    imageFile.loadFile(entry, function() {
+      // Testing initial loading.
       ok(true, 'Loading image');
       equal(imageFile.loaded, true, 'Successfully loaded');
       ok(imageFile.image.src, 'Image source valid');
-      start();
-    };
-    imageFile.loadFile(entry, callback);
-    equal(imageFile.fileEntry, entry,
-       'Chosen file entry and global entry equal');
-    ok(!imageFile.image.src, 'Starts with no image');
+      equal(imageFile.fileEntry, entry,
+            'Chosen file entry and global entry equal');
+      // Load same image again.
+      imageFile.loadFile(entry, function() {
+        ok(true, 'Callback called again');
+        start();
+      });
+    });
   });
 });
 
@@ -38,5 +41,33 @@ test('saveFile', function() {
       'data:image/png;base64,iVbe');
   equal(blob2.size, 3, 'Blob correct size');
   equal(blob2.type, 'image/png', 'Blob correct type (image/png)');
+});
+
+/**
+ * Check cancel does not run the callback and has not changed anything.
+ */
+asyncTest('cancelFile', function() {
+  expect(4);
+
+  // Load image to canvas
+  var canvas = bitmapper_test.createCanvas();
+  var context = canvas.getContext('2d');
+  bitmapper_test.getLocalFileEntry('test-image.png', function(entry) {
+    var imageFile = new bitmapper.ImageFile();
+
+    imageFile.loadFile(entry, function() {
+      var srcBeforeCancel = imageFile.image.src;
+      // Simulate pressing cancel.
+      imageFile.loadFile(undefined, function() {
+        ok(false, 'This callback should never run');
+      });
+      ok(true, 'Passing in undefined entry');
+      equal(srcBeforeCancel, imageFile.image.src,
+            'Image file sources unchanged');
+      ok(imageFile.loaded);
+      equal(imageFile.fileEntry, entry, 'File entry is previously loaded file');
+      start();
+    });
+  });
 });
 })();

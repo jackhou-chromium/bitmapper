@@ -41,9 +41,14 @@ ImageFile.prototype.setFileEntry = function(fileEntry) {
  * @param {function()} callback
  */
 ImageFile.prototype.loadFile = function(fileEntry, callback) {
-  this.setFileEntry(fileEntry);
+  // If user presses Cancel do nothing.
+  if (!fileEntry)
+    return;
 
+  this.setFileEntry(fileEntry);
   this.loaded = false;
+  // Refresh image src so the image loads and triggers the callback.
+  this.image.src = '';
   var that = this;
   this.image.onload = function() {
     that.loaded = true;
