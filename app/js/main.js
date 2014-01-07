@@ -37,6 +37,9 @@ bitmapper.openFile = function() {
         }
         bitmapper.zoomManager.setZoomFactor(1);
         bitmapper.imageFile.loadFile(entry, bitmapper.setCanvasToImage);
+        // TODO(dadisusila): Handle errors while loading.
+        bitmapper.statusMessage(bitmapper.imageFile.fileEntry.name +
+                                ' opened.');
       });
 };
 
@@ -64,8 +67,9 @@ bitmapper.saveAsFile = function() {
  * Saves to current file entry.
  */
 bitmapper.saveFile = function() {
-  bitmapper.imageFile.saveFile(bitmapper.sourceCanvas);
+  // TODO(dadisusila): Handle error cases for saving.
   bitmapper.statusMessage(bitmapper.imageFile.fileEntry.name + ' saved.');
+  bitmapper.imageFile.saveFile(bitmapper.sourceCanvas);
 };
 
 /**
