@@ -13,6 +13,7 @@ bitmapper.setCanvasToImage = function() {
   bitmapper.sourceCanvas.height = image.height;
   var sourceContext = bitmapper.sourceCanvas.getContext('2d');
   sourceContext.drawImage(image, 0, 0);
+  bitmapper.zoomManager.setZoomFactor(1);
   bitmapper.zoomManager.drawDisplayCanvas();
 };
 
@@ -29,13 +30,13 @@ bitmapper.openFile = function() {
       function(entry) {
         if (!entry) {
           bitmapper.statusMessage('Nothing selected.');
-        } else if (!bitmapper.imageFile) {
-          bitmapper.imageFile = new bitmapper.ImageFile();
-        } else {
-          // Enable save button only if user opens file and doesn't cancel.
-          document.getElementById('saveButton').disabled = false;
+          return;
         }
-        bitmapper.zoomManager.setZoomFactor(1);
+        if (!bitmapper.imageFile)
+          bitmapper.imageFile = new bitmapper.ImageFile();
+
+        // Enable save button only if user opens file and doesn't cancel.
+        document.getElementById('saveButton').disabled = false;
         bitmapper.imageFile.loadFile(entry, bitmapper.setCanvasToImage);
         // TODO(dadisusila): Handle errors while loading.
         bitmapper.statusMessage(bitmapper.imageFile.fileEntry.name +
