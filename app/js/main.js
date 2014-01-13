@@ -143,11 +143,11 @@ bitmapper.setSelectedColorBox = function() {
 
 /**
  * Changes background of selected cell in palette to selected color.
- * @this {HTMLElement}
  */
 bitmapper.updatePalette = function() {
   bitmapper.colorPalette.updateCellColor(
-      this.value, bitmapper.colorPalette.getSelectedIndex());
+      document.getElementById('colorSelector').value,
+          bitmapper.colorPalette.getSelectedIndex());
 };
 
 /**
@@ -164,7 +164,6 @@ bitmapper.start = function() {
   var open = document.getElementById('openButton');
   open.addEventListener('click', bitmapper.openFile, false);
 
-  // Create zoom manager at start.
   bitmapper.zoomManager = new bitmapper.ZoomManager(
       bitmapper.sourceCanvas, bitmapper.displayCanvas);
 

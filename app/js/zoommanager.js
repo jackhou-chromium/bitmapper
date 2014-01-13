@@ -1,8 +1,16 @@
 /**
- * Copyright 2013 Google Inc. All rights reserved.
+ * @license Copyright 2013 Google Inc. All rights reserved.
  * Use of this source code is governed by the Apache license that can be
  * found in the LICENSE file.
  */
+
+/**
+ * @constructor
+ * @struct
+ * @param {HTMLElement} sourceCanvas
+ * @param {HTMLElement} displayCanvas
+ */
+function ZoomManager(sourceCanvas, displayCanvas) {}
 
 (function() {
 
@@ -12,12 +20,24 @@ var MAX_AREA = 15000000;
 /**
  * Encapsulates data related to the zoom manager.
  * @constructor
+ * @struct
  * @param {HTMLElement} sourceCanvas
  * @param {HTMLElement} displayCanvas
  */
 function ZoomManager(sourceCanvas, displayCanvas) {
+  /**
+   * @type {number}
+   */
   this.zoomFactor = 1;
+
+  /**
+   * @type {HTMLElement}
+   */
   this.sourceCanvas = sourceCanvas;
+
+  /**
+   * @type {HTMLElement}
+   */
   this.displayCanvas = displayCanvas;
 };
 
@@ -44,6 +64,7 @@ ZoomManager.prototype.drawDisplayCanvas = function() {
 
 /**
  * Returns current zoom factor.
+ * @return {number}
  */
 ZoomManager.prototype.getZoomFactor = function() {
   return this.zoomFactor;
@@ -52,6 +73,7 @@ ZoomManager.prototype.getZoomFactor = function() {
 /**
  * Calculates the co-ordinate relative to source canvas.
  * @param {number} displayCoordinate
+ * @return {number}
  */
 ZoomManager.prototype.getSourceCoordinate = function(displayCoordinate) {
   return displayCoordinate / this.zoomFactor;
@@ -59,6 +81,7 @@ ZoomManager.prototype.getSourceCoordinate = function(displayCoordinate) {
 
 /**
  * Returns true if display canvas is too large.
+ * @return {boolean}
  */
 ZoomManager.prototype.exceededZoomLimit = function() {
   return (this.displayCanvas.height * this.displayCanvas.width) > MAX_AREA;

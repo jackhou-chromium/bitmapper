@@ -5,6 +5,14 @@
  */
 
 /**
+ * @constructor
+ * @struct
+ * @param {HTMLElement} divContainer
+ * @param {function()} callback
+ */
+function ColorPalette(divContainer, callback) {}
+
+/**
  * Color palette.
  */
 (function() {
@@ -12,13 +20,33 @@
 /**
  * Encapsulates data related to the color palette.
  * @constructor
+ * @struct
  * @param {HTMLElement} divContainer
  * @param {function()} callback
  */
 function ColorPalette(divContainer, callback) {
+  /**
+   * Color palette cells appended to this div container.
+   * @type {HTMLElement}
+   */
   this.divContainer = divContainer;
+
+  /**
+   * Called when selectedColorIndex is set.
+   * @type {function()}
+   */
   this.callback = callback;
-  this.selectedColor = 0;
+
+  /**
+   * The palette position of selected color.
+   * @type {number}
+   */
+  this.selectedColorIndex = 0;
+
+  /**
+   * Array of given colors.
+   * @type {Array.<Element>}
+   */
   this.colorDivs = [];
 };
 
@@ -65,7 +93,7 @@ ColorPalette.prototype.updateCellColor = function(color, index) {
  * @param {number} index
  */
 ColorPalette.prototype.setSelectedIndex = function(index) {
-  this.selectedColor = index;
+  this.selectedColorIndex = index;
   this.callback();
 };
 
@@ -74,7 +102,7 @@ ColorPalette.prototype.setSelectedIndex = function(index) {
  * @return {number}
  */
 ColorPalette.prototype.getSelectedIndex = function() {
-  return this.selectedColor;
+  return this.selectedColorIndex;
 };
 
 /**
@@ -82,7 +110,7 @@ ColorPalette.prototype.getSelectedIndex = function() {
  * @return {string}
  */
 ColorPalette.prototype.getSelectedColor = function() {
-  return this.colorDivs[this.selectedColor].style.backgroundColor;
+  return this.colorDivs[this.selectedColorIndex].style.backgroundColor;
 };
 
 /**
