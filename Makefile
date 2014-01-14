@@ -147,7 +147,7 @@ $(QUNIT_EXTERNS) :
 
 # Lints all .js files.
 lint :
-	gjslint $(ALL_SRCS) $(EXTERNS)
+	gjslint --jslint_error=all $(ALL_SRCS) $(EXTERNS)
 
 
 # Clean up output files.

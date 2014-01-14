@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 
+
 /**
  * Draws the image file to the canvas.
  */
@@ -16,6 +17,7 @@ bitmapper.setCanvasToImage = function() {
   bitmapper.zoomManager.setZoomFactor(1);
   bitmapper.zoomManager.drawDisplayCanvas();
 };
+
 
 /**
  * Displays a file picker and loads the file.
@@ -44,6 +46,7 @@ bitmapper.openFile = function() {
       });
 };
 
+
 /**
  * Opens save dialog box and allows user to save image.
  * Set the file entry then save.
@@ -64,6 +67,7 @@ bitmapper.saveAsFile = function() {
       });
 };
 
+
 /**
  * Saves to current file entry.
  */
@@ -73,6 +77,7 @@ bitmapper.saveFile = function() {
   bitmapper.imageFile.saveFile(bitmapper.sourceCanvas);
 };
 
+
 /**
  * Outputs status message.
  * @param {string} status
@@ -80,6 +85,7 @@ bitmapper.saveFile = function() {
 bitmapper.statusMessage = function(status) {
   document.getElementById('output').textContent = status;
 };
+
 
 /**
  * Clears the canvas.
@@ -90,6 +96,7 @@ bitmapper.clearCanvas = function() {
       bitmapper.sourceCanvas.height);
   bitmapper.zoomManager.drawDisplayCanvas();
 };
+
 
 /**
  * Scales to double.
@@ -102,6 +109,7 @@ bitmapper.zoomIn = function() {
   }
 };
 
+
 /**
  * Scales to half.
  */
@@ -110,6 +118,7 @@ bitmapper.zoomOut = function() {
       bitmapper.zoomManager.getZoomFactor() * 0.5);
   bitmapper.zoomManager.drawDisplayCanvas();
 };
+
 
 /**
  * Gets mouse co-ordinates for source canvas.
@@ -122,6 +131,7 @@ bitmapper.mouseMoveCoordinates = function(mouseEvent) {
       bitmapper.colorPalette.getSelectedColor());
 };
 
+
 /**
  * Gets mouse co-ordinates for source canvas.
  * @param {Event} mouseEvent
@@ -133,6 +143,7 @@ bitmapper.mouseDownCoordinates = function(mouseEvent) {
       bitmapper.colorPalette.getSelectedColor());
 };
 
+
 /**
  * Set background color of selected color box to selected color.
  */
@@ -141,14 +152,16 @@ bitmapper.setSelectedColorBox = function() {
       bitmapper.rgbToHex(bitmapper.colorPalette.getSelectedColor());
 };
 
+
 /**
  * Changes background of selected cell in palette to selected color.
  */
 bitmapper.updatePalette = function() {
   bitmapper.colorPalette.updateCellColor(
       document.getElementById('colorSelector').value,
-          bitmapper.colorPalette.getSelectedIndex());
+      bitmapper.colorPalette.getSelectedIndex());
 };
+
 
 /**
  * Entry point.
@@ -191,7 +204,7 @@ bitmapper.start = function() {
   // Callback sets the color selector box to the selected color.
   bitmapper.colorPalette = new bitmapper.ColorPalette(
       document.getElementById('paletteContainer'),
-            bitmapper.setSelectedColorBox);
+      bitmapper.setSelectedColorBox);
   var initialColors = ['#000000', '#ffff00', '#0000ff', '#ff00ff',
                       '#cc00ff', '#9900ff', '#ff6600', '#0099ff'];
   bitmapper.colorPalette.generatePalette(initialColors);
@@ -201,6 +214,7 @@ bitmapper.start = function() {
   document.getElementById('colorSelector')
      .addEventListener('change', bitmapper.updatePalette, false);
 };
+
 
 /** Closure called when the window finishes loading. */
 window.onload = bitmapper.start;

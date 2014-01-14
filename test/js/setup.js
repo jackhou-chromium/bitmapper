@@ -8,10 +8,12 @@
  * File holds functions that tests need global access to.
  */
 
+
 /**
  * How long an async test will run for before it times out and fails.
  */
 QUnit.config.testTimeout = 1000;
+
 
 /**
  * Names div with current test name and appends to debug div.
@@ -27,6 +29,7 @@ QUnit.testStart = function(test) {
   testDiv.appendChild(titleDiv);
 };
 
+
 /**
  * Creates canvas for testing and appends to current test div.
  * @return {HTMLElement} testCanvas
@@ -38,6 +41,7 @@ bitmapper_test.createCanvas = function() {
   testCanvas.style.border = 'black solid 1px';
   return testCanvas;
 };
+
 
 /**
  * Looks for a file in the app bundle and calls the callback passing in the

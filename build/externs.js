@@ -6,18 +6,23 @@
 // about. More info here:
 // http://developers.google.com/closure/compiler/docs/api-tutorial3#externs
 
+
 /**
  * @param {function(Entry)} callback callback
  */
 chrome.runtime.getPackageDirectoryEntry = function(callback) {};
+
 
 /**
  * @param {string} data data
  */
 var atob = function(data) {};
 
+
+
 /** @constructor */
 function RenderingContext() {}
+
 
 /**
  * @param {Image} image image.
@@ -28,6 +33,7 @@ function RenderingContext() {}
  */
 RenderingContext.prototype.drawImage = function(image, dx, dy, dw, dh) {};
 
+
 /**
  * @param {number} dx dx.
  * @param {number} dy dy.
@@ -35,6 +41,7 @@ RenderingContext.prototype.drawImage = function(image, dx, dy, dw, dh) {};
  * @param {number} dh dh.
  */
 RenderingContext.prototype.clearRect = function(dx, dy, dw, dh) {};
+
 
 /**
  * @param {number} dx dx.
@@ -44,6 +51,7 @@ RenderingContext.prototype.clearRect = function(dx, dy, dw, dh) {};
  */
 RenderingContext.prototype.fillRect = function(dx, dy, dw, dh) {};
 
+
 /**
  * @param {number} dx dx.
  * @param {number} dy dy.
@@ -51,6 +59,7 @@ RenderingContext.prototype.fillRect = function(dx, dy, dw, dh) {};
  * @param {number} dh dh.
  */
 RenderingContext.prototype.strokeRect = function(dx, dy, dw, dh) {};
+
 
 /**
  * @param {number} x0 x0.
@@ -64,6 +73,7 @@ RenderingContext.prototype.strokeRect = function(dx, dy, dw, dh) {};
 RenderingContext.prototype.createRadialGradient =
     function(x0, y0, r0, x1, y1, r1) {};
 
+
 /**
  * @param {number} x0 x0.
  * @param {number} y0 y0.
@@ -72,6 +82,7 @@ RenderingContext.prototype.createRadialGradient =
  * @return {Object}
  */
 RenderingContext.prototype.createLinearGradient = function(x0, y0, x1, y1) {};
+
 
 /**
  * @param {number} x x.
@@ -83,6 +94,7 @@ RenderingContext.prototype.createLinearGradient = function(x0, y0, x1, y1) {};
  */
 RenderingContext.prototype.arc = function(x, y, r, startAngle, endAngle) {};
 
+
 /**
  * @param {number} cpx cpx.
  * @param {number} cpy cpy.
@@ -91,11 +103,13 @@ RenderingContext.prototype.arc = function(x, y, r, startAngle, endAngle) {};
  */
 RenderingContext.prototype.quadraticCurveTo = function(cpx, cpy, x, y) {};
 
+
 /**
  * @param {number} x x.
  * @param {number} y y.
  */
 RenderingContext.prototype.moveTo = function(x, y) {};
+
 
 /**
  * @param {number} x x.
@@ -103,19 +117,27 @@ RenderingContext.prototype.moveTo = function(x, y) {};
  */
 RenderingContext.prototype.lineTo = function(x, y) {};
 
+
 /**
  * @param {string} text text.
  * @param {number} x x.
  * @param {number} y y.
- * @param {number=} maxWidth maxWidth.
+ * @param {number} maxWidth maxWidth.
  */
 RenderingContext.prototype.fillText = function(text, x, y, maxWidth) {};
 
+
 /** */
 RenderingContext.prototype.beginPath = function() {};
+
+
 /** */
 RenderingContext.prototype.closePath = function() {};
+
+
 /** */
 RenderingContext.prototype.fill = function() {};
+
+
 /** */
 RenderingContext.prototype.stroke = function() {};
