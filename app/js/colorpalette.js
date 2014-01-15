@@ -51,6 +51,12 @@ function ColorPalette(divContainer, callback) {}
      * @type {Array.<Element>}
      */
     this.colorDivs = [];
+
+    /**
+     * Default opacity is 1 (fully opaque).
+     * @type {number}
+     */
+    this.opacity = 1;
   };
 
   /**
@@ -114,6 +120,24 @@ function ColorPalette(divContainer, callback) {}
    */
   ColorPalette.prototype.getSelectedColor = function() {
     return this.colorDivs[this.selectedColorIndex].style.backgroundColor;
+  };
+
+  /**
+   * Gets selected color with opacity level (rgba).
+   * @param {string} rgb
+   * @return {string}
+   */
+  ColorPalette.prototype.getSelectedColorWithOpacity = function() {
+    var rgb = this.getSelectedColor();
+    return 'rgba' + rgb.slice(3, -1) + ', ' + this.opacity.toString() + ')';
+  };
+
+  /**
+   * Sets the opacity value (0-1 scale).
+   * @param {number} opacity
+   */
+  ColorPalette.prototype.setOpacity = function(opacity) {
+    this.opacity = opacity;
   };
 
   /**

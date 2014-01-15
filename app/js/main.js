@@ -128,7 +128,7 @@ bitmapper.mouseMoveCoordinates = function(mouseEvent) {
   bitmapper.mousemove(
       bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetX),
       bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetY),
-      bitmapper.colorPalette.getSelectedColor());
+      bitmapper.colorPalette.getSelectedColorWithOpacity());
 };
 
 
@@ -140,7 +140,7 @@ bitmapper.mouseDownCoordinates = function(mouseEvent) {
   bitmapper.mousedown(
       bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetX),
       bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetY),
-      bitmapper.colorPalette.getSelectedColor());
+      bitmapper.colorPalette.getSelectedColorWithOpacity());
 };
 
 
@@ -160,6 +160,16 @@ bitmapper.updatePalette = function() {
   bitmapper.colorPalette.updateCellColor(
       document.getElementById('colorSelector').value,
       bitmapper.colorPalette.getSelectedIndex());
+};
+
+
+/**
+ * Updates the current opacity level.
+ */
+bitmapper.updateOpacity = function() {
+  var opacity = document.getElementById('opacity').value;
+  document.getElementById('opacityValue').innerHTML = opacity + '%';
+  bitmapper.colorPalette.setOpacity(opacity / 100);
 };
 
 
@@ -212,7 +222,10 @@ bitmapper.start = function() {
   bitmapper.setSelectedColorBox();
 
   document.getElementById('colorSelector')
-     .addEventListener('change', bitmapper.updatePalette, false);
+      .addEventListener('change', bitmapper.updatePalette, false);
+
+  document.getElementById('opacity')
+      .addEventListener('input', bitmapper.updateOpacity, false);
 };
 
 

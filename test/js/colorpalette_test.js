@@ -13,6 +13,7 @@
   /**
    * Initialises color palette and appends to selected test debug div.
    * @param {function()} callback
+   * @return {Object}
    */
   function initialiseTestPalette(callback) {
     // Create color palette element in debug section.
@@ -92,5 +93,27 @@
             .style.backgroundColor;
     equal(backgroundColor, 'rgb(64, 224, 208)',
           'Color palette cell updated with selected color');
+  });
+
+  /**
+   * Testing adding opacity to color (rgb to rgba).
+   */
+  test('rgbaFormat', function() {
+    var colorPalette = initialiseTestPalette(function() {});
+    // Choose color from palette, alter opacity and check resulting rgba.
+    colorPalette.setSelectedIndex(0);
+    equal(colorPalette.getSelectedColorWithOpacity(), 'rgba(255, 0, 0, 1)');
+
+    colorPalette.setSelectedIndex(1);
+    colorPalette.setOpacity(0.2);
+    equal(colorPalette.getSelectedColorWithOpacity(), 'rgba(255, 255, 0, 0.2)');
+
+    colorPalette.setSelectedIndex(2);
+    colorPalette.setOpacity(0.053);
+    equal(colorPalette.getSelectedColorWithOpacity(), 'rgba(0, 0, 255, 0.053)');
+
+    colorPalette.setSelectedIndex(3);
+    colorPalette.setOpacity(0);
+    equal(colorPalette.getSelectedColorWithOpacity(), 'rgba(255, 0, 255, 0)');
   });
 })();
