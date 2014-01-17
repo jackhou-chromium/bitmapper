@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Copyright 2013 Google Inc. All Rights Reserved. -->
+<!-- Copyright 2013  Google Inc. All Rights Reserved. -->
 <html>
   <head>
     <link href="style.css" rel="stylesheet">
@@ -18,11 +18,10 @@
     <div id="output"></div>
     <div id="content">
       <div id="leftToolBar">
-        <div class="tools">[+] Pencil</div>
-        <div class="tools">[+] Brush Type</div>
-        <div class="tools">[+] Paint Bucket</div>
-        <div class="tools">Color
-          <p><input id="colorSelector" type="color"></div>
+        <div class="tools"><button id='pencilToolButton'>Pencil</button></div>
+        <div class = "tools">Size</div>
+          <input type='range' id='sizeSelector' min='1' max='10' step='1' value='5'></input>
+        <div class="tools">Color: <input id="colorSelector" type="color"></div>
         <div id="paletteContainer"></div>
         <div class="tools">Opacity
             <input type="range" id="opacity" min="0" max="100" step="1" value="100">

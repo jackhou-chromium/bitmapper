@@ -121,35 +121,12 @@ bitmapper.zoomOut = function() {
 
 
 /**
- * Gets mouse co-ordinates for source canvas.
- * @param {Event} mouseEvent
- */
-bitmapper.mouseMoveCoordinates = function(mouseEvent) {
-  bitmapper.mousemove(
-      bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetX),
-      bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetY),
-      bitmapper.colorPalette.getSelectedColorWithOpacity());
-};
-
-
-/**
- * Gets mouse co-ordinates for source canvas.
- * @param {Event} mouseEvent
- */
-bitmapper.mouseDownCoordinates = function(mouseEvent) {
-  bitmapper.mousedown(
-      bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetX),
-      bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetY),
-      bitmapper.colorPalette.getSelectedColorWithOpacity());
-};
-
-
-/**
  * Set background color of selected color box to selected color.
  */
 bitmapper.setSelectedColorBox = function() {
   document.getElementById('colorSelector').value =
-      bitmapper.rgbToHex(bitmapper.colorPalette.getSelectedColor());
+      bitmapper.rgbToHex(
+          bitmapper.optionProviders.colorPalette.getSelectedColor());
 };
 
 
@@ -157,9 +134,116 @@ bitmapper.setSelectedColorBox = function() {
  * Changes background of selected cell in palette to selected color.
  */
 bitmapper.updatePalette = function() {
-  bitmapper.colorPalette.updateCellColor(
+  bitmapper.optionProviders.colorPalette.updateCellColor(
       document.getElementById('colorSelector').value,
-      bitmapper.colorPalette.getSelectedIndex());
+      bitmapper.optionProviders.colorPalette.getSelectedIndex());
+};
+
+
+/**
+ * Set selected tool.
+ * @param {Object} tool
+ */
+bitmapper.setSelectedTool = function(tool) {
+  bitmapper.selectedTool = tool;
+};
+
+
+/**
+ * Dispatch mouse events.
+ */
+bitmapper.handleMouseEvents = function() {
+  bitmapper.displayCanvas.addEventListener('mousedown',
+      function(mouseEvent) {
+        bitmapper.selectedTool.mouseDown(
+            bitmapper.getMouseCoordinates(mouseEvent));
+      });
+  bitmapper.displayCanvas.addEventListener('mouseup',
+      function(mouseEvent) {
+        bitmapper.selectedTool.mouseUp(
+            bitmapper.getMouseCoordinates(mouseEvent));
+      });
+  bitmapper.displayCanvas.addEventListener('mousemove',
+      function(mouseEvent) {
+        bitmapper.selectedTool.mouseMove(
+            bitmapper.getMouseCoordinates(mouseEvent));
+      });
+  bitmapper.displayCanvas.addEventListener('mouseleave',
+      function(mouseEvent) {
+        bitmapper.selectedTool.mouseLeave(
+            bitmapper.getMouseCoordinates(mouseEvent));
+      });
+};
+
+
+/**
+ * Bundle mouse coordinates to pass to tools.
+ * @param {Event} mouseEvent
+ * @return {MouseCoordinates}
+ */
+bitmapper.getMouseCoordinates = function(mouseEvent) {
+  var mouseCoordinates = new MouseCoordinates();
+  mouseCoordinates.sourceX =
+      bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetX);
+  mouseCoordinates.sourceY =
+      bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetY);
+  return mouseCoordinates;
+};
+
+
+/**
+ * Set up optionProviders which is given to tools.
+ */
+bitmapper.setUpOptionProviders = function() {
+  // Callback sets the color selector box to the selected color.
+  var colorPalette = new bitmapper.ColorPalette(
+      document.getElementById('paletteContainer'),
+      bitmapper.setSelectedColorBox);
+  var initialColors = ['#000000', '#ffff00', '#0000ff', '#ff00ff',
+    '#cc00ff', '#9900ff', '#ff6600', '#0099ff'];
+  colorPalette.generatePalette(initialColors);
+
+  var sizeSelector = document.getElementById('sizeSelector');
+
+  // Option providers passed to Tools as an Object so there is no type safety.
+  bitmapper.optionProviders =
+      /** @struct */ {
+        /** @type {ColorPalette} */
+        colorPalette: colorPalette,
+        /** @type {HTMLElement} */
+        sizeSelector: sizeSelector
+      };
+};
+
+
+/**
+ * Set up tools and handlers for UI tool elements.
+ */
+bitmapper.setUpTools = function() {
+  var toolContext = new ToolContext(
+      bitmapper.sourceCanvas,
+      bitmapper.displayCanvas,
+      function() {
+        bitmapper.zoomManager.drawDisplayCanvas();
+      });
+
+  // Initialise tools.
+  var pencilTool = new bitmapper.PencilTool(
+      toolContext, bitmapper.optionProviders);
+
+  bitmapper.tools =
+      /** @struct */ {
+        /** @type {PencilTool} */
+        pencilTool: pencilTool
+      };
+
+  // Handlers for tool buttons.
+  document.getElementById('pencilToolButton').addEventListener(
+      'click',
+      function() {
+        bitmapper.setSelectedTool(bitmapper.tools.pencilTool);
+      },
+      false);
 };
 
 
@@ -169,7 +253,7 @@ bitmapper.updatePalette = function() {
 bitmapper.updateOpacity = function() {
   var opacity = document.getElementById('opacity').value;
   document.getElementById('opacityValue').innerHTML = opacity + '%';
-  bitmapper.colorPalette.setOpacity(opacity / 100);
+  bitmapper.optionProviders.colorPalette.setOpacity(opacity / 100);
 };
 
 
@@ -177,52 +261,44 @@ bitmapper.updateOpacity = function() {
  * Entry point.
  */
 bitmapper.start = function() {
+  // Initialise canvases.
   bitmapper.displayCanvas = document.getElementById('imageCanvas');
   bitmapper.sourceCanvas = document.getElementById('sourceCanvas');
-
   document.getElementById('clearButton').onclick = function() {
     bitmapper.clearCanvas();
   };
+  bitmapper.statusMessage('Untitled Image.');
 
-  var open = document.getElementById('openButton');
-  open.addEventListener('click', bitmapper.openFile, false);
+  // Initialise handlers for filesystem buttons.
+  document.getElementById('openButton')
+      .addEventListener('click', bitmapper.openFile, false);
+  document.getElementById('saveButton')
+      .addEventListener('click', bitmapper.saveFile, false);
+  document.getElementById('saveAsButton')
+      .addEventListener('click', bitmapper.saveAsFile, false);
 
+  // Initialise zoom functionality.
   bitmapper.zoomManager = new bitmapper.ZoomManager(
       bitmapper.sourceCanvas, bitmapper.displayCanvas);
-
-  bitmapper.displayCanvas.addEventListener('mousedown',
-      bitmapper.mouseDownCoordinates, false);
-  bitmapper.displayCanvas.addEventListener('mousemove',
-      bitmapper.mouseMoveCoordinates, false);
-  bitmapper.displayCanvas.addEventListener('mouseup',
-      bitmapper.mouseup, false);
-  bitmapper.displayCanvas.addEventListener('mouseleave',
-      bitmapper.mouseup, false);
-
-  var save = document.getElementById('saveButton');
-  save.addEventListener('click', bitmapper.saveFile, false);
-
-  var saveAs = document.getElementById('saveAsButton');
-  saveAs.addEventListener('click', bitmapper.saveAsFile, false);
-
   document.getElementById('zoomInButton')
       .addEventListener('click', bitmapper.zoomIn, false);
   document.getElementById('zoomOutButton')
       .addEventListener('click', bitmapper.zoomOut, false);
 
-  // Create color palette at start.
-  // Callback sets the color selector box to the selected color.
-  bitmapper.colorPalette = new bitmapper.ColorPalette(
-      document.getElementById('paletteContainer'),
-      bitmapper.setSelectedColorBox);
-  var initialColors = ['#000000', '#ffff00', '#0000ff', '#ff00ff',
-                      '#cc00ff', '#9900ff', '#ff6600', '#0099ff'];
-  bitmapper.colorPalette.generatePalette(initialColors);
+  // Set up option providers and tools.
+  bitmapper.setUpOptionProviders();
+  bitmapper.setUpTools();
+
+  // Set default tool.
+  bitmapper.setSelectedTool(bitmapper.tools.pencilTool);
+  // Set up mouse event listeners.
+  bitmapper.handleMouseEvents();
+
+  // Other UI elements.
+  document.getElementById('colorSelector')
+    .addEventListener('change', bitmapper.updatePalette, false);
   // Set color selector as first color in palette.
   bitmapper.setSelectedColorBox();
-
-  document.getElementById('colorSelector')
-      .addEventListener('change', bitmapper.updatePalette, false);
 
   document.getElementById('opacity')
       .addEventListener('input', bitmapper.updateOpacity, false);

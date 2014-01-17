@@ -124,7 +124,6 @@ function ColorPalette(divContainer, callback) {}
 
   /**
    * Gets selected color with opacity level (rgba).
-   * @param {string} rgb
    * @return {string}
    */
   ColorPalette.prototype.getSelectedColorWithOpacity = function() {

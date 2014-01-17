@@ -18,7 +18,8 @@ TEST_EXCLUDES := main.js
 
 # Javascript source files to edit.
 # IMPORTANT: These must be in dependency order.
-SRCS := namespace.js imagefile.js draw.js zoommanager.js colorpalette.js main.js
+SRCS := namespace.js imagefile.js zoommanager.js colorpalette.js \
+    tool.js penciltool.js main.js
 APP_SRCS := $(patsubst %,$(APPDIR)/$(SRCDIR)/%,$(SRCS))
 TEST_SRCS := $(TESTDIR)/$(SRCDIR)/setup.js \
     $(shell find $(TESTDIR)/$(SRCDIR) -type f -name '*_test.js')
