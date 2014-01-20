@@ -155,6 +155,7 @@ bitmapper.setSelectedTool = function(tool) {
  * Dispatch mouse events.
  */
 bitmapper.handleMouseEvents = function() {
+  // Mouse support.
   bitmapper.displayCanvas.addEventListener('mousedown',
       function(mouseEvent) {
         bitmapper.selectedTool.mouseDown(
@@ -175,6 +176,47 @@ bitmapper.handleMouseEvents = function() {
         bitmapper.selectedTool.mouseLeave(
             bitmapper.getMouseCoordinates(mouseEvent));
       });
+
+  // Touch Support.
+  bitmapper.displayCanvas.addEventListener('touchstart',
+      function(touchEvent) {
+        touchEvent.preventDefault();
+        bitmapper.selectedTool.mouseDown(
+            bitmapper.getTouchCoordinates(touchEvent));
+      });
+  bitmapper.displayCanvas.addEventListener('touchend',
+      function(touchEvent) {
+        touchEvent.preventDefault();
+        bitmapper.selectedTool.mouseUp(
+            bitmapper.getTouchCoordinates(touchEvent));
+      });
+  bitmapper.displayCanvas.addEventListener('touchmove',
+      function(touchEvent) {
+        touchEvent.preventDefault();
+        bitmapper.selectedTool.mouseMove(
+            bitmapper.getTouchCoordinates(touchEvent));
+      });
+  bitmapper.displayCanvas.addEventListener('touchleave',
+      function(touchEvent) {
+        touchEvent.preventDefault();
+        bitmapper.selectedTool.mouseLeave(
+            bitmapper.getTouchCoordinates(touchEvent));
+      });
+};
+
+
+/**
+ * Bundle touch mouse coordinates to pass to tools.
+ * @param {Event} touchEvent
+ * @return {MouseCoordinates}
+ */
+bitmapper.getTouchCoordinates = function(touchEvent) {
+  var mouseCoordinates = new MouseCoordinates();
+  mouseCoordinates.sourceX = bitmapper.zoomManager.getSourceCoordinate(
+      touchEvent.targetTouches[0].pageX - bitmapper.displayCanvas.offsetLeft);
+  mouseCoordinates.sourceY = bitmapper.zoomManager.getSourceCoordinate(
+      touchEvent.targetTouches[0].pageY - bitmapper.displayCanvas.offsetTop);
+  return mouseCoordinates;
 };
 
 
