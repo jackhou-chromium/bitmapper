@@ -37,8 +37,6 @@ bitmapper.openFile = function() {
         if (!bitmapper.imageFile)
           bitmapper.imageFile = new bitmapper.ImageFile();
 
-        // Enable save button only if user opens file and doesn't cancel.
-        document.getElementById('saveButton').disabled = false;
         bitmapper.imageFile.loadFile(entry, bitmapper.setCanvasToImage);
         // TODO(dadisusila): Handle errors while loading.
         bitmapper.statusMessage(bitmapper.imageFile.fileEntry.name +
@@ -62,7 +60,6 @@ bitmapper.saveAsFile = function() {
             bitmapper.imageFile = new bitmapper.ImageFile();
           bitmapper.imageFile.setFileEntry(entry);
           bitmapper.saveFile();
-          document.getElementById('saveButton').disabled = false;
         }
       });
 };
@@ -72,9 +69,14 @@ bitmapper.saveAsFile = function() {
  * Saves to current file entry.
  */
 bitmapper.saveFile = function() {
-  // TODO(dadisusila): Handle error cases for saving.
-  bitmapper.statusMessage(bitmapper.imageFile.fileEntry.name + ' saved.');
-  bitmapper.imageFile.saveFile(bitmapper.sourceCanvas);
+  // Save acts as Save As if there is no valid file entry.
+  if (!bitmapper.imageFile || !bitmapper.imageFile.fileEntry) {
+    bitmapper.saveAsFile();
+  } else {
+    bitmapper.imageFile.saveFile(bitmapper.sourceCanvas);
+    // TODO(dadisusila): Handle error cases for saving.
+    bitmapper.statusMessage(bitmapper.imageFile.fileEntry.name + ' saved.');
+  }
 };
 
 
@@ -258,16 +260,28 @@ bitmapper.updateOpacity = function() {
 
 
 /**
+ * Clears canvas and sets file entry to null.
+ */
+bitmapper.newFile = function() {
+  if (bitmapper.imageFile)
+    bitmapper.imageFile.fileEntry = null;
+
+  bitmapper.clearCanvas();
+  bitmapper.statusMessage('Untitled Image.');
+};
+
+
+/**
  * Entry point.
  */
 bitmapper.start = function() {
   // Initialise canvases.
   bitmapper.displayCanvas = document.getElementById('imageCanvas');
   bitmapper.sourceCanvas = document.getElementById('sourceCanvas');
-  document.getElementById('clearButton').onclick = function() {
-    bitmapper.clearCanvas();
-  };
+  document.getElementById('newButton')
+      .addEventListener('click', bitmapper.newFile, false);
   bitmapper.statusMessage('Untitled Image.');
+
 
   // Initialise handlers for filesystem buttons.
   document.getElementById('openButton')
