@@ -9,6 +9,14 @@
       ]
     }
   },
+  "icons": {
+    "16": "icons/bitmapper_icon_16x16.png",
+    "32": "icons/bitmapper_icon_32x32.png",
+    "48": "icons/bitmapper_icon_48x48.png",
+    "64": "icons/bitmapper_icon_64x64.png",
+    "96": "icons/bitmapper_icon_96x96.png",
+    "128": "icons/bitmapper_icon_128x128.png"
+  },
   "permissions": [
     {"fileSystem": ["write"]}
   ]
