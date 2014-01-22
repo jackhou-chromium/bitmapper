@@ -55,7 +55,7 @@ $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
 		$(patsubst %, --js $(SRCDIR)/%, $(SRCS)) \
 		--js_output_file $(PROJECT).js \
 		--create_source_map $(PROJECT).js.map
-	
+
 	# Tell $(PROJECT).js where the source map is.
 	echo "//@ sourceMappingURL=$(PROJECT).js.map" >> \
 		$(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js
@@ -85,7 +85,7 @@ copy_release_files :
 	# Copy the $(APPDIR) into $(OUTDIR)/$(RELEASEDIR).
 	mkdir -p $(OUTDIR)
 	cp -rT $(APPDIR) $(OUTDIR)/$(RELEASEDIR)
-	
+
 	# Remove the original source files.
 	rm -rf $(OUTDIR)/$(RELEASEDIR)/$(SRCDIR)
 
@@ -93,8 +93,7 @@ copy_release_files :
 release : setup copy_release_files $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js
 	# Create a zipped copy of the $(OUTDIR)/$(APPDIR) directory.
 	rm -f $(OUTDIR)/$(PROJECT).zip
-	zip --junk-paths $(OUTDIR)/$(PROJECT).zip $(OUTDIR)/$(RELEASEDIR)/*
-
+	(cd $(OUTDIR)/$(RELEASEDIR); zip -r ../$(PROJECT).zip ./*)
 
 # Closure compiled output js for Test. WHITESPACE_ONLY for ease of debugging.
 $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js : $(APP_SRCS) $(TEST_SRCS) $(EXTERNS)
