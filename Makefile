@@ -107,7 +107,6 @@ $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js : $(APP_SRCS) $(TEST_SRCS) $(EXTERNS)
 			$(filter-out $(TEST_EXCLUDES), $(notdir $(ALL_SRCS)))) \
 		--js_output_file $(PROJECT)_test.js \
 		--create_source_map $(PROJECT)_test.js.map
-
 	# Tell $(PROJECT).js where the source map is.
 	echo "//@ sourceMappingURL=$(PROJECT)_test.js.map" >> \
 		$(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js
@@ -116,7 +115,6 @@ copy_test_files :
 	# Copy the $(TESTDIR) into $(OUTDIR)/$(TESTDIR)
 	mkdir -p $(OUTDIR)
 	cp -rT $(TESTDIR) $(OUTDIR)/$(TESTDIR)
-
 	# Add in all the original source files to be tested.
 	cp $(APP_SRCS) $(OUTDIR)/$(TESTDIR)/$(SRCDIR)/
 
