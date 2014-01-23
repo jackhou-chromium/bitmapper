@@ -1,11 +1,8 @@
-html {
-  height: 100%;
-  min-height: 100%;
-}
+/* Structure */
 
 body {
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   margin:0;
   display: flex;
   flex-direction: column;
@@ -17,7 +14,9 @@ header {
   height: 100px;
   width: 100%;
   font-size: 30px;
-  color: #009999;
+  color: white;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+  background: #009999;
   align-items: center;
 }
 
@@ -29,37 +28,29 @@ li {
 
 footer {
   margin: 20px;
+  display: inherit;
 }
 
 #output {
-  width: 100%;
-  height: 40px;
   color: white;
   text-align: center;
-  font-size: 20px;
-  background: #009999;
+  font-size: 15px;
+  height: 40px;
+  margin-top: 5px;
+
+}
+
+#leftToolBar {
+  width: 150px;
+  margin: 10px;
+  margin-top: 0px;
 }
 
 #content {
   display: flex;
   flex-direction: row;
   height: 100%;
-  margin-top: 20px;
-}
-
-#canvasContainer {
-  flex: 1;
-  overflow: auto;
-  background:gray;
-}
-
-#imageCanvas {
-  background-image: url('images/transparent_bg_4squares.png');
-}
-
-#leftToolBar {
-  width: 150px;
-  margin: 10px;
+  margin-top: 0px;
 }
 
 #rightToolBar {
@@ -69,10 +60,93 @@ footer {
   margin: 10px;
 }
 
+/* Header */
+
+.headerbutton {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  border: 0;
+  color: white;
+  font-size: 15px;
+  height: 30px;
+  margin: 10px;
+  position: relative;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  width: 90px;
+}
+
+.headerbutton:active:enabled {
+  box-shadow: none;
+  outline: none;
+  top: 1px;
+}
+
+.headerbutton:disabled {
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.4);
+  outline: none;
+  top: 1px;
+}
+
+.headerbutton:hover:enabled {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+#logo {
+  margin-right: 30px;
+}
+
+/* Canvas */
+
+#canvasContainer {
+  flex: 1;
+  overflow: auto;
+  background: gray;
+  padding: 10px;
+}
+
+#imageCanvas {
+  background-image: url('images/transparent_bg_4squares.png');
+}
+
+/* Tools */
+
 .tools {
   color: white;
   font-size: 15px;
   margin: 15px;
+}
+
+.toolbutton {
+  background: #009999;
+  border-bottom: 2px solid #1B7E7E;
+  border-radius: 6px;
+  border: 0;
+  box-shadow: inset 0 -2px #1B7E7E;
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+  height: 40px;
+  margin-right: 10px;
+  padding: 0;
+  position: relative;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  vertical-align: top;
+  width: 40px;
+}
+
+.toolbutton:active {
+  border-radius: 10px;
+  box-shadow: none;
+  box-shadow: none;
+  outline: blue;
+  top: 1px;
+}
+
+.toolbutton:hover {
+  background: #055555;
 }
 
 .paletteContainer {
@@ -84,8 +158,83 @@ footer {
   padding-bottom: 2px;
 }
 .paletteCell {
-  height: 30px;
-  width: 30px;
+  height: 28px;
+  width: 28px;
   margin-left: 2px;
   margin-top: 2px;
+  border: 1px #181818 solid;
+}
+
+#colorSelector {
+  background: #181818;
+  border: #181818;
+  height: 40px;
+  width: 120px;
+}
+
+/* Zoom */
+
+#zoomInButton {
+  height: 30px;
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 40px;
+}
+
+#zoomOutButton {
+  height: 30px;
+  width: 40px;
+}
+
+/* Option Providers */
+
+input[type='range'] {
+  /* Appearance property doesn't work without -webkit- prefix*/
+  -webkit-appearance: none;
+  background-color: white;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background-color: gray;
+  height: 10px;
+  width: 15px;
+}
+
+#opacity {
+  height: 10px;
+  width: 80px;
+}
+
+#opacityValue {
+  display: inline;
+  margin: 0px;
+  width: 80px;
+}
+
+#options {
+  background: rgb(49, 66, 78);
+  color: white;
+  font-size: 15px;
+  height: 40px;
+  padding-bottom: 0px;
+  padding-left: 20px;
+  padding-top: 5px;
+  width: 100%;
+}
+
+#pencilToolButton {
+  background-image: url('images/pencil_40.png');
+}
+
+#brush {
+  background-image: url('images/brush_40sm.png');
+}
+
+#eraser {
+  background-image: url('images/eraser_40.png');
+}
+
+#shape {
+  background-image: url('images/rect_40.png');
 }

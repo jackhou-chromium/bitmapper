@@ -1,43 +1,51 @@
 <!DOCTYPE html>
-<!-- Copyright 2013  Google Inc. All Rights Reserved. -->
+<!-- Copyright 2013 Google Inc. All Rights Reserved. -->
 <html>
   <head>
     <link href="style.css" rel="stylesheet">
     <script type="text/javascript" src="bitmapper.js"></script>
-    <header>
-      <ul>
-        <li>Bitmapper</li>
-        <li><button id = "newButton">New</button></li>
-        <li><button id="openButton">Open</button></li>
-        <li><button id="saveButton">Save</button></li>
-        <li><button id="saveAsButton">Save As</button></li>
-      </ul>
-    </header>
   </head>
   <body>
+    <header>
+      <ul>
+        <li id="logo">Bitmapper</li>
+        <li><button id="newButton" class="headerbutton">New</button></li>
+        <li><button id="openButton" class="headerbutton">Open</button></li>
+        <li><button disabled id="saveButton" class="headerbutton">Save</button></li>
+        <li><button id="saveAsButton" class="headerbutton">Save As</button></li>
+      </ul>
+    </header>
+    <div id="options">
+      Size
+      <input type="range" id="sizeSelector" min="1" max="10" step="1" value="5"></input>
+      Opacity
+      <input type="range" id="opacity" min="0" max="100" step="1" value="100"></input>
+      <div class="tools" id="opacityValue">100%</div>
+    </div>
     <div id="output"></div>
     <div id="content">
       <div id="leftToolBar">
-        <div class="tools"><button id='pencilToolButton'>Pencil</button></div>
-        <div class = "tools">Size</div>
-          <input type='range' id='sizeSelector' min='1' max='10' step='1' value='5'></input>
-        <div class="tools">Color: <input id="colorSelector" type="color"></div>
-        <div id="paletteContainer"></div>
-        <div class="tools">Opacity
-            <input type="range" id="opacity" min="0" max="100" step="1" value="100">
-            <div id = "opacityValue">100%</div>
+        <div class="tools">
+          <button class="toolbutton" id="pencilToolButton"></button> Pencil
         </div>
+        <div class="tools">
+          <br>
+            <input id="colorSelector" type="color">
+        </div>
+        <div id="paletteContainer"></div>
       </div>
       <div id="canvasContainer">
         <canvas hidden id="sourceCanvas"></canvas>
         <canvas id="imageCanvas"></canvas>
       </div>
       <div id="rightToolBar">
-        Zoom:
-        <button id="zoomInButton">+</button>
-        <button id="zoomOutButton">-</button>
+        <button id="zoomInButton" class="toolbutton">+</button>
+        <button id="zoomOutButton" class="toolbutton">-</button>
       </div>
     </div>
-    <footer></footer> 
+    <footer class="coordinates">
+      (<div id = "x">0</div>
+      ,<div id = "y">0</div>)
+    </footer>
   </body>
 </html>
