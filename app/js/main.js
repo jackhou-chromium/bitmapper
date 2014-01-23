@@ -6,6 +6,13 @@
 
 
 /**
+ * Local storage key for colors in color palette.
+ * @const
+ */
+bitmapper.COLOR_ARRAY_STORAGE_KEY = 'colorArray';
+
+
+/**
  * Draws the image file to the canvas.
  */
 bitmapper.setCanvasToImage = function() {
@@ -154,6 +161,11 @@ bitmapper.updatePalette = function() {
   bitmapper.optionProviders.colorPalette.updateCellColor(
       document.getElementById('colorSelector').value,
       bitmapper.optionProviders.colorPalette.getSelectedIndex());
+
+  var storageEntry = {};
+  storageEntry[bitmapper.COLOR_ARRAY_STORAGE_KEY] =
+      bitmapper.optionProviders.colorPalette.getColorArray();
+  chrome.storage.local.set(storageEntry, function() {});
 };
 
 
@@ -252,16 +264,20 @@ bitmapper.getMouseCoordinates = function(mouseEvent) {
 
 /**
  * Set up optionProviders which is given to tools.
+ * @param {Object} localStorageObject
  */
-bitmapper.setUpOptionProviders = function() {
+bitmapper.setUpOptionProviders = function(localStorageObject) {
   // Callback sets the color selector box to the selected color.
   var colorPalette = new bitmapper.ColorPalette(
       document.getElementById('paletteContainer'),
       bitmapper.setSelectedColorBox);
-  var initialColors = ['#000000', '#ffff00', '#0000ff', '#ff00ff',
-    '#cc00ff', '#9900ff', '#ff6600', '#0099ff'];
-  colorPalette.generatePalette(initialColors);
 
+  var initialColors = localStorageObject[bitmapper.COLOR_ARRAY_STORAGE_KEY];
+  if (!initialColors) {
+    initialColors = ['#000000', '#ffff00', '#0000ff', '#ff00ff',
+                     '#cc00ff', '#9900ff', '#ff6600', '#0099ff'];
+  }
+  colorPalette.generatePalette(initialColors);
   var sizeSelector = document.getElementById('sizeSelector');
 
   // Option providers passed to Tools as an Object so there is no type safety.
@@ -330,8 +346,9 @@ bitmapper.newFile = function() {
 
 /**
  * Entry point.
+ * @param {Object} localStorageObject
  */
-bitmapper.start = function() {
+bitmapper.start = function(localStorageObject) {
   // Initialise canvases.
   bitmapper.displayCanvas = document.getElementById('imageCanvas');
   bitmapper.sourceCanvas = document.getElementById('sourceCanvas');
@@ -357,19 +374,18 @@ bitmapper.start = function() {
       .addEventListener('click', bitmapper.zoomOut, false);
 
   // Set up option providers and tools.
-  bitmapper.setUpOptionProviders();
+  bitmapper.setUpOptionProviders(localStorageObject);
   bitmapper.setUpTools();
 
   // Set default tool.
   bitmapper.setSelectedTool(bitmapper.tools.pencilTool);
   // Set up mouse event listeners.
   bitmapper.handleMouseEvents();
+  bitmapper.setSelectedColorBox();
 
   // Other UI elements.
   document.getElementById('colorSelector')
     .addEventListener('change', bitmapper.updatePalette, false);
-  // Set color selector as first color in palette.
-  bitmapper.setSelectedColorBox();
 
   document.getElementById('opacity')
       .addEventListener('input', bitmapper.updateOpacity, false);
@@ -377,4 +393,9 @@ bitmapper.start = function() {
 
 
 /** Closure called when the window finishes loading. */
-window.onload = bitmapper.start;
+window.onload = function() {
+  // Retrieve everything stored in local storage.
+  chrome.storage.local.get(null, function(localStorageObject) {
+    bitmapper.start(localStorageObject);
+  });
+};

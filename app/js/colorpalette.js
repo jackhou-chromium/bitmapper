@@ -156,6 +156,18 @@ function ColorPalette(divContainer, callback) {}
     return '#' + r + g + b;
   }
 
+  /**
+   * Gets the colors of the color palette.
+   * @return {Array.<string>}
+   */
+  ColorPalette.prototype.getColorArray = function() {
+    var colorArray = [];
+    for (var i = 0; i < this.colorDivs.length; i++) {
+      colorArray.push(this.colorDivs[i].style.backgroundColor);
+    }
+    return colorArray;
+  };
+
   bitmapper.rgbToHex = rgbToHex;
   bitmapper.ColorPalette = ColorPalette;
 })();

@@ -18,6 +18,7 @@
     "128": "icons/bitmapper_icon_128x128.png"
   },
   "permissions": [
+    "storage",
     {"fileSystem": ["write"]}
   ]
 }
