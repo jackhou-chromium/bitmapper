@@ -70,4 +70,21 @@
       });
     });
   });
+
+  test('imageFileType', function() {
+    equal(bitmapper.getFileType('/file.png'), 'image/png',
+        'Recognises png');
+    equal(bitmapper.getFileType('/hello.world.png'), 'image/png',
+        'Recognises png');
+    equal(bitmapper.getFileType('/file.jpg'), 'image/jpeg',
+        'Recognises jpeg');
+    equal(bitmapper.getFileType('/file.jpeg'), 'image/jpeg',
+        'Recognises jpeg');
+    equal(bitmapper.getFileType('/nosuffix'), 'image/png',
+        'Defaults to png');
+    equal(bitmapper.getFileType('/file.bmp'), 'image/png',
+        'Defaults to png');
+    equal(bitmapper.getFileType('/file.gif'), 'image/png',
+        'Defaults to png');
+  });
 })();

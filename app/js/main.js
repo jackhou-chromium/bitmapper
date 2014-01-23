@@ -27,7 +27,15 @@ bitmapper.openFile = function() {
   chrome.fileSystem.chooseEntry(
       {
         'type': 'openWritableFile',
-        'accepts': [{'description': '*.png', 'extensions': ['png']}]
+        'accepts': [
+          {'description': 'All image files',
+            'extensions': ['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp']},
+          {'description': 'PNG image', 'extensions': ['png']},
+          {'description': 'JPG image', 'extensions': ['jpg']},
+          {'description': 'BMP image', 'extensions': ['bmp']},
+          {'description': 'GIF image', 'extensions': ['gif']},
+          {'description': 'WEBP image', 'extensions': ['webp']}],
+        'acceptsAllTypes': false
       },
       function(entry) {
         if (!entry) {
@@ -51,7 +59,14 @@ bitmapper.openFile = function() {
  */
 bitmapper.saveAsFile = function() {
   chrome.fileSystem.chooseEntry(
-      {'type': 'saveFile'},
+      {
+        'type': 'saveFile',
+        'accepts': [
+          {'description': 'PNG image', 'extensions': ['png']},
+          {'description': 'JPG image', 'extensions': ['jpg']},
+          {'description': 'WEBP image', 'extensions': ['webp']}],
+        'acceptsAllTypes': false
+      },
       function(entry) {
         if (!entry) {
           bitmapper.statusMessage('Nothing selected.');

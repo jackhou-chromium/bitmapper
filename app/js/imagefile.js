@@ -83,10 +83,12 @@ function ImageFile() {}
    * @param {HTMLElement} canvas
    */
   ImageFile.prototype.saveFile = function(canvas) {
-    var pngBlob = this.dataURItoBlob(canvas.toDataURL());
+    // Method toDataURL accepts 'image/png', 'image/jpeg' and 'image/webp'.
+    var blob = this.dataURItoBlob(
+        canvas.toDataURL(getFileType(this.fileEntry.fullPath)));
     this.fileEntry.createWriter(function(writer) {
       writer.seek(0);
-      writer.write(pngBlob);
+      writer.write(blob);
     });
   };
 
@@ -108,5 +110,29 @@ function ImageFile() {}
     return blob;
   };
 
+  /**
+   * Gets the mime type based on the file extension.
+   * Returns "image/jpeg" for .jpg/.jpeg, "image/webp" for .webp and
+   * "image/png" in any other case.
+   * @return {string}
+   */
+  function getFileType(filePath) {
+    var index = filePath.lastIndexOf('.');
+    // If none, default to png.
+    var fileType = 'image/png';
+    if (index != -1) {
+      // Get the filename extension.
+      var suffix = filePath.substr(index + 1);
+      // Method toDataURL does not recognise 'jpg'.
+      if (suffix == 'jpg' || suffix == 'jpeg') {
+        fileType = 'image/jpeg';
+      } else if (suffix == 'webp') {
+        fileType = 'image/webp';
+      }
+    }
+    return fileType;
+  }
+
+  bitmapper.getFileType = getFileType;
   bitmapper.ImageFile = ImageFile;
 })();
