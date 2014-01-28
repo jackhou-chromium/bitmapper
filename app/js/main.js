@@ -6,6 +6,18 @@
 
 
 /**
+ * @const {number}
+ */
+bitmapper.MAX_RESIZE_CANVAS_WIDTH = 1500;
+
+
+/**
+ * @const {number}
+ */
+bitmapper.MAX_RESIZE_CANVAS_HEIGHT = 1500;
+
+
+/**
  * Local storage key for colors in color palette.
  * @const
  */
@@ -345,6 +357,44 @@ bitmapper.newFile = function() {
 
 
 /**
+ * Resizes the canvas using input dimensions.
+ * @param {number} newWidth
+ * @param {number} newHeight
+ */
+bitmapper.resizeCanvas = function(newWidth, newHeight) {
+  // Error handling.
+  if (!newWidth || !newHeight || newWidth < 1 || newHeight < 1) {
+    bitmapper.statusMessage('Please enter valid dimensions.');
+    return;
+  }
+  if (newWidth > bitmapper.MAX_RESIZE_CANVAS_WIDTH ||
+      newHeight > bitmapper.MAX_RESIZE_CANVAS_HEIGHT) {
+    bitmapper.statusMessage('Maximum is' + bitmapper.MAX_RESIZE_CANVAS_WIDTH +
+        'x' + bitmapper.MAX_RESIZE_CANVAS_HEIGHT + 'px.');
+    return;
+  }
+
+  // Create temporary canvas.
+  var tempCanvas = document.createElement('canvas');
+  // Temporarily store source canvas.
+  tempCanvas.width = bitmapper.sourceCanvas.width;
+  tempCanvas.height = bitmapper.sourceCanvas.height;
+  tempCanvas.getContext('2d').drawImage(bitmapper.sourceCanvas, 0, 0,
+      bitmapper.sourceCanvas.width, bitmapper.sourceCanvas.height);
+  // Clear source canvas.
+  bitmapper.clearCanvas();
+  // Resize source.
+  bitmapper.sourceCanvas.width = newWidth;
+  bitmapper.sourceCanvas.height = newHeight;
+  // Draw temp back on source.
+  bitmapper.sourceCanvas.getContext('2d').drawImage(tempCanvas, 0, 0);
+  // Draw display canvas.
+  bitmapper.zoomManager.drawDisplayCanvas();
+  bitmapper.statusMessage('Resized the canvas.');
+};
+
+
+/**
  * Entry point.
  * @param {Object} localStorageObject
  */
@@ -389,6 +439,14 @@ bitmapper.start = function(localStorageObject) {
 
   document.getElementById('opacity')
       .addEventListener('input', bitmapper.updateOpacity, false);
+
+  document.getElementById('resizeCanvasButton').addEventListener(
+      'click',
+      function() {
+        bitmapper.resizeCanvas(
+            document.getElementById('resizeCanvasWidth').value,
+            document.getElementById('resizeCanvasHeight').value);
+      }, false);
 };
 
 
