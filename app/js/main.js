@@ -300,6 +300,14 @@ bitmapper.setUpOptionProviders = function(localStorageObject) {
         /** @type {HTMLElement} */
         sizeSelector: sizeSelector
       };
+
+  // Change UI brush size arc.
+  bitmapper.optionProviders.sizeSelector.addEventListener('input', function() {
+    document.getElementById('brushSize').style.height =
+        (bitmapper.optionProviders.sizeSelector.value * 2) + 'px';
+    document.getElementById('brushSize').style.width =
+        (bitmapper.optionProviders.sizeSelector.value * 2) + 'px';
+  }, false);
 };
 
 

@@ -11,9 +11,9 @@ body {
 
 header {
   display: flex;
-  height: 100px;
+  height: 80px;
   width: 100%;
-  font-size: 30px;
+  font-size: 27px;
   color: white;
   text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
   background: #009999;
@@ -27,23 +27,34 @@ li {
 }
 
 footer {
-  margin: 20px;
+  color: gray;
   display: inherit;
+  font-size: 15px;
+  margin: 20px;
 }
 
 #output {
+  background: rgb(49, 66, 78);
   color: white;
-  text-align: center;
   font-size: 15px;
   height: 40px;
-  margin-top: 5px;
-
+  text-align: center;
+  margin-bottom: 20px;
+  padding-left: 20px;
+  padding-top: 5px;
+  width: 100%;
 }
 
 #leftToolBar {
   width: 150px;
   margin: 10px;
   margin-top: 0px;
+}
+
+#options {
+  color: white;
+  font-size: 15px;
+  margin: 10px;
 }
 
 #content {
@@ -73,7 +84,7 @@ footer {
   position: relative;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-  width: 90px;
+  width: 70px;
 }
 
 .headerbutton:active:enabled {
@@ -115,7 +126,7 @@ footer {
 .tools {
   color: white;
   font-size: 15px;
-  margin: 15px;
+  margin: 10px;
 }
 
 .toolbutton {
@@ -155,6 +166,7 @@ footer {
   width: 130px;
   background: white;
   margin: auto;
+  margin-bottom: 20px;
   padding-bottom: 2px;
 }
 .paletteCell {
@@ -178,7 +190,7 @@ footer {
   background: #181818;
   border: #181818;
   height: 40px;
-  width: 120px;
+  width: 130px;
 }
 
 /* Zoom */
@@ -201,6 +213,9 @@ input[type='range'] {
   /* Appearance property doesn't work without -webkit- prefix*/
   -webkit-appearance: none;
   background-color: white;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  width: 86px;
 }
 
 input[type='range']::-webkit-slider-thumb {
@@ -212,24 +227,13 @@ input[type='range']::-webkit-slider-thumb {
 
 #opacity {
   height: 10px;
-  width: 80px;
+  width: 86px;
 }
 
 #opacityValue {
   display: inline;
   margin: 0px;
   width: 80px;
-}
-
-#options {
-  background: rgb(49, 66, 78);
-  color: white;
-  font-size: 15px;
-  height: 40px;
-  padding-bottom: 0px;
-  padding-left: 20px;
-  padding-top: 5px;
-  width: 100%;
 }
 
 #pencilToolButton {
@@ -246,4 +250,13 @@ input[type='range']::-webkit-slider-thumb {
 
 #shape {
   background-image: url('images/rect_40.png');
+}
+
+#brushSize {
+  background: white;
+  border-radius: 50%;
+  display: inline-block;
+  height: 10px;
+  margin-left: 10px;
+  width: 10px;
 }

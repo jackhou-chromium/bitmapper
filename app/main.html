@@ -11,17 +11,10 @@
         <li id="logo">Bitmapper</li>
         <li><button id="newButton" class="headerbutton">New</button></li>
         <li><button id="openButton" class="headerbutton">Open</button></li>
-        <li><button disabled id="saveButton" class="headerbutton">Save</button></li>
+        <li><button id="saveButton" class="headerbutton">Save</button></li>
         <li><button id="saveAsButton" class="headerbutton">Save As</button></li>
       </ul>
     </header>
-    <div id="options">
-      Size
-      <input type="range" id="sizeSelector" min="1" max="10" step="1" value="5"></input>
-      Opacity
-      <input type="range" id="opacity" min="0" max="100" step="1" value="100"></input>
-      <div class="tools" id="opacityValue">100%</div>
-    </div>
     <div id="output"></div>
     <div id="content">
       <div id="leftToolBar">
@@ -33,6 +26,16 @@
             <input id="colorSelector" type="color">
         </div>
         <div id="paletteContainer"></div>
+        <div id="options">
+        Size
+        <br>
+        <input type="range" id="sizeSelector" min="1" max="10" step="1" value="5"></input>
+        <div id="brushSize"></div>
+        Opacity
+        <br>
+        <input type="range" id="opacity" min="1" max="100" step="1" value="100"></input>
+          <div class="tools" id="opacityValue">100%</div>
+        </div>
       </div>
       <div id="canvasContainer">
         <canvas hidden id="sourceCanvas"></canvas>
