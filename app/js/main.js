@@ -33,8 +33,12 @@ bitmapper.setCanvasToImage = function() {
   bitmapper.sourceCanvas.height = image.height;
   var sourceContext = bitmapper.sourceCanvas.getContext('2d');
   sourceContext.drawImage(image, 0, 0);
-  bitmapper.zoomManager.setZoomFactor(1);
-  bitmapper.zoomManager.drawDisplayCanvas();
+
+  // Set initial zoom properties.
+  var zoomSelector = document.getElementById('zoomSelector');
+  zoomSelector.value = 1;
+  zoomSelector.setAttribute('max', bitmapper.zoomManager.getMaxZoomFactor());
+  bitmapper.zoomCanvas();
 };
 
 
@@ -135,24 +139,13 @@ bitmapper.clearCanvas = function() {
 
 
 /**
- * Scales to double.
+ * Scales the canvas to the value from the zoom input range element.
  */
-bitmapper.zoomIn = function() {
-  if (!bitmapper.zoomManager.exceededZoomLimit()) {
-    bitmapper.zoomManager.setZoomFactor(
-        bitmapper.zoomManager.getZoomFactor() * 2);
-    bitmapper.zoomManager.drawDisplayCanvas();
-  }
-};
-
-
-/**
- * Scales to half.
- */
-bitmapper.zoomOut = function() {
-  bitmapper.zoomManager.setZoomFactor(
-      bitmapper.zoomManager.getZoomFactor() * 0.5);
+bitmapper.zoomCanvas = function() {
+  var zoomValue = document.getElementById('zoomSelector').value;
+  bitmapper.zoomManager.setZoomFactor(zoomValue);
   bitmapper.zoomManager.drawDisplayCanvas();
+  document.getElementById('zoomValue').textContent = (zoomValue * 100) + '%';
 };
 
 
@@ -414,7 +407,6 @@ bitmapper.start = function(localStorageObject) {
       .addEventListener('click', bitmapper.newFile, false);
   bitmapper.statusMessage('Untitled Image.');
 
-
   // Initialise handlers for filesystem buttons.
   document.getElementById('openButton')
       .addEventListener('click', bitmapper.openFile, false);
@@ -426,10 +418,8 @@ bitmapper.start = function(localStorageObject) {
   // Initialise zoom functionality.
   bitmapper.zoomManager = new bitmapper.ZoomManager(
       bitmapper.sourceCanvas, bitmapper.displayCanvas);
-  document.getElementById('zoomInButton')
-      .addEventListener('click', bitmapper.zoomIn, false);
-  document.getElementById('zoomOutButton')
-      .addEventListener('click', bitmapper.zoomOut, false);
+  document.getElementById('zoomSelector')
+      .addEventListener('input', bitmapper.zoomCanvas, false);
 
   // Set up option providers and tools.
   bitmapper.setUpOptionProviders(localStorageObject);

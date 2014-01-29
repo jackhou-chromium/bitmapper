@@ -41,17 +41,23 @@
         <canvas hidden id="sourceCanvas"></canvas>
         <canvas id="imageCanvas"></canvas>
       </div>
-      <div id="rightToolBar">
-        <button id="zoomInButton" class="toolbutton">+</button>
-        <button id="zoomOutButton" class="toolbutton">-</button>
+    </div>
+    <footer>
+      <div class="coordinates">
+      (X: <div id="xCoordinate">0</div>
+      , Y: <div id="yCoordinate">0</div>)
+      </div>
+      <div id="zoomContainer">
+        Zoom
+        <input type="range" id="zoomSelector" min="1" max="8" step="1" value="1">
+        <div id="zoomValue">100%</div>
+      </div>
+      <div id="midfooter"></div>
+      <div id="resizeContainer">
         <input type="number" id="resizeCanvasWidth" class="dimensions" placeholder="W:300">
         <input type="number" id="resizeCanvasHeight" class="dimensions" placeholder="H:150">
         <button id="resizeCanvasButton">Resize</button>
       </div>
-    </div>
-    <footer class="coordinates">
-      (<div id = "x">0</div>
-      ,<div id = "y">0</div>)
     </footer>
   </body>
 </html>

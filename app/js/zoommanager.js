@@ -16,8 +16,11 @@ function ZoomManager(sourceCanvas, displayCanvas) {}
 
 (function() {
 
-  /** @const {number} MAX_AREA */
-  var MAX_AREA = 15000000;
+  /**
+   * Used to find max zoom factor to prevent OOMing.
+   * @const
+   */
+  var MAX_AREA = 10000000;
 
   /**
    * Encapsulates data related to the zoom manager.
@@ -82,11 +85,12 @@ function ZoomManager(sourceCanvas, displayCanvas) {}
   };
 
   /**
-   * Returns true if display canvas is too large.
-   * @return {boolean}
+   * Returns max zoom factor for loaded image to prevent OOMing.
+   * @return {number}
    */
-  ZoomManager.prototype.exceededZoomLimit = function() {
-    return (this.displayCanvas.height * this.displayCanvas.width) > MAX_AREA;
+  ZoomManager.prototype.getMaxZoomFactor = function() {
+    return Math.round(Math.sqrt(
+        MAX_AREA / (this.sourceCanvas.width * this.sourceCanvas.height)));
   };
 
   bitmapper.ZoomManager = ZoomManager;
