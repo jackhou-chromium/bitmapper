@@ -25,6 +25,13 @@ bitmapper.COLOR_ARRAY_STORAGE_KEY = 'colorArray';
 
 
 /**
+ * Local storage key for saved canvas dataURL.
+ * @const
+ */
+bitmapper.SAVED_CANVAS_STORAGE_KEY = 'savedCanvas';
+
+
+/**
  * Draws the image file to the canvas.
  */
 bitmapper.setCanvasToImage = function() {
@@ -197,6 +204,7 @@ bitmapper.handleMouseEvents = function() {
       function(mouseEvent) {
         bitmapper.selectedTool.mouseUp(
             bitmapper.getMouseCoordinates(mouseEvent));
+        bitmapper.saveStateToLocalStorage();
       });
   bitmapper.displayCanvas.addEventListener('mousemove',
       function(mouseEvent) {
@@ -207,6 +215,7 @@ bitmapper.handleMouseEvents = function() {
       function(mouseEvent) {
         bitmapper.selectedTool.mouseLeave(
             bitmapper.getMouseCoordinates(mouseEvent));
+        bitmapper.saveStateToLocalStorage();
       });
 
   // Touch Support.
@@ -221,6 +230,7 @@ bitmapper.handleMouseEvents = function() {
         touchEvent.preventDefault();
         bitmapper.selectedTool.mouseUp(
             bitmapper.getTouchCoordinates(touchEvent));
+        bitmapper.saveStateToLocalStorage();
       });
   bitmapper.displayCanvas.addEventListener('touchmove',
       function(touchEvent) {
@@ -233,6 +243,7 @@ bitmapper.handleMouseEvents = function() {
         touchEvent.preventDefault();
         bitmapper.selectedTool.mouseLeave(
             bitmapper.getTouchCoordinates(touchEvent));
+        bitmapper.saveStateToLocalStorage();
       });
 };
 
@@ -358,6 +369,17 @@ bitmapper.newFile = function() {
 
 
 /**
+ * Save source canvas to local storage.
+ */
+bitmapper.saveStateToLocalStorage = function() {
+  var storageEntry = {};
+  storageEntry[bitmapper.SAVED_CANVAS_STORAGE_KEY] =
+      bitmapper.sourceCanvas.toDataURL();
+  chrome.storage.local.set(storageEntry, function() {});
+};
+
+
+/**
  * Resizes the canvas using input dimensions.
  * @param {number} newWidth
  * @param {number} newHeight
@@ -403,6 +425,7 @@ bitmapper.start = function(localStorageObject) {
   // Initialise canvases.
   bitmapper.displayCanvas = document.getElementById('imageCanvas');
   bitmapper.sourceCanvas = document.getElementById('sourceCanvas');
+
   document.getElementById('newButton')
       .addEventListener('click', bitmapper.newFile, false);
   bitmapper.statusMessage('Untitled Image.');
@@ -445,13 +468,31 @@ bitmapper.start = function(localStorageObject) {
             document.getElementById('resizeCanvasWidth').value,
             document.getElementById('resizeCanvasHeight').value);
       }, false);
+
+  // Load canvas in local storage if there is one.
+  if (localStorageObject[bitmapper.SAVED_CANVAS_STORAGE_KEY]) {
+    var image = new Image();
+    image.src = localStorageObject[bitmapper.SAVED_CANVAS_STORAGE_KEY];
+    bitmapper.sourceCanvas.width = image.width;
+    bitmapper.sourceCanvas.height = image.height;
+    bitmapper.sourceCanvas.getContext('2d').drawImage(image, 0, 0);
+    bitmapper.zoomManager.drawDisplayCanvas();
+  }
 };
 
 
-/** Closure called when the window finishes loading. */
-window.onload = function() {
-  // Retrieve everything stored in local storage.
-  chrome.storage.local.get(null, function(localStorageObject) {
-    bitmapper.start(localStorageObject);
-  });
+/**
+ * Loads local storage if app restarted by Chrome.
+ * Starts clean if user relaunched the app.
+ * @param {boolean} isRestart
+ */
+window.runApp = function(isRestart) {
+  if (isRestart) {
+    chrome.storage.local.get(null, function(localStorageObject) {
+      bitmapper.start(localStorageObject);
+    });
+  } else {
+    // Pass in empty object.
+    bitmapper.start({});
+  }
 };
