@@ -208,6 +208,8 @@ bitmapper.handleMouseEvents = function() {
       });
   bitmapper.displayCanvas.addEventListener('mousemove',
       function(mouseEvent) {
+        bitmapper.showCoordinates(
+            bitmapper.getMouseCoordinates(mouseEvent));
         bitmapper.selectedTool.mouseMove(
             bitmapper.getMouseCoordinates(mouseEvent));
       });
@@ -235,6 +237,8 @@ bitmapper.handleMouseEvents = function() {
   bitmapper.displayCanvas.addEventListener('touchmove',
       function(touchEvent) {
         touchEvent.preventDefault();
+        bitmapper.showCoordinates(
+            bitmapper.getTouchCoordinates(touchEvent));
         bitmapper.selectedTool.mouseMove(
             bitmapper.getTouchCoordinates(touchEvent));
       });
@@ -275,6 +279,18 @@ bitmapper.getMouseCoordinates = function(mouseEvent) {
   mouseCoordinates.sourceY =
       bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetY);
   return mouseCoordinates;
+};
+
+
+/**
+ * Display source co-ordinates UI.
+ * @param {MouseCoordinates} mouseCoordinates
+ */
+bitmapper.showCoordinates = function(mouseCoordinates) {
+  document.getElementById('xCoordinate').textContent =
+      Math.round(mouseCoordinates.sourceX);
+  document.getElementById('yCoordinate').textContent =
+      Math.round(mouseCoordinates.sourceY);
 };
 
 
