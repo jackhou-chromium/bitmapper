@@ -365,11 +365,27 @@ bitmapper.setUpTools = function() {
   // Initialise tools.
   var pencilTool = new bitmapper.PencilTool(
       toolContext, bitmapper.optionProviders);
+  var pipetteTool = new bitmapper.PipetteTool(
+      toolContext, function(color, opacity, done) {
+        bitmapper.optionProviders.colorPalette.updateCellColor(
+            color,
+            bitmapper.optionProviders.colorPalette.getSelectedIndex());
+        bitmapper.setSelectedColorBox();
+        var opacityPercent = Math.round(opacity * 100);
+        document.getElementById('opacity').value = opacityPercent;
+        document.getElementById('opacityValue').innerHTML =
+            opacityPercent + '%';
+        bitmapper.optionProviders.colorPalette.setOpacity(opacity);
+        if (done)
+          bitmapper.setSelectedTool(bitmapper.tools.pencilTool);
+      });
 
   bitmapper.tools =
       /** @struct */ {
         /** @type {PencilTool} */
-        pencilTool: pencilTool
+        pencilTool: pencilTool,
+        /** @type {PipetteTool} */
+        pipetteTool: pipetteTool
       };
 
   // Handlers for tool buttons.
@@ -377,6 +393,12 @@ bitmapper.setUpTools = function() {
       'click',
       function() {
         bitmapper.setSelectedTool(bitmapper.tools.pencilTool);
+      },
+      false);
+  document.getElementById('pipetteToolButton').addEventListener(
+      'click',
+      function() {
+        bitmapper.setSelectedTool(bitmapper.tools.pipetteTool);
       },
       false);
 };
