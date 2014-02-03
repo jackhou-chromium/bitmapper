@@ -50,7 +50,7 @@
   asyncTest('cancelFile', function() {
     expect(4);
 
-    // Load image to canvas)
+    // Load image to canvas.
     bitmapper_test.getLocalFileEntry('test-image.png', function(entry) {
       var imageFile = new bitmapper.ImageFile();
 
@@ -86,5 +86,33 @@
         'Defaults to png');
     equal(bitmapper.getFileType('/file.gif'), 'image/png',
         'Defaults to png');
+  });
+
+  /**
+   * Check awareness of modified canvas.
+   */
+  asyncTest('matchesOriginal', function() {
+    expect(2);
+    // Load jpg image to canvas.
+    bitmapper_test.getLocalFileEntry('test-jpg-image.jpg', function(entry) {
+      var imageFile = new bitmapper.ImageFile();
+
+      imageFile.loadFile(entry, function() {
+        var sourceCanvas = bitmapper_test.createCanvas();
+        var image = imageFile.image;
+        sourceCanvas.width = image.width;
+        sourceCanvas.height = image.height;
+        var sourceContext = sourceCanvas.getContext('2d');
+        sourceContext.drawImage(image, 0, 0);
+
+        equal(imageFile.matchesOriginal(sourceCanvas), true);
+
+        // Now draw on canvas and check that it does not match original.
+        sourceContext.fillStyle = 'blue';
+        sourceContext.fillRect(0, 0, 1, 1);
+        equal(imageFile.matchesOriginal(sourceCanvas), false);
+        start();
+      });
+    });
   });
 })();

@@ -33,15 +33,22 @@ footer {
   margin: 20px;
 }
 
-#output {
+#fileName {
   background: rgb(49, 66, 78);
   color: white;
   font-size: 15px;
   height: 40px;
   text-align: center;
-  margin-bottom: 20px;
-  padding-left: 20px;
+  margin-bottom: 8px;
   padding-top: 5px;
+  width: 100%;
+}
+
+#output {
+  color: white;
+  font-size: 14px;
+  height: 40px;
+  text-align: center;
   width: 100%;
 }
 

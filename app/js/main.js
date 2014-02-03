@@ -76,11 +76,9 @@ bitmapper.openFile = function() {
         }
         if (!bitmapper.imageFile)
           bitmapper.imageFile = new bitmapper.ImageFile();
-
-        bitmapper.imageFile.loadFile(entry, bitmapper.setCanvasToImage);
         // TODO(dadisusila): Handle errors while loading.
-        bitmapper.statusMessage(bitmapper.imageFile.fileEntry.name +
-                                ' opened.');
+        bitmapper.imageFile.loadFile(entry, bitmapper.setCanvasToImage);
+        bitmapper.updateFileNameMessage();
       });
 };
 
@@ -121,9 +119,8 @@ bitmapper.saveFile = function() {
     bitmapper.saveAsFile();
   } else {
     bitmapper.imageFile.saveFile(bitmapper.sourceCanvas);
-    // TODO(dadisusila): Handle error cases for saving.
-    bitmapper.statusMessage(bitmapper.imageFile.fileEntry.name + ' saved.');
   }
+  bitmapper.updateFileNameMessage();
 };
 
 
@@ -204,6 +201,7 @@ bitmapper.handleMouseEvents = function() {
       });
   bitmapper.displayCanvas.addEventListener('mouseup',
       function(mouseEvent) {
+        bitmapper.updateFileNameMessage();
         bitmapper.selectedTool.mouseUp(
             bitmapper.getMouseCoordinates(mouseEvent));
         bitmapper.saveStateToLocalStorage();
@@ -231,6 +229,7 @@ bitmapper.handleMouseEvents = function() {
       });
   bitmapper.displayCanvas.addEventListener('touchend',
       function(touchEvent) {
+        bitmapper.updateFileNameMessage();
         touchEvent.preventDefault();
         bitmapper.selectedTool.mouseUp(
             bitmapper.getTouchCoordinates(touchEvent));
@@ -251,6 +250,25 @@ bitmapper.handleMouseEvents = function() {
             bitmapper.getTouchCoordinates(touchEvent));
         bitmapper.saveStateToLocalStorage();
       });
+};
+
+
+/**
+ * Compare saved canvas with potentially dirtied source canvas and displays
+ * file name message accordingly.
+ */
+bitmapper.updateFileNameMessage = function() {
+  var fileNameStatus = document.getElementById('fileName');
+  // App first launched or new file.
+  if (!bitmapper.imageFile || !bitmapper.imageFile.fileEntry) {
+    fileNameStatus.textContent = 'Untitled_image.';
+    return;
+  }
+  if (bitmapper.imageFile.matchesOriginal(bitmapper.sourceCanvas)) {
+    fileNameStatus.textContent = bitmapper.imageFile.getFileName();
+  } else {
+    fileNameStatus.textContent = bitmapper.imageFile.getFileName() + '*';
+  }
 };
 
 
@@ -382,7 +400,7 @@ bitmapper.newFile = function() {
     bitmapper.imageFile.fileEntry = null;
 
   bitmapper.clearCanvas();
-  bitmapper.statusMessage('Untitled Image.');
+  bitmapper.updateFileNameMessage();
 };
 
 
@@ -415,11 +433,12 @@ bitmapper.resizeCanvas = function(newWidth, newHeight) {
     return;
   }
 
-  // Create temporary canvas.
+  // Make copy of canvas stored temporarily.
   var tempCanvas = document.createElement('canvas');
-  // Temporarily store source canvas.
   tempCanvas.width = bitmapper.sourceCanvas.width;
   tempCanvas.height = bitmapper.sourceCanvas.height;
+  tempCanvas.getContext('2d').clearRect(0, 0, tempCanvas.width,
+      tempCanvas.height);
   tempCanvas.getContext('2d').drawImage(bitmapper.sourceCanvas, 0, 0,
       bitmapper.sourceCanvas.width, bitmapper.sourceCanvas.height);
   // Clear source canvas.
@@ -459,7 +478,7 @@ bitmapper.start = function(localStorageObject) {
 
   document.getElementById('newButton')
       .addEventListener('click', bitmapper.newFile, false);
-  bitmapper.statusMessage('Untitled Image.');
+  bitmapper.updateFileNameMessage();
 
   // Initialise handlers for filesystem buttons.
   document.getElementById('openButton')
