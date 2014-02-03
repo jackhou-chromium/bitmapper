@@ -46,6 +46,8 @@ bitmapper.setCanvasToImage = function() {
   zoomSelector.value = 1;
   zoomSelector.setAttribute('max', bitmapper.zoomManager.getMaxZoomFactor());
   bitmapper.zoomCanvas();
+
+  bitmapper.displayCanvasDimensions(image.width, image.height);
 };
 
 
@@ -430,6 +432,19 @@ bitmapper.resizeCanvas = function(newWidth, newHeight) {
   // Draw display canvas.
   bitmapper.zoomManager.drawDisplayCanvas();
   bitmapper.statusMessage('Resized the canvas.');
+
+  bitmapper.displayCanvasDimensions(newWidth, newHeight);
+};
+
+
+/**
+ * Displays canvas dimensions in UI as placeholders.
+ * @param {number} width
+ * @param {number} height
+ */
+bitmapper.displayCanvasDimensions = function(width, height) {
+  document.getElementById('resizeCanvasWidth').placeholder = 'W: ' + width;
+  document.getElementById('resizeCanvasHeight').placeholder = 'H: ' + height;
 };
 
 
@@ -493,6 +508,7 @@ bitmapper.start = function(localStorageObject) {
     bitmapper.sourceCanvas.height = image.height;
     bitmapper.sourceCanvas.getContext('2d').drawImage(image, 0, 0);
     bitmapper.zoomManager.drawDisplayCanvas();
+    bitmapper.displayCanvasDimensions(image.width, image.height);
   }
 };
 

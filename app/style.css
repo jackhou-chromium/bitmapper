@@ -301,6 +301,10 @@ input[type='range']::-webkit-slider-thumb {
   width: 70px;
 }
 
+#resizeCanvasButton:hover {
+  background: rgba(49, 66, 78, 0.5);
+}
+
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 
