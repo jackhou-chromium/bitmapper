@@ -191,12 +191,13 @@ bitmapper.setSelectedTool = function(tool) {
  */
 bitmapper.handleMouseEvents = function() {
   // Mouse support.
-  bitmapper.displayCanvas.addEventListener('mousedown',
+  var canvasWrapper = document.getElementById('canvasWrapper');
+  canvasWrapper.addEventListener('mousedown',
       function(mouseEvent) {
         bitmapper.selectedTool.mouseDown(
             bitmapper.getMouseCoordinates(mouseEvent));
-      });
-  bitmapper.displayCanvas.addEventListener('mouseup',
+      }, false);
+  canvasWrapper.addEventListener('mouseup',
       function(mouseEvent) {
         bitmapper.updateFileNameMessage();
         bitmapper.selectedTool.mouseUp(
@@ -204,29 +205,29 @@ bitmapper.handleMouseEvents = function() {
         bitmapper.saveStateToLocalStorage();
         // Snapshot pushed for undo/redo functionality.
         bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
-      });
-  bitmapper.displayCanvas.addEventListener('mousemove',
+      }, false);
+  canvasWrapper.addEventListener('mousemove',
       function(mouseEvent) {
         bitmapper.showCoordinates(
             bitmapper.getMouseCoordinates(mouseEvent));
         bitmapper.selectedTool.mouseMove(
             bitmapper.getMouseCoordinates(mouseEvent));
-      });
-  bitmapper.displayCanvas.addEventListener('mouseleave',
+      }, false);
+  canvasWrapper.addEventListener('mouseleave',
       function(mouseEvent) {
         bitmapper.selectedTool.mouseLeave(
             bitmapper.getMouseCoordinates(mouseEvent));
         bitmapper.saveStateToLocalStorage();
-      });
+      }, false);
 
   // Touch Support.
-  bitmapper.displayCanvas.addEventListener('touchstart',
+  canvasWrapper.addEventListener('touchstart',
       function(touchEvent) {
         touchEvent.preventDefault();
         bitmapper.selectedTool.mouseDown(
             bitmapper.getTouchCoordinates(touchEvent));
-      });
-  bitmapper.displayCanvas.addEventListener('touchend',
+      }, false);
+  canvasWrapper.addEventListener('touchend',
       function(touchEvent) {
         bitmapper.updateFileNameMessage();
         touchEvent.preventDefault();
@@ -235,22 +236,22 @@ bitmapper.handleMouseEvents = function() {
         bitmapper.saveStateToLocalStorage();
         // Snapshot pushed for undo/redo functionality.
         bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
-      });
-  bitmapper.displayCanvas.addEventListener('touchmove',
+      }, false);
+  canvasWrapper.addEventListener('touchmove',
       function(touchEvent) {
         touchEvent.preventDefault();
         bitmapper.showCoordinates(
             bitmapper.getTouchCoordinates(touchEvent));
         bitmapper.selectedTool.mouseMove(
             bitmapper.getTouchCoordinates(touchEvent));
-      });
-  bitmapper.displayCanvas.addEventListener('touchleave',
+      }, false);
+  canvasWrapper.addEventListener('touchleave',
       function(touchEvent) {
         touchEvent.preventDefault();
         bitmapper.selectedTool.mouseLeave(
             bitmapper.getTouchCoordinates(touchEvent));
         bitmapper.saveStateToLocalStorage();
-      });
+      }, false);
 };
 
 
@@ -507,7 +508,7 @@ bitmapper.drawImageToCanvas = function(imageSrc) {
 bitmapper.start = function(localStorageObject) {
   // Initialise canvases.
   bitmapper.displayCanvas = document.getElementById('imageCanvas');
-  bitmapper.sourceCanvas = document.getElementById('sourceCanvas');
+  bitmapper.sourceCanvas = document.createElement('canvas');
 
   document.getElementById('newButton')
       .addEventListener('click', bitmapper.newFile, false);

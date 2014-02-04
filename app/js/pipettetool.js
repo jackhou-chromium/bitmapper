@@ -28,6 +28,11 @@ function PipetteTool(toolContext, callback) {}
    */
   function PipetteTool(toolContext, callback) {
     /**
+     * @type {HTMLElement}
+     */
+    this.sourceCanvas = toolContext.sourceCanvas;
+
+    /**
      * @type {CanvasRenderingContext2D}
      */
     this.sourceContext = toolContext.sourceCanvas.getContext('2d');
@@ -69,16 +74,29 @@ function PipetteTool(toolContext, callback) {}
     this.mouseMove(mouseCoordinates);
   };
 
-  PipetteTool.prototype.mouseUp = function() {
+  /**
+   * Calls callback.
+   * @param {MouseCoordinates} mouseCoordinates
+   */
+  PipetteTool.prototype.mouseUp = function(mouseCoordinates) {
     this.dragging = false;
     this.callback(this.pipetteColor, this.opacity, true);
   };
 
-  PipetteTool.prototype.mouseLeave = function() {
+  /**
+   * @param {MouseCoordinates} mouseCoordinates
+   */
+  PipetteTool.prototype.mouseLeave = function(mouseCoordinates) {
   };
 
+  /**
+   * Gets color of pixel under mouse and calls callback.
+   * @param {MouseCoordinates} mouseCoordinates
+   */
   PipetteTool.prototype.mouseMove = function(mouseCoordinates) {
-    if (!this.dragging)
+    // Return if pipette moves outside canvas.
+    if (!this.dragging || mouseCoordinates.sourceX > this.sourceCanvas.width ||
+        mouseCoordinates.sourceY > this.sourceCanvas.height)
       return;
 
     var imageData = this.sourceContext.getImageData(

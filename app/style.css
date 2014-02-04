@@ -117,17 +117,17 @@ footer {
 
 /* Canvas */
 
-#canvasContainer {
+#canvasViewport {
   flex: 1;
   overflow: auto;
   background: gray;
-  padding: 10px;
   width: 100%;
   margin-right: 20px;
 }
 
 #imageCanvas {
   background-image: url('images/transparent_bg_4squares.png');
+  margin: 10px;
 }
 
 /* Tools */
