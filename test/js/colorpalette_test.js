@@ -10,27 +10,6 @@
  */
 (function() {
 
-  /**
-   * Initialises color palette and appends to selected test debug div.
-   * @param {function()} callback
-   * @return {Object}
-   */
-  function initialiseTestPalette(callback) {
-    // Create color palette element in debug section.
-    var currentTestDiv = document.getElementById(
-        bitmapper_test.currentTestName);
-    var colorPalette = new bitmapper.ColorPalette(currentTestDiv, callback);
-    var initialColors = ['#ff0000', '#ffff00', '#0000ff', '#ff00ff',
-      '#cc00ff', '#9900ff', '#ff6600', '#0099ff'];
-    colorPalette.generatePalette(initialColors);
-    // Allow palette to be seen for visual debugging.
-    for (var i = 0; i < initialColors.length; i++) {
-      colorPalette.colorDivs[i].style.height = '30px';
-      colorPalette.colorDivs[i].style.width = '30px';
-    }
-    return colorPalette;
-  }
-
   module('ColorPalette');
 
   /**
@@ -49,7 +28,7 @@
    * Generate palette with correctly styled divs.
    */
   test('generateColorPalette', function() {
-    var colorPalette = initialiseTestPalette(function() {});
+    var colorPalette = bitmapper_test.initialiseTestPalette(function() {});
     // Testing a generated div.
     equal(colorPalette.colorDivs[7].style.backgroundColor, 'rgb(0, 153, 255)',
           'Div has correct background color');
@@ -67,7 +46,7 @@
       equal(colorPalette.getSelectedIndex(), 2, 'Correct selected index');
       start();
     };
-    var colorPalette = initialiseTestPalette(callback);
+    var colorPalette = bitmapper_test.initialiseTestPalette(callback);
     // Trigger the callback.
     colorPalette.colorDivs[2].click();
     ok(true, 'Triggering choosing color palette cell');
@@ -82,7 +61,7 @@
       equal(colorPalette.getSelectedIndex(), 4, 'Correct selected index');
       start();
     };
-    var colorPalette = initialiseTestPalette(callback);
+    var colorPalette = bitmapper_test.initialiseTestPalette(callback);
     // Trigger callback.
     colorPalette.colorDivs[4].click();
     colorPalette.updateCellColor('rgb(64, 224, 208)',
@@ -99,7 +78,7 @@
    * Testing adding opacity to color (rgb to rgba).
    */
   test('rgbaFormat', function() {
-    var colorPalette = initialiseTestPalette(function() {});
+    var colorPalette = bitmapper_test.initialiseTestPalette(function() {});
     // Choose color from palette, alter opacity and check resulting rgba.
     colorPalette.setSelectedIndex(0);
     equal(colorPalette.getSelectedColorWithOpacity(), 'rgba(255, 0, 0, 1)');

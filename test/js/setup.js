@@ -44,6 +44,28 @@ bitmapper_test.createCanvas = function() {
 
 
 /**
+ * Initialises color palette and appends to selected test debug div.
+ * @param {function()} callback
+ * @return {Object}
+ */
+bitmapper_test.initialiseTestPalette = function(callback) {
+  // Create color palette element in debug section.
+  var currentTestDiv = document.getElementById(
+      bitmapper_test.currentTestName);
+  var colorPalette = new bitmapper.ColorPalette(currentTestDiv, callback);
+  var initialColors = ['#ff0000', '#ffff00', '#0000ff', '#ff00ff',
+    '#cc00ff', '#9900ff', '#ff6600', '#0099ff'];
+  colorPalette.generatePalette(initialColors);
+  // Allow palette to be seen for visual debugging.
+  for (var i = 0; i < initialColors.length; i++) {
+    colorPalette.colorDivs[i].style.height = '30px';
+    colorPalette.colorDivs[i].style.width = '30px';
+  }
+  return colorPalette;
+};
+
+
+/**
  * Looks for a file in the app bundle and calls the callback passing in the
  * FileEntry.
  * @param {string} fileName
