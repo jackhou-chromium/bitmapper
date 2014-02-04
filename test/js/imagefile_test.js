@@ -115,4 +115,36 @@
       });
     });
   });
+
+  /**
+   * Undo/Redo functionality.
+   */
+  test('Pop, unpop, push, top snapshot', function() {
+    var imageFile = new bitmapper.ImageFile();
+
+    // Initial empty stack.
+    equal(imageFile.topSnapshot(), null, 'Top returns null on empty stack');
+    equal(imageFile.popSnapshot(), null, 'Pop returns null on empty stack');
+
+    // Undo/Redo sequence.
+    imageFile.pushSnapshot('a');
+    imageFile.pushSnapshot('b');
+    imageFile.pushSnapshot('c');
+    equal(imageFile.topSnapshot(), 'c', 'a b [c]');
+    equal(imageFile.unpopSnapshot(), null, 'a b [c]');
+    equal(imageFile.popSnapshot(), 'b', 'a [b] c');
+    equal(imageFile.topSnapshot(), 'b', 'a [b] c');
+    equal(imageFile.unpopSnapshot(), 'c', 'a b [c]');
+    equal(imageFile.pushSnapshot('d'));
+    equal(imageFile.popSnapshot(), 'c', 'a b [c] d');
+    equal(imageFile.popSnapshot(), 'b', 'a [b] c d');
+    equal(imageFile.pushSnapshot('e'));
+    equal(imageFile.topSnapshot(), 'e', 'a b [e]');
+    equal(imageFile.unpopSnapshot(), null, 'a b [e]');
+    equal(imageFile.popSnapshot(), 'b', 'a [b] e');
+    equal(imageFile.popSnapshot(), 'a', '[a] b e');
+    equal(imageFile.popSnapshot(), null, '[a] b e');
+    equal(imageFile.topSnapshot(), 'a', '[a] b c');
+    equal(imageFile.unpopSnapshot(), 'b', 'a [b] c');
+  });
 })();

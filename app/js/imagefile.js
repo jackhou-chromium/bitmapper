@@ -15,6 +15,12 @@ function ImageFile() {}
 (function() {
 
   /**
+   * Max number of snapshots held in snapshot stack.
+   * @const
+   */
+  var MAX_SNAPSHOTS = 10;
+
+  /**
    * Encapsulates data related to one image file.
    * @constructor
    * @struct
@@ -37,6 +43,18 @@ function ImageFile() {}
      * @type {HTMLElement}
      */
     this.image = new Image();
+
+    /**
+     * Holds current position in snapshot stack.
+     * @type {number}
+     */
+    this.snapshotIndex = -1;
+
+    /**
+     * Holds snapshots.
+     * @type {Array.<string>}
+     */
+    this.snapshotStack = [];
   };
 
   /**
@@ -154,6 +172,65 @@ function ImageFile() {}
    */
   ImageFile.prototype.matchesOriginal = function(canvas) {
     return (this.image.src == canvas.toDataURL());
+  };
+
+  /**
+   * Moves backward in stack but doesn't throw away any snapshots.
+   * @return {?string}
+   */
+  ImageFile.prototype.popSnapshot = function() {
+    // Snapshot stack is empty.
+    if (this.snapshotIndex <= 0)
+      return null;
+
+    this.snapshotIndex--;
+    return this.snapshotStack[this.snapshotIndex];
+  };
+
+  /**
+   * Moves forward in stack.
+   * @return {?string}
+   */
+  ImageFile.prototype.unpopSnapshot = function() {
+    // No snapshots after current snapshot.
+    if (this.snapshotIndex == this.snapshotStack.length - 1)
+      return null;
+
+    this.snapshotIndex++;
+    return this.snapshotStack[this.snapshotIndex];
+  };
+
+  /**
+   * Clears snapshots after current index and pushes snapshot to stack.
+   * @param {string} dataURI
+   */
+  ImageFile.prototype.pushSnapshot = function(dataURI) {
+    // Return if the canvas has not been dirtied.
+    if (dataURI == this.topSnapshot())
+      return;
+
+    // If index not at top of stack, overwrite snapshots after current index.
+    if (this.snapshotIndex < this.snapshotStack.length - 1) {
+      this.snapshotStack.splice(
+          this.snapshotIndex + 1, this.snapshotStack.length);
+    }
+
+    this.snapshotStack.push(dataURI);
+
+    // Cut off beginning of the stack to limit to max stack size.
+    if (this.snapshotStack.length == MAX_SNAPSHOTS + 1) {
+      this.snapshotStack.shift();
+    } else {
+      this.snapshotIndex++;
+    }
+  };
+
+  /**
+   * Returns the top snapshot.
+   * @return {?string}
+   */
+  ImageFile.prototype.topSnapshot = function() {
+    return this.snapshotStack[this.snapshotIndex] || null;
   };
 
   bitmapper.getFileType = getFileType;

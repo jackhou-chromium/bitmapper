@@ -32,14 +32,12 @@ bitmapper.SAVED_CANVAS_STORAGE_KEY = 'savedCanvas';
 
 
 /**
- * Draws the image file to the canvas.
+ * Draws the image file to the canvas and sets initial properties.
+ * Pushes this state as first snapshot.
  */
 bitmapper.setCanvasToImage = function() {
   var image = bitmapper.imageFile.image;
-  bitmapper.sourceCanvas.width = image.width;
-  bitmapper.sourceCanvas.height = image.height;
-  var sourceContext = bitmapper.sourceCanvas.getContext('2d');
-  sourceContext.drawImage(image, 0, 0);
+  bitmapper.drawImageToCanvas(image.src);
 
   // Set initial zoom properties.
   var zoomSelector = document.getElementById('zoomSelector');
@@ -47,6 +45,7 @@ bitmapper.setCanvasToImage = function() {
   zoomSelector.setAttribute('max', bitmapper.zoomManager.getMaxZoomFactor());
   bitmapper.zoomCanvas();
 
+  bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
   bitmapper.displayCanvasDimensions(image.width, image.height);
 };
 
@@ -74,8 +73,8 @@ bitmapper.openFile = function() {
           bitmapper.statusMessage('Nothing selected.');
           return;
         }
-        if (!bitmapper.imageFile)
-          bitmapper.imageFile = new bitmapper.ImageFile();
+        // Re-instantiate bitmapper.imageFile.
+        bitmapper.imageFile = new bitmapper.ImageFile();
         // TODO(dadisusila): Handle errors while loading.
         bitmapper.imageFile.loadFile(entry, bitmapper.setCanvasToImage);
         bitmapper.updateFileNameMessage();
@@ -101,8 +100,6 @@ bitmapper.saveAsFile = function() {
         if (!entry) {
           bitmapper.statusMessage('Nothing selected.');
         } else {
-          if (!bitmapper.imageFile)
-            bitmapper.imageFile = new bitmapper.ImageFile();
           bitmapper.imageFile.setFileEntry(entry);
           bitmapper.saveFile();
         }
@@ -205,6 +202,8 @@ bitmapper.handleMouseEvents = function() {
         bitmapper.selectedTool.mouseUp(
             bitmapper.getMouseCoordinates(mouseEvent));
         bitmapper.saveStateToLocalStorage();
+        // Snapshot pushed for undo/redo functionality.
+        bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
       });
   bitmapper.displayCanvas.addEventListener('mousemove',
       function(mouseEvent) {
@@ -234,6 +233,8 @@ bitmapper.handleMouseEvents = function() {
         bitmapper.selectedTool.mouseUp(
             bitmapper.getTouchCoordinates(touchEvent));
         bitmapper.saveStateToLocalStorage();
+        // Snapshot pushed for undo/redo functionality.
+        bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
       });
   bitmapper.displayCanvas.addEventListener('touchmove',
       function(touchEvent) {
@@ -418,9 +419,7 @@ bitmapper.updateOpacity = function() {
  * Clears canvas and sets file entry to null.
  */
 bitmapper.newFile = function() {
-  if (bitmapper.imageFile)
-    bitmapper.imageFile.fileEntry = null;
-
+  bitmapper.imageFile = new bitmapper.ImageFile();
   bitmapper.clearCanvas();
   bitmapper.updateFileNameMessage();
 };
@@ -459,8 +458,6 @@ bitmapper.resizeCanvas = function(newWidth, newHeight) {
   var tempCanvas = document.createElement('canvas');
   tempCanvas.width = bitmapper.sourceCanvas.width;
   tempCanvas.height = bitmapper.sourceCanvas.height;
-  tempCanvas.getContext('2d').clearRect(0, 0, tempCanvas.width,
-      tempCanvas.height);
   tempCanvas.getContext('2d').drawImage(bitmapper.sourceCanvas, 0, 0,
       bitmapper.sourceCanvas.width, bitmapper.sourceCanvas.height);
   // Clear source canvas.
@@ -486,6 +483,20 @@ bitmapper.resizeCanvas = function(newWidth, newHeight) {
 bitmapper.displayCanvasDimensions = function(width, height) {
   document.getElementById('resizeCanvasWidth').placeholder = 'W: ' + width;
   document.getElementById('resizeCanvasHeight').placeholder = 'H: ' + height;
+};
+
+
+/**
+ * Draw image to canvas using given image source.
+ * @param {string} imageSrc
+ */
+bitmapper.drawImageToCanvas = function(imageSrc) {
+  var image = new Image();
+  image.src = imageSrc;
+  bitmapper.sourceCanvas.width = image.width;
+  bitmapper.sourceCanvas.height = image.height;
+  bitmapper.sourceCanvas.getContext('2d').drawImage(image, 0, 0);
+  bitmapper.zoomManager.drawDisplayCanvas();
 };
 
 
@@ -543,14 +554,28 @@ bitmapper.start = function(localStorageObject) {
 
   // Load canvas in local storage if there is one.
   if (localStorageObject[bitmapper.SAVED_CANVAS_STORAGE_KEY]) {
-    var image = new Image();
-    image.src = localStorageObject[bitmapper.SAVED_CANVAS_STORAGE_KEY];
-    bitmapper.sourceCanvas.width = image.width;
-    bitmapper.sourceCanvas.height = image.height;
-    bitmapper.sourceCanvas.getContext('2d').drawImage(image, 0, 0);
-    bitmapper.zoomManager.drawDisplayCanvas();
-    bitmapper.displayCanvasDimensions(image.width, image.height);
+    bitmapper.drawImageToCanvas(
+        localStorageObject[bitmapper.SAVED_CANVAS_STORAGE_KEY]);
   }
+
+  bitmapper.imageFile = new bitmapper.ImageFile();
+  // Push first snapshot.
+  bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
+  document.getElementById('undoButton').addEventListener(
+      'click',
+      function() {
+        var poppedSnapshot = bitmapper.imageFile.popSnapshot();
+        if (poppedSnapshot)
+          bitmapper.drawImageToCanvas(poppedSnapshot);
+      }, false);
+
+  document.getElementById('redoButton').addEventListener(
+      'click',
+      function() {
+        var unpoppedSnapshot = bitmapper.imageFile.unpopSnapshot();
+        if (unpoppedSnapshot)
+          bitmapper.drawImageToCanvas(unpoppedSnapshot);
+      }, false);
 };
 
 
