@@ -344,7 +344,7 @@ bitmapper.setUpOptionProviders = function(localStorageObject) {
       };
 
   // Change UI brush size arc.
-  bitmapper.optionProviders.sizeSelector.addEventListener('input', function() {
+  bitmapper.optionProviders.sizeSelector.addEventListener('change', function() {
     document.getElementById('brushSize').style.height =
         (bitmapper.optionProviders.sizeSelector.value * 2) + 'px';
     document.getElementById('brushSize').style.width =
@@ -526,7 +526,7 @@ bitmapper.start = function(localStorageObject) {
   bitmapper.zoomManager = new bitmapper.ZoomManager(
       bitmapper.sourceCanvas, bitmapper.displayCanvas);
   document.getElementById('zoomSelector')
-      .addEventListener('input', bitmapper.zoomCanvas, false);
+      .addEventListener('change', bitmapper.zoomCanvas, false);
 
   // Set up option providers and tools.
   bitmapper.setUpOptionProviders(localStorageObject);
@@ -543,7 +543,7 @@ bitmapper.start = function(localStorageObject) {
     .addEventListener('change', bitmapper.updatePalette, false);
 
   document.getElementById('opacity')
-      .addEventListener('input', bitmapper.updateOpacity, false);
+      .addEventListener('change', bitmapper.updateOpacity, false);
 
   document.getElementById('resizeCanvasButton').addEventListener(
       'click',
