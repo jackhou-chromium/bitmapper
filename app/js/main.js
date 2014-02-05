@@ -256,6 +256,49 @@ bitmapper.handleMouseEvents = function() {
 
 
 /**
+ * Handle keyboard shortcuts.
+ * @param {Event} keyEvent
+ */
+bitmapper.handleKeyDown = function(keyEvent) {
+  if (keyEvent.ctrlKey) {
+    switch (keyEvent.keyCode) {
+      case 79: // o
+        // Open.
+        bitmapper.openFile();
+        break;
+      case 83: // s
+        // Save as and save.
+        if (keyEvent.shiftKey)
+          bitmapper.saveAsFile();
+        else
+          bitmapper.saveFile();
+        break;
+      case 89: // y
+        // Redo.
+        bitmapper.redo();
+        break;
+      case 90: // z
+        // Undo.
+        bitmapper.undo();
+        break;
+      case 187: // +
+        // Zoom in.
+        document.getElementById('zoomSelector').value =
+            bitmapper.zoomManager.getZoomFactor() + 1;
+        bitmapper.zoomCanvas();
+        break;
+      case 189: // -
+        // Zoom out.
+        document.getElementById('zoomSelector').value =
+            bitmapper.zoomManager.getZoomFactor() - 1;
+        bitmapper.zoomCanvas();
+        break;
+    }
+  }
+};
+
+
+/**
  * Compare saved canvas with potentially dirtied source canvas and displays
  * file name message accordingly.
  */
@@ -502,6 +545,26 @@ bitmapper.drawImageToCanvas = function(imageSrc) {
 
 
 /**
+ * Undo and draw snapshot to canvas.
+ */
+bitmapper.undo = function() {
+  var poppedSnapshot = bitmapper.imageFile.popSnapshot();
+  if (poppedSnapshot)
+    bitmapper.drawImageToCanvas(poppedSnapshot);
+};
+
+
+/**
+ * Redo and draw snapshot to canvas.
+ */
+bitmapper.redo = function() {
+  var unpoppedSnapshot = bitmapper.imageFile.unpopSnapshot();
+  if (unpoppedSnapshot)
+    bitmapper.drawImageToCanvas(unpoppedSnapshot);
+};
+
+
+/**
  * Entry point.
  * @param {Object} localStorageObject
  */
@@ -559,24 +622,18 @@ bitmapper.start = function(localStorageObject) {
         localStorageObject[bitmapper.SAVED_CANVAS_STORAGE_KEY]);
   }
 
+  // Keyboard shortcuts.
+  document.addEventListener('keydown', bitmapper.handleKeyDown, false);
+
+  // Undo and redo.
   bitmapper.imageFile = new bitmapper.ImageFile();
   // Push first snapshot.
   bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
-  document.getElementById('undoButton').addEventListener(
-      'click',
-      function() {
-        var poppedSnapshot = bitmapper.imageFile.popSnapshot();
-        if (poppedSnapshot)
-          bitmapper.drawImageToCanvas(poppedSnapshot);
-      }, false);
+  document.getElementById('undoButton')
+    .addEventListener('click', bitmapper.undo, false);
 
-  document.getElementById('redoButton').addEventListener(
-      'click',
-      function() {
-        var unpoppedSnapshot = bitmapper.imageFile.unpopSnapshot();
-        if (unpoppedSnapshot)
-          bitmapper.drawImageToCanvas(unpoppedSnapshot);
-      }, false);
+  document.getElementById('redoButton')
+    .addEventListener('click', bitmapper.redo, false);
 };
 
 
