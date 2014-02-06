@@ -651,6 +651,7 @@ bitmapper.start = function(localStorageObject) {
  * Loads local storage if app restarted by Chrome.
  * Starts clean if user relaunched the app.
  * @param {boolean} isRestart
+ * @expose
  */
 window.runApp = function(isRestart) {
   if (isRestart) {
