@@ -1,7 +1,8 @@
 {
   "name": "bitmapper",
   "description": "A pixel art editor.",
-  "version": "0.2",
+  "version": "0.3",
+  "offline_enabled": true,
   "app": {
     "background": {
       "scripts": [
