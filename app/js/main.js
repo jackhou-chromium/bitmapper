@@ -408,6 +408,8 @@ bitmapper.setUpTools = function() {
       });
 
   // Initialise tools.
+  var brushTool = new bitmapper.BrushTool(
+      toolContext, bitmapper.optionProviders);
   var pencilTool = new bitmapper.PencilTool(
       toolContext, bitmapper.optionProviders);
   var pipetteTool = new bitmapper.PipetteTool(
@@ -427,6 +429,8 @@ bitmapper.setUpTools = function() {
 
   bitmapper.tools =
       /** @struct */ {
+        /** @type {BrushTool} */
+        brushTool: brushTool,
         /** @type {PencilTool} */
         pencilTool: pencilTool,
         /** @type {PipetteTool} */
@@ -434,6 +438,12 @@ bitmapper.setUpTools = function() {
       };
 
   // Handlers for tool buttons.
+  document.getElementById('brushToolButton').addEventListener(
+      'click',
+      function() {
+        bitmapper.setSelectedTool(bitmapper.tools.brushTool);
+      },
+      false);
   document.getElementById('pencilToolButton').addEventListener(
       'click',
       function() {
