@@ -187,9 +187,9 @@ bitmapper.setSelectedTool = function(tool) {
 
 
 /**
- * Dispatch mouse events.
+ * Add event listeners for mouse events.
  */
-bitmapper.handleMouseEvents = function() {
+bitmapper.registerMouseEvents = function() {
   // Mouse support.
   var canvasWrapper = document.getElementById('canvasWrapper');
   canvasWrapper.addEventListener('mousedown',
@@ -292,6 +292,44 @@ bitmapper.handleKeyDown = function(keyEvent) {
         document.getElementById('zoomSelector').value =
             bitmapper.zoomManager.getZoomFactor() - 1;
         bitmapper.zoomCanvas();
+        break;
+    }
+  } else {
+    switch (keyEvent.keyCode) {
+      case 49: // 1
+        bitmapper.setSelectedTool(bitmapper.tools.pencilTool);
+        break;
+      case 50: // 2
+        bitmapper.setSelectedTool(bitmapper.tools.brushTool);
+        break;
+      case 51: // 3
+        bitmapper.setSelectedTool(bitmapper.tools.pipetteTool);
+        break;
+      case 52: // 4
+        break;
+      case 81: // q
+        bitmapper.optionProviders.colorPalette.setSelectedIndex(0);
+        break;
+      case 87: // w
+        bitmapper.optionProviders.colorPalette.setSelectedIndex(1);
+        break;
+      case 69: // e
+        bitmapper.optionProviders.colorPalette.setSelectedIndex(2);
+        break;
+      case 82: // r
+        bitmapper.optionProviders.colorPalette.setSelectedIndex(3);
+        break;
+      case 65: // a
+        bitmapper.optionProviders.colorPalette.setSelectedIndex(4);
+        break;
+      case 83: // s
+        bitmapper.optionProviders.colorPalette.setSelectedIndex(5);
+        break;
+      case 68: // d
+        bitmapper.optionProviders.colorPalette.setSelectedIndex(6);
+        break;
+      case 70: // f
+        bitmapper.optionProviders.colorPalette.setSelectedIndex(7);
         break;
     }
   }
@@ -608,7 +646,7 @@ bitmapper.start = function(localStorageObject) {
   // Set default tool.
   bitmapper.setSelectedTool(bitmapper.tools.pencilTool);
   // Set up mouse event listeners.
-  bitmapper.handleMouseEvents();
+  bitmapper.registerMouseEvents();
   bitmapper.setSelectedColorBox();
 
   // Other UI elements.
