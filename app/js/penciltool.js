@@ -44,7 +44,7 @@ function PencilTool(toolContext, optionProviders) {}
     this.sizeSelector = optionProviders.sizeSelector;
 
     /**
-     * No drawing has occured yet.
+     * Whether the mouse is being held down for a drag.
      * @type {boolean}
      */
     this.dragging = false;
@@ -130,8 +130,8 @@ function PencilTool(toolContext, optionProviders) {}
     var sy = y0 < y1 ? 1 : -1;
     var err = dx - dy;
     while (run) {
-      ctx.clearRect(x0, y0, 1, 1);
-      ctx.fillRect(x0, y0, 1, 1);
+      ctx.clearRect(x0, y0, this.sizeSelector.value, this.sizeSelector.value);
+      ctx.fillRect(x0, y0, this.sizeSelector.value, this.sizeSelector.value);
       if (x0 === x1 && y0 === y1) {
         run = false;
       }
@@ -141,8 +141,8 @@ function PencilTool(toolContext, optionProviders) {}
         x0 += sx;
       }
       if (x0 === x1 && y0 === y1) {
-        ctx.clearRect(x0, y0, 1, 1);
-        ctx.fillRect(x0, y0, 1, 1);
+        ctx.clearRect(x0, y0, this.sizeSelector.value, this.sizeSelector.value);
+        ctx.fillRect(x0, y0, this.sizeSelector.value, this.sizeSelector.value);
         run = false;
       }
       if (e2 < dx) {
