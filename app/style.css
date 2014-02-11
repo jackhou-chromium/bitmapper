@@ -11,7 +11,7 @@ body {
 
 header {
   display: flex;
-  height: 80px;
+  height: 70px;
   width: 100%;
   font-size: 27px;
   color: white;
@@ -33,23 +33,26 @@ footer {
   margin: 20px;
 }
 
-#fileName {
+#bar {
   background: rgb(49, 66, 78);
+  display: flex;
+  height: 45px;
+}
+
+#fileName {
   color: white;
   font-size: 15px;
-  height: 40px;
   text-align: center;
-  margin-bottom: 8px;
-  padding-top: 5px;
-  width: 100%;
+  margin: 7px;
+  width: 150px;
 }
 
 #output {
   color: white;
+  flex: 3;
   font-size: 14px;
-  height: 40px;
   text-align: center;
-  width: 100%;
+  margin: 7px;
 }
 
 #leftToolBar {
@@ -113,6 +116,33 @@ footer {
 
 #logo {
   margin-right: 30px;
+}
+
+#undoButtons {
+  flex-direction: column;
+  margin: 5px;
+}
+
+.undo {
+  background: #009999;
+  border-bottom: 2px solid #1B7E7E;
+  border-radius: 6px;
+  border: 0;
+  box-shadow: inset 0 -2px #1B7E7E;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  height: 25px;
+  margin-right: 10px;
+  padding: 0;
+  position: relative;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  width: 44px;
+}
+
+.undo:hover {
+  background: #055555;
 }
 
 /* Canvas */

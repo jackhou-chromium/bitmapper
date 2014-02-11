@@ -15,8 +15,14 @@
         <li><button id="saveAsButton" class="headerbutton">Save As</button></li>
       </ul>
     </header>
-    <div id="fileName"></div>
-    <div id="output"></div>
+    <div id="bar">
+      <div id="fileName"></div>
+      <div id="output"></div>
+      <div id="undoButtons">
+        <button class="undo" id="undoButton">Undo</button>
+        <button class="undo" id="redoButton">Redo</button>
+      </div>
+    </div>
     <div id="content">
       <div id="leftToolBar">
         <div class="tools">
@@ -39,8 +45,6 @@
           <input type="range" id="opacity" min="1" max="100" step="1" value="100"></input>
           <div class="tools" id="opacityValue">100%</div>
         </div>
-        <button id="undoButton">Undo</button>
-        <button id="redoButton">Redo</button>
       </div>
       <div id="canvasViewport">
         <div id="canvasWrapper">
