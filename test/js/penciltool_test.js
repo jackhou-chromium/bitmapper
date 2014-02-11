@@ -37,8 +37,8 @@
     var pencil = new bitmapper.PencilTool(toolContext, optionProviders);
 
     var coordinates = new MouseCoordinates();
-    coordinates.sourceX = 0;
-    coordinates.sourceY = 0;
+    coordinates.sourceX = 1;
+    coordinates.sourceY = 1;
 
     var expectedData = new Uint8ClampedArray([255, 0, 0, 127]);
 
@@ -102,7 +102,7 @@
     var transparentPixel = new Uint8ClampedArray([0, 0, 0, 0]);
     // Checks that each pixel in the line is filled.
     // Checks that the neighbouring pixels are untouched.
-    for (var i = 10; i <= 20; i++) {
+    for (var i = 10; i < 20; i++) {
       imageData = ctx.getImageData(i, i, 1, 1).data;
       deepEqual(imageData, expectedData, 'Pixel filled');
       imageData = ctx.getImageData(i - 1, i, 1, 1).data;
@@ -147,21 +147,21 @@
     var expectedData = new Uint8ClampedArray([255, 0, 0, 255]);
     var transparentPixel = new Uint8ClampedArray([0, 0, 0, 0]);
     // Checks that the right number of pixels are filled.
-    for (var i = 10; i < 15; i++) {
-      for (var j = 10; j < 15; j++) {
+    for (var i = 7; i < 12; i++) {
+      for (var j = 7; j < 12; j++) {
         imageData = ctx.getImageData(i, j, 1, 1).data;
         deepEqual(imageData, expectedData, 'Pixel filled');
       }
     }
     // Checks that the neighbouring pixels are untouched.
-    for (var i = 9; i < 15; i++) {
-      imageData = ctx.getImageData(i, 9, 1, 1).data;
+    for (var i = 6; i < 13; i++) {
+      imageData = ctx.getImageData(i, 6, 1, 1).data;
       deepEqual(imageData, transparentPixel, 'Transparent Pixel');
-      imageData = ctx.getImageData(i, 16, 1, 1).data;
+      imageData = ctx.getImageData(i, 13, 1, 1).data;
       deepEqual(imageData, transparentPixel, 'Transparent Pixel');
-      imageData = ctx.getImageData(9, i, 1, 1).data;
+      imageData = ctx.getImageData(6, i, 1, 1).data;
       deepEqual(imageData, transparentPixel, 'Transparent Pixel');
-      imageData = ctx.getImageData(16, i, 1, 1).data;
+      imageData = ctx.getImageData(13, i, 1, 1).data;
       deepEqual(imageData, transparentPixel, 'Transparent Pixel');
     }
   });

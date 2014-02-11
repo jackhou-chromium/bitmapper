@@ -140,6 +140,14 @@ function ColorPalette(divContainer, callback) {}
   };
 
   /**
+   * Gets opacity value.
+   * @return {number}
+   */
+  ColorPalette.prototype.getOpacity = function() {
+    return this.opacity;
+  };
+
+  /**
    * Converts rgb color format to hex. Color selector only takes hex for value.
    * @param {string} rgbColor
    * @return {string}

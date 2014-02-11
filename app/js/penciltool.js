@@ -113,15 +113,23 @@ function PencilTool(toolContext, optionProviders) {}
     this.dragging = false;
   };
 
+  /**
+   * Takes into account size selector value and draws to centre of rect.
+   * @param {number} x0
+   * @param {number} y0
+   * @param {number} x1
+   * @param {number} y1
+   */
   PencilTool.prototype.drawLine = function(x0, y0, x1, y1) {
     // Bresenham's line algorithm
     // Based on the Wikipedia article about Bresenham's line
     // function.
     var ctx = this.sourceContext;
-    x0 = Math.floor(x0);
-    y0 = Math.floor(y0);
-    x1 = Math.floor(x1);
-    y1 = Math.floor(y1);
+    var shift = this.sizeSelector.value / 2;
+    x0 = Math.floor(x0 - shift);
+    y0 = Math.floor(y0 - shift);
+    x1 = Math.floor(x1 - shift);
+    y1 = Math.floor(y1 - shift);
     var run = true;
     var dx = Math.abs(x1 - x0);
     var dy = Math.abs(y1 - y0);
@@ -152,6 +160,36 @@ function PencilTool(toolContext, optionProviders) {}
     }
     // Redraw display canvas.
     this.drawDisplayCanvas();
+  };
+
+  /**
+   * Set cursor guide image.
+   * @param {Element} cursorDiv
+   * @param {MouseCoordinates} mouseCoordinates
+   * @param {number} zoomFactor
+   * @return {boolean}
+   */
+  PencilTool.prototype.updateCursorGuide = function(
+      cursorDiv, mouseCoordinates, zoomFactor) {
+    // Styling.
+    cursorDiv.style.width = (this.sizeSelector.value * zoomFactor) + 'px';
+    cursorDiv.style.height = (this.sizeSelector.value * zoomFactor) + 'px';
+    cursorDiv.style.backgroundColor =
+        this.colorPalette.getSelectedColorWithOpacity();
+    // Give cursor div border when opacity is low.
+    if (this.colorPalette.getOpacity() < 0.2) {
+      cursorDiv.style.border = '1px solid black';
+      // Account for border.
+      cursorDiv.style.width = parseInt(cursorDiv.style.width, 10) - 1 + 'px';
+      cursorDiv.style.height = parseInt(cursorDiv.style.height, 10) - 1 + 'px';
+    }
+    // Position with centred pixel alignment.
+    var shift = this.sizeSelector.value / 2;
+    cursorDiv.style.left =
+        (Math.floor(mouseCoordinates.sourceX - shift)) * zoomFactor + 'px';
+    cursorDiv.style.top =
+        (Math.floor(mouseCoordinates.sourceY - shift)) * zoomFactor + 'px';
+    return true;
   };
 
   bitmapper.PencilTool = PencilTool;

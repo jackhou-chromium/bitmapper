@@ -183,6 +183,7 @@ bitmapper.updatePalette = function() {
  */
 bitmapper.setSelectedTool = function(tool) {
   bitmapper.selectedTool = tool;
+  bitmapper.cursorGuide.setTool(tool);
 };
 
 
@@ -212,12 +213,15 @@ bitmapper.registerMouseEvents = function() {
             bitmapper.getMouseCoordinates(mouseEvent));
         bitmapper.selectedTool.mouseMove(
             bitmapper.getMouseCoordinates(mouseEvent));
+        bitmapper.cursorGuide.setPosition(
+            bitmapper.getMouseCoordinates(mouseEvent));
       }, false);
   canvasWrapper.addEventListener('mouseleave',
       function(mouseEvent) {
         bitmapper.selectedTool.mouseLeave(
             bitmapper.getMouseCoordinates(mouseEvent));
         bitmapper.saveStateToLocalStorage();
+        bitmapper.cursorGuide.hide();
       }, false);
 
   // Touch Support.
@@ -225,6 +229,8 @@ bitmapper.registerMouseEvents = function() {
       function(touchEvent) {
         touchEvent.preventDefault();
         bitmapper.selectedTool.mouseDown(
+            bitmapper.getTouchCoordinates(touchEvent));
+        bitmapper.cursorGuide.setPosition(
             bitmapper.getTouchCoordinates(touchEvent));
       }, false);
   canvasWrapper.addEventListener('touchend',
@@ -236,6 +242,7 @@ bitmapper.registerMouseEvents = function() {
         bitmapper.saveStateToLocalStorage();
         // Snapshot pushed for undo/redo functionality.
         bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
+        bitmapper.cursorGuide.hide();
       }, false);
   canvasWrapper.addEventListener('touchmove',
       function(touchEvent) {
@@ -244,6 +251,8 @@ bitmapper.registerMouseEvents = function() {
             bitmapper.getTouchCoordinates(touchEvent));
         bitmapper.selectedTool.mouseMove(
             bitmapper.getTouchCoordinates(touchEvent));
+        bitmapper.cursorGuide.setPosition(
+            bitmapper.getTouchCoordinates(touchEvent));
       }, false);
   canvasWrapper.addEventListener('touchleave',
       function(touchEvent) {
@@ -251,6 +260,7 @@ bitmapper.registerMouseEvents = function() {
         bitmapper.selectedTool.mouseLeave(
             bitmapper.getTouchCoordinates(touchEvent));
         bitmapper.saveStateToLocalStorage();
+        bitmapper.cursorGuide.hide();
       }, false);
 };
 
@@ -638,6 +648,10 @@ bitmapper.start = function(localStorageObject) {
       bitmapper.sourceCanvas, bitmapper.displayCanvas);
   document.getElementById('zoomSelector')
       .addEventListener('change', bitmapper.zoomCanvas, false);
+
+  // Initialise cursor guide.
+  bitmapper.cursorGuide = new bitmapper.CursorGuide(
+      document.getElementById('canvasWrapper'), bitmapper.zoomManager);
 
   // Set up option providers and tools.
   bitmapper.setUpOptionProviders(localStorageObject);

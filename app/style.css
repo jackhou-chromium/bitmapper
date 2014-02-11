@@ -155,9 +155,15 @@ footer {
   margin-right: 20px;
 }
 
+#canvasWrapper {
+  cursor: none;
+  position: relative;
+  margin: 10px;
+  width: 0;
+}
+
 #imageCanvas {
   background-image: url('images/transparent_bg_4squares.png');
-  margin: 10px;
 }
 
 /* Tools */
@@ -359,4 +365,12 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 
   margin: 0; 
+}
+
+.cursorDiv {
+  display: 'block';
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
 }

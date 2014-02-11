@@ -18,6 +18,12 @@ function PipetteTool(toolContext, callback) {}
 (function() {
 
   /**
+   * Size of pipette cursor image.
+   * @const
+   */
+  var PIPETTE_CURSOR_SIZE = 16;
+
+  /**
    * Pipette tool. Gets the color of the selected pixel on the
    * display canvas and puts it on the color palette.
    * @constructor
@@ -114,6 +120,28 @@ function PipetteTool(toolContext, callback) {}
     // is converted into a value from 0 to 1.
     this.opacity = pixel[3] / 255;
     this.callback(this.pipetteColor, this.opacity, false);
+  };
+
+  /**
+   * Set cursor guide image.
+   * @param {Element} cursorDiv
+   * @param {MouseCoordinates} mouseCoordinates
+   * @param {number} zoomFactor
+   * @return {boolean}
+   */
+  PipetteTool.prototype.updateCursorGuide = function(
+      cursorDiv, mouseCoordinates, zoomFactor) {
+    // Set background image to pipette image.
+    cursorDiv.style.width = PIPETTE_CURSOR_SIZE + 'px';
+    cursorDiv.style.height = PIPETTE_CURSOR_SIZE + 'px';
+    cursorDiv.style.backgroundImage = 'url("images/pipette_cursor.png")';
+
+    // Tip of pipette matches mouse co-ordinate.
+    cursorDiv.style.left =
+        mouseCoordinates.sourceX * zoomFactor + 'px';
+    cursorDiv.style.top =
+        mouseCoordinates.sourceY * zoomFactor - PIPETTE_CURSOR_SIZE + 'px';
+    return true;
   };
 
   bitmapper.PipetteTool = PipetteTool;

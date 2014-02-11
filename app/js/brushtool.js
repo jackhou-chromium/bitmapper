@@ -120,5 +120,29 @@ function BrushTool(toolContext, optionProviders) {}
     this.dragging = false;
   };
 
+  /**
+   * Set cursor guide image.
+   * @param {Element} cursorDiv
+   * @param {MouseCoordinates} mouseCoordinates
+   * @param {number} zoomFactor
+   * @return {boolean}
+   */
+  BrushTool.prototype.updateCursorGuide = function(
+      cursorDiv, mouseCoordinates, zoomFactor) {
+    // Styling.
+    cursorDiv.style.width = (this.sizeSelector.value * zoomFactor) + 'px';
+    cursorDiv.style.height = (this.sizeSelector.value * zoomFactor) + 'px';
+    cursorDiv.style.borderRadius = '50%';
+    cursorDiv.style.border = '1px solid black';
+    cursorDiv.style.backgroundColor = 'none';
+    // Position with middle of circle.
+    var shift = this.sizeSelector.value / 2;
+    cursorDiv.style.left =
+        (mouseCoordinates.sourceX - shift) * zoomFactor + 'px';
+    cursorDiv.style.top =
+        (mouseCoordinates.sourceY - shift) * zoomFactor + 'px';
+    return true;
+  };
+
   bitmapper.BrushTool = BrushTool;
 })();

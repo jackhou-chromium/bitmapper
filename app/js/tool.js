@@ -78,3 +78,14 @@ Tool.prototype.mouseMove = function(mouseCoordinates) {};
  * @param {MouseCoordinates} mouseCoordinates
  */
 Tool.prototype.mouseLeave = function(mouseCoordinates) {};
+
+
+/**
+ * Return if tool needs cursor guide or not and update cursor guide.
+ * @param {Element} contentDiv
+ * @param {MouseCoordinates} mouseCoordinates
+ * @param {number} zoomFactor
+ * @return {boolean}
+ */
+Tool.prototype.updateCursorGuide = function(
+    contentDiv, mouseCoordinates, zoomFactor) {};
