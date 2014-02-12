@@ -569,6 +569,8 @@ bitmapper.resizeCanvas = function(newWidth, newHeight) {
   bitmapper.sourceCanvas.height = newHeight;
   // Draw temp back on source.
   bitmapper.sourceCanvas.getContext('2d').drawImage(tempCanvas, 0, 0);
+  // Snapshot pushed for undo/redo functionality.
+  bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
   // Draw display canvas.
   bitmapper.zoomManager.drawDisplayCanvas();
   bitmapper.statusMessage('Resized the canvas.');
