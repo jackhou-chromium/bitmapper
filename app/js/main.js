@@ -607,8 +607,10 @@ bitmapper.drawImageToCanvas = function(imageSrc) {
  */
 bitmapper.undo = function() {
   var poppedSnapshot = bitmapper.imageFile.popSnapshot();
-  if (poppedSnapshot)
+  if (poppedSnapshot) {
     bitmapper.drawImageToCanvas(poppedSnapshot);
+    bitmapper.updateFileNameMessage();
+  }
 };
 
 
@@ -617,8 +619,10 @@ bitmapper.undo = function() {
  */
 bitmapper.redo = function() {
   var unpoppedSnapshot = bitmapper.imageFile.unpopSnapshot();
-  if (unpoppedSnapshot)
+  if (unpoppedSnapshot) {
     bitmapper.drawImageToCanvas(unpoppedSnapshot);
+    bitmapper.updateFileNameMessage();
+  }
 };
 
 
