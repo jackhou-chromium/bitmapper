@@ -171,7 +171,8 @@ footer {
 .tools {
   color: white;
   font-size: 15px;
-  margin: 0 20px;
+  margin-top: 15px;
+  margin-left: 20px;
 }
 
 .toolbutton {
@@ -184,8 +185,7 @@ footer {
   cursor: pointer;
   font-size: 15px;
   height: 40px;
-  margin-bottom: 10px;
-  margin-right: 10px;
+  margin: 5px;
   padding: 0;
   position: relative;
   text-align: center;
