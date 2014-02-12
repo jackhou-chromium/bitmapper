@@ -574,6 +574,7 @@ bitmapper.resizeCanvas = function(newWidth, newHeight) {
   // Draw display canvas.
   bitmapper.zoomManager.drawDisplayCanvas();
   bitmapper.statusMessage('Resized the canvas.');
+  bitmapper.updateFileNameMessage();
 
   bitmapper.displayCanvasDimensions(newWidth, newHeight);
 };
