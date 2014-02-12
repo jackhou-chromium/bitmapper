@@ -69,6 +69,17 @@ function PipetteTool(toolContext, callback) {}
      * @type {boolean}
      */
     this.dragging = false;
+
+    /**
+     * Pipette cursor image.
+     * @type {Element}
+     */
+    this.pipetteCursorDiv = document.createElement('div');
+    this.pipetteCursorDiv.style.width = PIPETTE_CURSOR_SIZE + 'px';
+    this.pipetteCursorDiv.style.height = PIPETTE_CURSOR_SIZE + 'px';
+    this.pipetteCursorDiv.style.backgroundImage =
+        'url("images/pipette_cursor.png")';
+
   };
 
   /**
@@ -131,11 +142,7 @@ function PipetteTool(toolContext, callback) {}
    */
   PipetteTool.prototype.updateCursorGuide = function(
       cursorDiv, mouseCoordinates, zoomFactor) {
-    // Set background image to pipette image.
-    cursorDiv.style.width = PIPETTE_CURSOR_SIZE + 'px';
-    cursorDiv.style.height = PIPETTE_CURSOR_SIZE + 'px';
-    cursorDiv.style.backgroundImage = 'url("images/pipette_cursor.png")';
-
+    cursorDiv.appendChild(this.pipetteCursorDiv);
     // Tip of pipette matches mouse co-ordinate.
     cursorDiv.style.left =
         mouseCoordinates.sourceX * zoomFactor + 'px';
