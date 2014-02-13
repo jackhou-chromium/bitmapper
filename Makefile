@@ -62,8 +62,8 @@ $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
 
 copy_debug_files :
 	# Copy the $(APPDIR) into $(OUTDIR)/$(DEBUGDIR).
-	mkdir -p $(OUTDIR)
-	cp -rT $(APPDIR) $(OUTDIR)/$(DEBUGDIR)
+	mkdir -p $(OUTDIR)/$(DEBUGDIR)
+	cp -r $(APPDIR)/* $(OUTDIR)/$(DEBUGDIR)
 
 # Compile a debug build. This depends on the release build so the debug build
 # gets type checking.
@@ -83,8 +83,8 @@ $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
 
 copy_release_files :
 	# Copy the $(APPDIR) into $(OUTDIR)/$(RELEASEDIR).
-	mkdir -p $(OUTDIR)
-	cp -rT $(APPDIR) $(OUTDIR)/$(RELEASEDIR)
+	mkdir -p $(OUTDIR)/$(RELEASEDIR)
+	cp -r $(APPDIR)/* $(OUTDIR)/$(RELEASEDIR)
 
 	# Remove the original source files.
 	rm -rf $(OUTDIR)/$(RELEASEDIR)/$(SRCDIR)
@@ -113,8 +113,8 @@ $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js : $(APP_SRCS) $(TEST_SRCS) $(EXTERNS)
 
 copy_test_files :
 	# Copy the $(TESTDIR) into $(OUTDIR)/$(TESTDIR)
-	mkdir -p $(OUTDIR)
-	cp -rT $(TESTDIR) $(OUTDIR)/$(TESTDIR)
+	mkdir -p $(OUTDIR)/$(TESTDIR)
+	cp -r $(TESTDIR)/* $(OUTDIR)/$(TESTDIR)
 	# Add in all the original source files to be tested.
 	cp $(APP_SRCS) $(OUTDIR)/$(TESTDIR)/$(SRCDIR)/
 
