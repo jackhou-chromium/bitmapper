@@ -120,6 +120,9 @@ function BrushTool(toolContext, optionProviders) {}
     this.dragging = false;
   };
 
+  BrushTool.prototype.tearDown = function() {
+  };
+
   /**
    * Set cursor guide image.
    * @param {Element} cursorDiv

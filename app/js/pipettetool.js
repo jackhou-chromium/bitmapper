@@ -133,6 +133,9 @@ function PipetteTool(toolContext, callback) {}
     this.callback(this.pipetteColor, this.opacity, false);
   };
 
+  PipetteTool.prototype.tearDown = function() {
+  };
+
   /**
    * Set cursor guide image.
    * @param {Element} cursorDiv

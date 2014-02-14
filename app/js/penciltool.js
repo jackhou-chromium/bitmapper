@@ -44,16 +44,16 @@ function PencilTool(toolContext, optionProviders) {}
     this.sizeSelector = optionProviders.sizeSelector;
 
     /**
-     * Whether the mouse is being held down for a drag.
-     * @type {boolean}
-     */
-    this.dragging = false;
-
-    /**
      * Draw display canvas callback.
      * @type {function()}
      */
     this.drawDisplayCanvas = toolContext.drawDisplayCanvas;
+
+    /**
+     * Whether the mouse is being held down for a drag.
+     * @type {boolean}
+     */
+    this.dragging = false;
 
     /**
      * The last x coordinate.
@@ -160,6 +160,9 @@ function PencilTool(toolContext, optionProviders) {}
     }
     // Redraw display canvas.
     this.drawDisplayCanvas();
+  };
+
+  PencilTool.prototype.tearDown = function() {
   };
 
   /**

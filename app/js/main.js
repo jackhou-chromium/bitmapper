@@ -55,6 +55,8 @@ bitmapper.setCanvasToImage = function() {
  * Set file entry then load file.
  */
 bitmapper.openFile = function() {
+  // Tear down before loading new file.
+  bitmapper.selectedTool.tearDown();
   chrome.fileSystem.chooseEntry(
       {
         'type': 'openWritableFile',
@@ -115,6 +117,8 @@ bitmapper.saveFile = function() {
   if (!bitmapper.imageFile || !bitmapper.imageFile.fileEntry) {
     bitmapper.saveAsFile();
   } else {
+    // Tear down before saving file.
+    bitmapper.selectedTool.tearDown();
     bitmapper.imageFile.saveFile(bitmapper.sourceCanvas);
   }
   bitmapper.updateFileNameMessage();
@@ -149,6 +153,7 @@ bitmapper.zoomCanvas = function() {
   bitmapper.zoomManager.setZoomFactor(zoomValue);
   bitmapper.zoomManager.drawDisplayCanvas();
   document.getElementById('zoomValue').textContent = (zoomValue * 100) + '%';
+  bitmapper.selectionCanvasManager.drawSelectionCanvas();
 };
 
 
@@ -182,26 +187,37 @@ bitmapper.updatePalette = function() {
  * @param {Object} tool
  */
 bitmapper.setSelectedTool = function(tool) {
+  bitmapper.selectedTool.tearDown();
   bitmapper.selectedTool = tool;
   bitmapper.cursorGuide.setTool(tool);
 };
 
 
 /**
- * Add event listeners for mouse events.
+ * Add event listeners for mouse events hooked to canvas wrapper.
  */
 bitmapper.registerMouseEvents = function() {
-  // Mouse support.
   var canvasWrapper = document.getElementById('canvasWrapper');
+
+  // Mouse support.
   canvasWrapper.addEventListener('mousedown',
       function(mouseEvent) {
-        bitmapper.selectedTool.mouseDown(
-            bitmapper.getMouseCoordinates(mouseEvent));
+        // Hit test for selection canvas.
+        if (bitmapper.selectionCanvasManager.isInHitArea(
+            bitmapper.getMouseCoordinates(mouseEvent))) {
+          bitmapper.selectionCanvasManager.mouseDown(
+              bitmapper.getMouseCoordinates(mouseEvent));
+        } else {
+          bitmapper.selectedTool.mouseDown(
+              bitmapper.getMouseCoordinates(mouseEvent));
+        }
       }, false);
   canvasWrapper.addEventListener('mouseup',
       function(mouseEvent) {
         bitmapper.updateFileNameMessage();
         bitmapper.selectedTool.mouseUp(
+            bitmapper.getMouseCoordinates(mouseEvent));
+        bitmapper.selectionCanvasManager.mouseUp(
             bitmapper.getMouseCoordinates(mouseEvent));
         bitmapper.saveStateToLocalStorage();
         // Snapshot pushed for undo/redo functionality.
@@ -211,13 +227,21 @@ bitmapper.registerMouseEvents = function() {
       function(mouseEvent) {
         bitmapper.showCoordinates(
             bitmapper.getMouseCoordinates(mouseEvent));
-        bitmapper.selectedTool.mouseMove(
-            bitmapper.getMouseCoordinates(mouseEvent));
+        // Check if selection canvas is being dragged.
+        if (bitmapper.selectionCanvasManager.isDragging()) {
+          bitmapper.selectionCanvasManager.mouseMove(
+              bitmapper.getMouseCoordinates(mouseEvent));
+        } else {
+          bitmapper.selectedTool.mouseMove(
+              bitmapper.getMouseCoordinates(mouseEvent));
+        }
         bitmapper.cursorGuide.setPosition(
             bitmapper.getMouseCoordinates(mouseEvent));
       }, false);
   canvasWrapper.addEventListener('mouseleave',
       function(mouseEvent) {
+        bitmapper.selectionCanvasManager.mouseLeave(
+            bitmapper.getMouseCoordinates(mouseEvent));
         bitmapper.selectedTool.mouseLeave(
             bitmapper.getMouseCoordinates(mouseEvent));
         bitmapper.saveStateToLocalStorage();
@@ -228,8 +252,15 @@ bitmapper.registerMouseEvents = function() {
   canvasWrapper.addEventListener('touchstart',
       function(touchEvent) {
         touchEvent.preventDefault();
-        bitmapper.selectedTool.mouseDown(
-            bitmapper.getTouchCoordinates(touchEvent));
+        // Hit test for selection canvas.
+        if (bitmapper.selectionCanvasManager.isInHitArea(
+            bitmapper.getTouchCoordinates(touchEvent))) {
+          bitmapper.selectionCanvasManager.mouseDown(
+              bitmapper.getTouchCoordinates(touchEvent));
+        } else {
+          bitmapper.selectedTool.mouseDown(
+              bitmapper.getTouchCoordinates(touchEvent));
+        }
         bitmapper.cursorGuide.setPosition(
             bitmapper.getTouchCoordinates(touchEvent));
       }, false);
@@ -238,6 +269,8 @@ bitmapper.registerMouseEvents = function() {
         bitmapper.updateFileNameMessage();
         touchEvent.preventDefault();
         bitmapper.selectedTool.mouseUp(
+            bitmapper.getTouchCoordinates(touchEvent));
+        bitmapper.selectionCanvasManager.mouseUp(
             bitmapper.getTouchCoordinates(touchEvent));
         bitmapper.saveStateToLocalStorage();
         // Snapshot pushed for undo/redo functionality.
@@ -249,14 +282,22 @@ bitmapper.registerMouseEvents = function() {
         touchEvent.preventDefault();
         bitmapper.showCoordinates(
             bitmapper.getTouchCoordinates(touchEvent));
-        bitmapper.selectedTool.mouseMove(
-            bitmapper.getTouchCoordinates(touchEvent));
+        // Check if selection canvas is being dragged.
+        if (bitmapper.selectionCanvasManager.isDragging()) {
+          bitmapper.selectionCanvasManager.mouseMove(
+              bitmapper.getTouchCoordinates(touchEvent));
+        } else {
+          bitmapper.selectedTool.mouseMove(
+              bitmapper.getTouchCoordinates(touchEvent));
+        }
         bitmapper.cursorGuide.setPosition(
             bitmapper.getTouchCoordinates(touchEvent));
       }, false);
   canvasWrapper.addEventListener('touchleave',
       function(touchEvent) {
         touchEvent.preventDefault();
+        bitmapper.selectionCanvasManager.mouseLeave(
+            bitmapper.getTouchCoordinates(touchEvent));
         bitmapper.selectedTool.mouseLeave(
             bitmapper.getTouchCoordinates(touchEvent));
         bitmapper.saveStateToLocalStorage();
@@ -451,6 +492,7 @@ bitmapper.setUpTools = function() {
   var toolContext = new ToolContext(
       bitmapper.sourceCanvas,
       bitmapper.displayCanvas,
+      bitmapper.selectionCanvasManager,
       function() {
         bitmapper.zoomManager.drawDisplayCanvas();
       });
@@ -474,6 +516,7 @@ bitmapper.setUpTools = function() {
         if (done)
           bitmapper.setSelectedTool(bitmapper.tools.pencilTool);
       });
+  var selectionTool = new bitmapper.SelectionTool(toolContext);
 
   bitmapper.tools =
       /** @struct */ {
@@ -482,7 +525,9 @@ bitmapper.setUpTools = function() {
         /** @type {PencilTool} */
         pencilTool: pencilTool,
         /** @type {PipetteTool} */
-        pipetteTool: pipetteTool
+        pipetteTool: pipetteTool,
+        /** @type {SelectionTool} */
+        selectionTool: selectionTool
       };
 
   // Handlers for tool buttons.
@@ -502,6 +547,12 @@ bitmapper.setUpTools = function() {
       'click',
       function() {
         bitmapper.setSelectedTool(bitmapper.tools.pipetteTool);
+      },
+      false);
+  document.getElementById('selectionToolButton').addEventListener(
+      'click',
+      function() {
+        bitmapper.setSelectedTool(bitmapper.tools.selectionTool);
       },
       false);
 };
@@ -609,6 +660,9 @@ bitmapper.drawImageToCanvas = function(imageSrc) {
  * Undo and draw snapshot to canvas.
  */
 bitmapper.undo = function() {
+  if (bitmapper.selectedTool == bitmapper.tools.selectionTool)
+    return;
+
   var poppedSnapshot = bitmapper.imageFile.popSnapshot();
   if (poppedSnapshot) {
     bitmapper.drawImageToCanvas(poppedSnapshot);
@@ -656,6 +710,9 @@ bitmapper.start = function(localStorageObject) {
   document.getElementById('zoomSelector')
       .addEventListener('change', bitmapper.zoomCanvas, false);
 
+  bitmapper.selectionCanvasManager = new bitmapper.SelectionCanvasManager(
+      document.getElementById('selectionCanvas'), bitmapper.zoomManager);
+
   // Initialise cursor guide.
   bitmapper.cursorGuide = new bitmapper.CursorGuide(
       document.getElementById('canvasWrapper'), bitmapper.zoomManager);
@@ -665,6 +722,7 @@ bitmapper.start = function(localStorageObject) {
   bitmapper.setUpTools();
 
   // Set default tool.
+  bitmapper.selectedTool = bitmapper.tools.pencilTool;
   bitmapper.setSelectedTool(bitmapper.tools.pencilTool);
   // Set up mouse event listeners.
   bitmapper.registerMouseEvents();

@@ -99,3 +99,23 @@ bitmapper_test.getLocalFileEntry = function(fileName, callback) {
     readEntries();
   });
 };
+
+
+
+/**
+ * Mock zoom manager that holds zoom factor.
+ * @constructor
+ * @struct
+ */
+bitmapper_test.MockZoomManager = function() {
+  this.zoomFactor = 1;
+};
+
+
+/**
+ * Get zoom factor method called by selection canvas manager.
+ * @return {number}
+ */
+bitmapper_test.MockZoomManager.prototype.getZoomFactor = function() {
+  return this.zoomFactor;
+};

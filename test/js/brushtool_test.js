@@ -18,7 +18,7 @@
     canvas.width = 100;
     canvas.height = 50;
 
-    var toolContext = new ToolContext(canvas, null, function() {});
+    var toolContext = new ToolContext(canvas, null, null, function() {});
     var colorPalette = bitmapper_test.initialiseTestPalette(function() {});
     colorPalette.setSelectedIndex(0);
 

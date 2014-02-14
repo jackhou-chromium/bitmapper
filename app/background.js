@@ -20,10 +20,10 @@ chrome.app.runtime.onRestarted.addListener(function() {
  */ 
 function runApp(isRestart) {
   chrome.app.window.create('main.html', {
-    'width': 800,
-    'height': 600,
-    'minWidth': 800,
-    'minHeight': 600,
+    'width': 900,
+    'height': 700,
+    'minWidth': 900,
+    'minHeight': 700,
   },
   function(createdWindow) {
     createdWindow.contentWindow.addEventListener('load', function() {

@@ -374,3 +374,16 @@ input[type=number]::-webkit-outer-spin-button {
   position: absolute;
   top: 0;
 }
+
+#selectionCanvas { 
+  border: 1px dashed black;
+  cursor: move;
+  position: absolute;
+  pointer-events: none;
+}
+
+#selectionSourceCanvas { 
+  border: 1px dashed black;
+  position: absolute;
+  pointer-events: none;
+}

@@ -55,6 +55,7 @@ function CursorGuide(canvasWrapper, zoomManager) {}
    */
   CursorGuide.prototype.setPosition = function(mouseCoordinates) {
     // Reset cursorDiv.
+    this.canvasWrapper.style.cursor = 'none';
     this.canvasWrapper.removeChild(this.cursorDiv);
     this.cursorDiv = document.createElement('div');
     this.cursorDiv.className = 'cursorDiv';
@@ -62,6 +63,8 @@ function CursorGuide(canvasWrapper, zoomManager) {}
     if (!this.tool.updateCursorGuide(
         this.cursorDiv, mouseCoordinates, this.zoomManager.getZoomFactor())) {
       this.hide();
+      this.canvasWrapper.style.cursor = 'default';
+      this.canvasWrapper.appendChild(this.cursorDiv);
       return;
     }
     this.canvasWrapper.appendChild(this.cursorDiv);

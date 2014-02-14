@@ -17,7 +17,7 @@
     canvas.width = 100;
     canvas.height = 50;
 
-    var toolContext = new ToolContext(canvas, null, function() {});
+    var toolContext = new ToolContext(canvas, null, null, function() {});
     var colorPalette = bitmapper_test.initialiseTestPalette(function() {});
     colorPalette.setSelectedIndex(0);
     colorPalette.setOpacity(0.5);
@@ -68,7 +68,7 @@
     canvas.width = 100;
     canvas.height = 50;
 
-    var toolContext = new ToolContext(canvas, null, function() {});
+    var toolContext = new ToolContext(canvas, null, null, function() {});
     var colorPalette = bitmapper_test.initialiseTestPalette(function() {});
 
     var sizeSelector = {
@@ -117,7 +117,7 @@
     canvas.width = 100;
     canvas.height = 50;
 
-    var toolContext = new ToolContext(canvas, null, function() {});
+    var toolContext = new ToolContext(canvas, null, null, function() {});
     var colorPalette = bitmapper_test.initialiseTestPalette(function() {});
 
     var sizeSelector = {

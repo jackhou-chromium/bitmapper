@@ -30,9 +30,11 @@ function MouseCoordinates() {
  * @struct
  * @param {HTMLElement} sourceCanvas
  * @param {HTMLElement} displayCanvas
+ * @param {SelectionCanvasManager} selectionCanvasManager
  * @param {function()} drawDisplayCanvas
  */
-function ToolContext(sourceCanvas, displayCanvas, drawDisplayCanvas) {
+function ToolContext(sourceCanvas, displayCanvas, selectionCanvasManager,
+    drawDisplayCanvas) {
   /**
    * @type {HTMLElement}
    */
@@ -41,6 +43,10 @@ function ToolContext(sourceCanvas, displayCanvas, drawDisplayCanvas) {
    * @type {HTMLElement}
    */
   this.displayCanvas = displayCanvas;
+  /**
+   * @type {SelectionCanvasManager}
+   */
+  this.selectionCanvasManager = selectionCanvasManager;
   /**
    * @type {function()}
    */
@@ -78,6 +84,12 @@ Tool.prototype.mouseMove = function(mouseCoordinates) {};
  * @param {MouseCoordinates} mouseCoordinates
  */
 Tool.prototype.mouseLeave = function(mouseCoordinates) {};
+
+
+/**
+ * Tool will clean up after itself.
+ */
+Tool.prototype.tearDown = function() {};
 
 
 /**
