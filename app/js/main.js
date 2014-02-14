@@ -413,10 +413,14 @@ bitmapper.updateFileNameMessage = function() {
  */
 bitmapper.getTouchCoordinates = function(touchEvent) {
   var mouseCoordinates = new MouseCoordinates();
+  var canvasWrapper = document.getElementById('canvasWrapper');
+  var canvasViewport = document.getElementById('canvasViewport');
   mouseCoordinates.sourceX = bitmapper.zoomManager.getSourceCoordinate(
-      touchEvent.targetTouches[0].pageX - bitmapper.displayCanvas.offsetLeft);
+      touchEvent.targetTouches[0].pageX - canvasWrapper.offsetLeft +
+      canvasViewport.scrollLeft);
   mouseCoordinates.sourceY = bitmapper.zoomManager.getSourceCoordinate(
-      touchEvent.targetTouches[0].pageY - bitmapper.displayCanvas.offsetTop);
+      touchEvent.targetTouches[0].pageY - canvasWrapper.offsetTop +
+      canvasViewport.scrollTop);
   return mouseCoordinates;
 };
 
