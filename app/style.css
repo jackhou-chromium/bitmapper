@@ -28,9 +28,11 @@ li {
 
 footer {
   color: gray;
-  display: inherit;
+  display: flex;
   font-size: 15px;
-  margin: 20px;
+  height: 30px;
+  justify-content: space-between;
+  margin: 10px 20px;
 }
 
 #bar {
@@ -42,8 +44,8 @@ footer {
 #fileName {
   color: white;
   font-size: 15px;
-  text-align: center;
   margin: 7px;
+  margin-left: 22px;
   width: 150px;
 }
 
@@ -115,6 +117,7 @@ footer {
 }
 
 #logo {
+  margin-left: 20px;
   margin-right: 30px;
 }
 
@@ -172,7 +175,7 @@ footer {
   color: white;
   font-size: 15px;
   margin-top: 15px;
-  margin-left: 20px;
+  margin-left: 25px;
 }
 
 .toolbutton {
@@ -233,14 +236,14 @@ footer {
 }
 
 .colorSelector {
-  margin: 10px;
+  margin: 8px;
 }
 
 #colorSelector {
   background: #181818;
   border: #181818;
   height: 40px;
-  width: 130px;
+  width: 134px;
 }
 
 
@@ -252,7 +255,6 @@ input[type='range'] {
   background-color: white;
   margin-bottom: 10px;
   margin-top: 10px;
-  width: 86px;
 }
 
 input[type='range']::-webkit-slider-thumb {
@@ -301,20 +303,20 @@ input[type='range']::-webkit-slider-thumb {
   background-image: url('images/rect_40.png');
 }
 
-#midfooter {
-  flex: 1;
-  width: 100%;
+#sizeSelector {
+  height: 10px;
+  width: 86px;
 }
 
 #zoomSelector {
-  height: 8px;
-  margin-left: 10px;
-  margin-right: 10px;
+  height: 10px;
+  margin: 6px;
+  width: 120px;
 }
 
 .coordinates {
   display: inherit;
-  width: 150px;
+  width: 120px;
 }
 
 #brushSize {
@@ -379,14 +381,14 @@ input[type=number]::-webkit-outer-spin-button {
   top: 0;
 }
 
-#selectionCanvas { 
+#selectionCanvas {
   border: 1px dashed black;
   cursor: move;
   position: absolute;
   pointer-events: none;
 }
 
-#selectionSourceCanvas { 
+#selectionSourceCanvas {
   border: 1px dashed black;
   position: absolute;
   pointer-events: none;

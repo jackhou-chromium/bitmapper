@@ -8,13 +8,11 @@
   </head>
   <body>
     <header>
-      <ul>
-        <li id="logo">Bitmapper</li>
-        <li><button id="newButton" class="headerbutton">New</button></li>
-        <li><button id="openButton" class="headerbutton">Open</button></li>
-        <li><button id="saveButton" class="headerbutton">Save</button></li>
-        <li><button id="saveAsButton" class="headerbutton">Save As</button></li>
-      </ul>
+        <span id="logo">Bitmapper</span>
+        <button id="newButton" class="headerbutton">New</button>
+        <button id="openButton" class="headerbutton">Open</button>
+        <button id="saveButton" class="headerbutton">Save</button>
+        <button id="saveAsButton" class="headerbutton">Save As</button>
     </header>
     <div id="bar">
       <div id="fileName"></div>
@@ -55,15 +53,14 @@
     </div>
     <footer>
       <div class="coordinates">
-      (X: <div id="xCoordinate">0</div>
-      , Y: <div id="yCoordinate">0</div>)
+      (X: <span id="xCoordinate">0</span>
+      , Y: <span id="yCoordinate">0</span>)
       </div>
       <div id="zoomContainer">
         Zoom
         <input type="range" id="zoomSelector" min="1" max="8" step="1" value="1">
         <div id="zoomValue">100%</div>
       </div>
-      <div id="midfooter"></div>
       <div id="resizeContainer">
         <input type="number" id="resizeCanvasWidth" class="dimensions" placeholder="W:300">
         <input type="number" id="resizeCanvasHeight" class="dimensions" placeholder="H:150">
