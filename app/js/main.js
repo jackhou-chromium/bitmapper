@@ -484,12 +484,13 @@ bitmapper.setUpOptionProviders = function(localStorageObject) {
       };
 
   // Change UI brush size arc.
-  bitmapper.optionProviders.sizeSelector.addEventListener('change', function() {
-    document.getElementById('brushSize').style.height =
-        (bitmapper.optionProviders.sizeSelector.value * 2) + 'px';
-    document.getElementById('brushSize').style.width =
-        (bitmapper.optionProviders.sizeSelector.value * 2) + 'px';
-  }, false);
+  var updateBrushSize = function() {
+    var brushSize = document.getElementById('brushSize');
+    brushSize.style.height = (sizeSelector.value * 2) + 'px';
+    brushSize.style.width = (sizeSelector.value * 2) + 'px';
+  };
+  sizeSelector.addEventListener('input', updateBrushSize, false);
+  sizeSelector.addEventListener('change', updateBrushSize, false);
 };
 
 
@@ -519,7 +520,7 @@ bitmapper.setUpTools = function() {
             bitmapper.optionProviders.colorPalette.getSelectedIndex());
         bitmapper.setSelectedColorBox();
         var opacityPercent = Math.round(opacity * 100);
-        document.getElementById('opacity').value = opacityPercent;
+        document.getElementById('opacitySelector').value = opacityPercent;
         document.getElementById('opacityValue').innerHTML =
             opacityPercent + '%';
         bitmapper.optionProviders.colorPalette.setOpacity(opacity);
@@ -580,7 +581,7 @@ bitmapper.setUpTools = function() {
  * Updates the current opacity level.
  */
 bitmapper.updateOpacity = function() {
-  var opacity = document.getElementById('opacity').value;
+  var opacity = document.getElementById('opacitySelector').value;
   document.getElementById('opacityValue').innerHTML = opacity + '%';
   bitmapper.optionProviders.colorPalette.setOpacity(opacity / 100);
 };
@@ -725,8 +726,9 @@ bitmapper.start = function(localStorageObject) {
   // Initialise zoom functionality.
   bitmapper.zoomManager = new bitmapper.ZoomManager(
       bitmapper.sourceCanvas, bitmapper.displayCanvas);
-  document.getElementById('zoomSelector')
-      .addEventListener('change', bitmapper.zoomCanvas, false);
+  var zoomSelector = document.getElementById('zoomSelector');
+  zoomSelector.addEventListener('input', bitmapper.zoomCanvas, false);
+  zoomSelector.addEventListener('change', bitmapper.zoomCanvas, false);
 
   bitmapper.selectionCanvasManager = new bitmapper.SelectionCanvasManager(
       document.getElementById('selectionCanvas'), bitmapper.zoomManager);
@@ -747,11 +749,12 @@ bitmapper.start = function(localStorageObject) {
   bitmapper.setSelectedColorBox();
 
   // Other UI elements.
-  document.getElementById('colorSelector')
-    .addEventListener('change', bitmapper.updatePalette, false);
+  var colorSelector = document.getElementById('colorSelector');
+  colorSelector.addEventListener('change', bitmapper.updatePalette, false);
 
-  document.getElementById('opacity')
-      .addEventListener('change', bitmapper.updateOpacity, false);
+  var opacitySelector = document.getElementById('opacitySelector');
+  opacitySelector.addEventListener('input', bitmapper.updateOpacity, false);
+  opacitySelector.addEventListener('change', bitmapper.updateOpacity, false);
 
   document.getElementById('resizeCanvasButton').addEventListener(
       'click',
