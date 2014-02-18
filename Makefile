@@ -8,6 +8,7 @@ QUNIT_EXTERNS_URL := https://raw.github.com/lukeasrodgers/qunit-js-externs/maste
 
 # Directory structure.
 APPDIR := app
+DEPSDIR := deps
 SRCDIR := js
 TESTDIR := test
 OUTDIR := out
@@ -19,8 +20,8 @@ TEST_EXCLUDES := main.js
 # Javascript source files to edit.
 # IMPORTANT: These must be in dependency order.
 SRCS := namespace.js imagefile.js zoommanager.js colorpalette.js \
-    tool.js penciltool.js brushtool.js pipettetool.js selectiontool.js \
-    selectioncanvasmanager.js cursorguide.js main.js
+    tool.js penciltool.js brushtool.js buckettool.js pipettetool.js \
+    selectiontool.js selectioncanvasmanager.js cursorguide.js main.js
 APP_SRCS := $(patsubst %,$(APPDIR)/$(SRCDIR)/%,$(SRCS))
 TEST_SRCS := $(TESTDIR)/$(SRCDIR)/setup.js \
     $(shell find $(TESTDIR)/$(SRCDIR) -type f -name '*_test.js')
@@ -118,6 +119,8 @@ copy_test_files :
 	cp -r $(TESTDIR)/* $(OUTDIR)/$(TESTDIR)
 	# Add in all the original source files to be tested.
 	cp $(APP_SRCS) $(OUTDIR)/$(TESTDIR)/$(SRCDIR)/
+	# Copy apps deps.
+	cp -r $(APPDIR)/$(DEPSDIR)/* $(OUTDIR)/$(TESTDIR)/$(DEPSDIR)/
 
 # Compile the test app.
 test : setup copy_test_files $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js

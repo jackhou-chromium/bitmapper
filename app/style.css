@@ -285,6 +285,10 @@ input[type='range']::-webkit-slider-thumb {
   background-image: url('images/pipette_40.png');
 }
 
+#bucketToolButton {
+  background-image: url('images/bucket_40.png');
+}
+
 #selectionToolButton {
   background-image: url('images/selection_40.png');
 }
@@ -361,10 +365,10 @@ input[type='range']::-webkit-slider-thumb {
   background: rgba(49, 66, 78, 0.5);
 }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .cursorDiv {

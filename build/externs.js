@@ -20,6 +20,18 @@ var atob = function(data) {};
 
 
 /**
+ * @param {number} x
+ * @param {number} y
+ * @param {Array} fillcolor
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {number} width
+ * @param {number} height
+ * @param {number} tolerance
+ */
+var floodfill = function(x, y, fillcolor, ctx, width, height, tolerance) {};
+
+
+/**
  * @type {boolean}
  */
 CanvasRenderingContext2D.prototype.imageSmoothingEnabled;

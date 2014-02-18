@@ -165,6 +165,20 @@ function ColorPalette(divContainer, callback) {}
   }
 
   /**
+   * Converts rgba color format to an object.
+   * @param {string} rgbaColor
+   * @return {Object}
+   */
+  function rgbaToArray(rgbaColor) {
+    var digits = rgbaColor.match(
+        /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*(\d+\.?\d*)\)$/);
+    return [parseInt(digits[1], 10),
+            parseInt(digits[2], 10),
+            parseInt(digits[3], 10),
+            Math.floor(parseFloat(digits[4]) * 255)];
+  }
+
+  /**
    * Gets the colors of the color palette.
    * @return {Array.<string>}
    */
@@ -177,5 +191,6 @@ function ColorPalette(divContainer, callback) {}
   };
 
   bitmapper.rgbToHex = rgbToHex;
+  bitmapper.rgbaToArray = rgbaToArray;
   bitmapper.ColorPalette = ColorPalette;
 })();

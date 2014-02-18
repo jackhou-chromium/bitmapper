@@ -25,6 +25,21 @@
   });
 
   /**
+   * Convert rgb to an array.
+   */
+  test('convertRgbaToArray', function() {
+    deepEqual(bitmapper.rgbaToArray('rgba(255, 102, 0, 0.5)'),
+              [255, 102, 0, 127],
+              'Correct rgb to hex conversion');
+    deepEqual(bitmapper.rgbaToArray('rgba(0, 153, 255, 1)'),
+              [0, 153, 255, 255],
+              'Correct rgb to hex conversion');
+    deepEqual(bitmapper.rgbaToArray('rgba(255, 255, 255, 0)'),
+              [255, 255, 255, 0],
+              'Correct rgb to hex conversion');
+  });
+
+  /**
    * Generate palette with correctly styled divs.
    */
   test('generateColorPalette', function() {
