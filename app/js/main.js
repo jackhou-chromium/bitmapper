@@ -42,7 +42,6 @@ bitmapper.setCanvasToImage = function() {
   // Set initial zoom properties.
   var zoomSelector = document.getElementById('zoomSelector');
   zoomSelector.value = 1;
-  zoomSelector.setAttribute('max', bitmapper.zoomManager.getMaxZoomFactor());
   bitmapper.zoomCanvas();
 
   bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
@@ -725,7 +724,18 @@ bitmapper.start = function(localStorageObject) {
 
   // Initialise zoom functionality.
   bitmapper.zoomManager = new bitmapper.ZoomManager(
-      bitmapper.sourceCanvas, bitmapper.displayCanvas);
+      bitmapper.sourceCanvas, bitmapper.displayCanvas,
+      document.getElementById('canvasPlaceholder'),
+      document.getElementById('canvasViewport'));
+
+  // Redraw display canvas on window resize.
+  window.addEventListener(
+      'resize',
+      function() {
+        bitmapper.zoomManager.drawDisplayCanvas();
+      },
+      false);
+
   var zoomSelector = document.getElementById('zoomSelector');
   zoomSelector.addEventListener('input', bitmapper.zoomCanvas, false);
   zoomSelector.addEventListener('change', bitmapper.zoomCanvas, false);

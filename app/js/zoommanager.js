@@ -11,16 +11,16 @@
  * @struct
  * @param {HTMLElement} sourceCanvas
  * @param {HTMLElement} displayCanvas
+ * @param {HTMLElement} canvasPlaceholder
+ * @param {HTMLElement} canvasViewport
  */
-function ZoomManager(sourceCanvas, displayCanvas) {}
+function ZoomManager(sourceCanvas,
+                     displayCanvas,
+                     canvasPlaceholder,
+                     canvasViewport) {
+}
 
 (function() {
-
-  /**
-   * Used to find max zoom factor to prevent OOMing.
-   * @const
-   */
-  var MAX_AREA = 10000000;
 
   /**
    * Encapsulates data related to the zoom manager.
@@ -28,8 +28,13 @@ function ZoomManager(sourceCanvas, displayCanvas) {}
    * @struct
    * @param {HTMLElement} sourceCanvas
    * @param {HTMLElement} displayCanvas
+   * @param {HTMLElement} canvasPlaceholder
+   * @param {HTMLElement} canvasViewport
    */
-  function ZoomManager(sourceCanvas, displayCanvas) {
+  function ZoomManager(sourceCanvas,
+                       displayCanvas,
+                       canvasPlaceholder,
+                       canvasViewport) {
     /**
      * @type {number}
      */
@@ -44,6 +49,26 @@ function ZoomManager(sourceCanvas, displayCanvas) {}
      * @type {HTMLElement}
      */
     this.displayCanvas = displayCanvas;
+
+    /**
+     * @type {HTMLElement}
+     * A placeholder for the displayCanvas which sizes to the logical pixel size
+     * of the zoomed image.
+     */
+    this.canvasPlaceholder = canvasPlaceholder;
+
+    /**
+     * @type {HTMLElement}
+     * The element which controls the scrolling and visible region of the
+     * displayed image.
+     */
+    this.canvasViewport = canvasViewport;
+    canvasViewport.addEventListener(
+        'scroll',
+        function() { this.drawDisplayCanvas(); }.bind(this),
+        true);
+
+    this.drawDisplayCanvas();
   };
 
   /**
@@ -58,13 +83,37 @@ function ZoomManager(sourceCanvas, displayCanvas) {}
    * Scales and redraws the display canvas.
    */
   ZoomManager.prototype.drawDisplayCanvas = function() {
-    this.displayCanvas.height = this.sourceCanvas.height * this.zoomFactor;
-    this.displayCanvas.width = this.sourceCanvas.width * this.zoomFactor;
+    var zoom = this.zoomFactor;
+    // Size the placeholder to the desired image size.
+    this.canvasPlaceholder.style.height =
+        (this.sourceCanvas.height * zoom) + 'px';
+    this.canvasPlaceholder.style.width =
+        (this.sourceCanvas.width * zoom) + 'px';
+
+    // Size and move the displayCanvas to the area visible in the viewport.
+    var left = this.canvasViewport.scrollLeft;
+    var top = this.canvasViewport.scrollTop;
+    this.displayCanvas.style.left = left + 'px';
+    this.displayCanvas.style.top = top + 'px';
+    this.displayCanvas.height = this.canvasViewport.clientHeight;
+    this.displayCanvas.width = this.canvasViewport.clientWidth;
+
     var displayContext = this.displayCanvas.getContext('2d');
     // Displays crisp pixels when scaled.
     displayContext.imageSmoothingEnabled = false;
-    displayContext.drawImage(this.sourceCanvas,
+    displayContext.clearRect(
         0, 0, this.displayCanvas.width, this.displayCanvas.height);
+
+    // Draw the visible region of the sourceCanvas to the display canvas.
+    displayContext.drawImage(
+        this.sourceCanvas,
+        left / zoom, top / zoom,
+        this.displayCanvas.width / zoom,
+        this.displayCanvas.height / zoom,
+        0,
+        0,
+        this.displayCanvas.width,
+        this.displayCanvas.height);
   };
 
   /**
@@ -82,15 +131,6 @@ function ZoomManager(sourceCanvas, displayCanvas) {}
    */
   ZoomManager.prototype.getSourceCoordinate = function(displayCoordinate) {
     return displayCoordinate / this.zoomFactor;
-  };
-
-  /**
-   * Returns max zoom factor for loaded image to prevent OOMing.
-   * @return {number}
-   */
-  ZoomManager.prototype.getMaxZoomFactor = function() {
-    return Math.round(Math.sqrt(
-        MAX_AREA / (this.sourceCanvas.width * this.sourceCanvas.height)));
   };
 
   bitmapper.ZoomManager = ZoomManager;

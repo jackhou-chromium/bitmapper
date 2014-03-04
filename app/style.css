@@ -161,12 +161,18 @@ footer {
 #canvasWrapper {
   cursor: none;
   position: relative;
-  margin: 10px;
   width: 0;
 }
 
-#imageCanvas {
+#canvasPlaceholder {
   background-image: url('images/transparent_bg_4squares.png');
+}
+
+#imageCanvas {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 /* Tools */

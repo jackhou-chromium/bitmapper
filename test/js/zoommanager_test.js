@@ -12,6 +12,14 @@
 
   module('ZoomManager');
 
+  function MockCanvasViewport(clientWidth, clientHeight) {
+    this.clientWidth = clientWidth;
+    this.clientHeight = clientHeight;
+    this.scrollLeft = 0;
+    this.scrollTop = 0;
+    this.addEventListener = function() {};
+  }
+
   test('zoomRectangle', function() {
     // Initialise source and display canvases.
     var sourceCanvas = bitmapper_test.createCanvas();
@@ -19,38 +27,49 @@
     sourceCanvas.height = 50;
 
     var displayCanvas = bitmapper_test.createCanvas();
-    displayCanvas.width = 100;
-    displayCanvas.height = 50;
 
     // Draw on source canvas.
     var sourceContext = sourceCanvas.getContext('2d');
     sourceContext.fillStyle = 'red';
     sourceContext.fillRect(1, 1, 10, 10);
 
-    // No zoom.
-    var zoomManager = new bitmapper.ZoomManager(sourceCanvas, displayCanvas);
-    equal(zoomManager.getZoomFactor(), 1, 'Zoom Factor 1');
-    equal(displayCanvas.width, 100, 'Display canvas has correct width');
-    equal(displayCanvas.height, 50, 'Display canvas has correct height');
-    zoomManager.drawDisplayCanvas();
-    equal(sourceCanvas.toDataURL(), displayCanvas.toDataURL(),
-        'Redraws correctly');
+    var imagePlaceholder = document.createElement('div');
+    var canvasViewport = new MockCanvasViewport(300, 200);
 
-    // Zoom Factor 2.
-    var currentZoomFactor = zoomManager.getZoomFactor();
-    zoomManager.setZoomFactor(currentZoomFactor * 2);
-    equal(zoomManager.getZoomFactor(), 2, 'Zoom Factor 2');
-    zoomManager.drawDisplayCanvas();
-    equal(displayCanvas.width, 200,
+    // No zoom.
+    var zoomManager = new bitmapper.ZoomManager(sourceCanvas, displayCanvas,
+        imagePlaceholder, canvasViewport);
+    equal(zoomManager.getZoomFactor(), 1, 'Zoom Factor 1');
+    equal(imagePlaceholder.style.width, '100px',
         'Display canvas has correct width');
-    equal(displayCanvas.height, 100,
+    equal(imagePlaceholder.style.height, '50px',
         'Display canvas has correct height');
+    zoomManager.drawDisplayCanvas();
 
     // Compare expected canvas with display canvas.
     var expectedCanvas = bitmapper_test.createCanvas();
-    expectedCanvas.width = 200;
-    expectedCanvas.height = 100;
+    expectedCanvas.width = 300;
+    expectedCanvas.height = 200;
     var expectedContext = expectedCanvas.getContext('2d');
+    expectedContext.fillStyle = 'red';
+    expectedContext.fillRect(1, 1, 10, 10);
+    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+        'Zoomed successfully');
+
+    // Zoom Factor 2.
+    zoomManager.setZoomFactor(2);
+    equal(zoomManager.getZoomFactor(), 2, 'Zoom Factor 2');
+    zoomManager.drawDisplayCanvas();
+    equal(imagePlaceholder.style.width, '200px',
+        'Display canvas has correct width');
+    equal(imagePlaceholder.style.height, '100px',
+        'Display canvas has correct height');
+
+    // Compare expected canvas with display canvas.
+    expectedCanvas = document.createElement('canvas');
+    expectedCanvas.width = 300;
+    expectedCanvas.height = 200;
+    expectedContext = expectedCanvas.getContext('2d');
     expectedContext.fillStyle = 'red';
     expectedContext.fillRect(2, 2, 20, 20);
     equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
@@ -64,7 +83,11 @@
     sourceCanvas.height = 50;
     var displayCanvas = bitmapper_test.createCanvas();
 
-    var zoomManager = new bitmapper.ZoomManager(sourceCanvas, displayCanvas);
+    var imagePlaceholder = document.createElement('div');
+    var canvasViewport = new MockCanvasViewport(300, 200);
+
+    var zoomManager = new bitmapper.ZoomManager(sourceCanvas, displayCanvas,
+        imagePlaceholder, canvasViewport);
 
     // No Zoom.
     ok(true, 'No zoom');
@@ -99,8 +122,13 @@
 
     var displayCanvas = bitmapper_test.createCanvas();
 
+    var imagePlaceholder = document.createElement('div');
+    var canvasViewport = new MockCanvasViewport(200, 200);
+
+    var zoomManager = new bitmapper.ZoomManager(sourceCanvas, displayCanvas,
+        imagePlaceholder, canvasViewport);
+
     // Zoom in.
-    var zoomManager = new bitmapper.ZoomManager(sourceCanvas, displayCanvas);
     zoomManager.setZoomFactor(2);
     zoomManager.drawDisplayCanvas();
 
@@ -121,13 +149,82 @@
   });
 
 
+  test('clippedDrawing', function() {
+    var sourceCanvas = bitmapper_test.createCanvas();
+    sourceCanvas.width = 100;
+    sourceCanvas.height = 100;
+    var sourceContext = sourceCanvas.getContext('2d');
+    sourceContext.fillRect(40, 40, 20, 20);
+
+    var displayCanvas = bitmapper_test.createCanvas();
+
+    var imagePlaceholder = document.createElement('div');
+    var canvasViewport = new MockCanvasViewport(100, 100);
+
+    var zoomManager = new bitmapper.ZoomManager(sourceCanvas, displayCanvas,
+        imagePlaceholder, canvasViewport);
+
+    // Compare expected canvas with display canvas.
+    var expectedCanvas = bitmapper_test.createCanvas();
+    expectedCanvas.width = 100;
+    expectedCanvas.height = 100;
+    var expectedContext = expectedCanvas.getContext('2d');
+    expectedContext.fillRect(40, 40, 20, 20);
+
+    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+        'Zoomed transparency successfully');
+
+    // Zoom 2x.
+    zoomManager.setZoomFactor(2);
+    zoomManager.drawDisplayCanvas();
+
+    expectedCanvas = bitmapper_test.createCanvas();
+    expectedCanvas.width = 100;
+    expectedCanvas.height = 100;
+    expectedContext = expectedCanvas.getContext('2d');
+    expectedContext.fillRect(80, 80, 20, 20);
+
+    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+        'Zoomed transparency successfully');
+
+    // Scroll to right.
+    canvasViewport.scrollLeft = 100;
+    expectedCanvas = bitmapper_test.createCanvas();
+    expectedCanvas.width = 100;
+    expectedCanvas.height = 100;
+    expectedContext = expectedCanvas.getContext('2d');
+    expectedContext.fillRect(0, 80, 20, 20);
+    zoomManager.drawDisplayCanvas();
+
+    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+        'Zoomed transparency successfully');
+
+    // Scroll to bottom right.
+    canvasViewport.scrollLeft = 100;
+    canvasViewport.scrollTop = 100;
+    expectedCanvas = bitmapper_test.createCanvas();
+    expectedCanvas.width = 100;
+    expectedCanvas.height = 100;
+    expectedContext = expectedCanvas.getContext('2d');
+    expectedContext.fillRect(0, 0, 20, 20);
+    zoomManager.drawDisplayCanvas();
+
+    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+        'Zoomed transparency successfully');
+  });
+
+
   asyncTest('testImage', function() {
     expect(1);
     var sourceCanvas = bitmapper_test.createCanvas();
     var displayCanvas = bitmapper_test.createCanvas();
     var expectedCanvas = bitmapper_test.createCanvas();
 
-    var zoomManager = new bitmapper.ZoomManager(sourceCanvas, displayCanvas);
+    var imagePlaceholder = document.createElement('div');
+    var canvasViewport = new MockCanvasViewport(200, 200);
+
+    var zoomManager = new bitmapper.ZoomManager(sourceCanvas, displayCanvas,
+        imagePlaceholder, canvasViewport);
     zoomManager.setZoomFactor(2);
 
     // Locate test image and draw onto canvas.
@@ -139,7 +236,6 @@
         sourceCanvas.width = image.width;
         sourceCanvas.height = image.height;
         sourceContext.drawImage(image, 0, 0);
-        zoomManager.drawDisplayCanvas();
 
         // Load expected image onto expected canvas to compare.
         bitmapper_test.getLocalFileEntry(
@@ -152,6 +248,13 @@
                 expectedCanvas.width = expectedImage.width;
                 expectedCanvas.height = expectedImage.height;
                 expectedContext.drawImage(expectedImage, 0, 0);
+
+                canvasViewport.clientWidth = expectedImage.width;
+                canvasViewport.clientHeight = expectedImage.height;
+
+                zoomManager.drawDisplayCanvas();
+                equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+                    'Zoomed image successfully');
                 start();
               };
               expectedImageFile.loadFile(expectedEntry, expectedCallback);
@@ -159,8 +262,6 @@
       };
       imageFile.loadFile(entry, callback);
     });
-    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
-        'Zoomed image successfully');
   });
 
   test('clearCanvas', function() {
@@ -174,7 +275,11 @@
 
     var displayCanvas = bitmapper_test.createCanvas();
 
-    var zoomManager = new bitmapper.ZoomManager(sourceCanvas, displayCanvas);
+    var imagePlaceholder = document.createElement('div');
+    var canvasViewport = new MockCanvasViewport(100, 50);
+
+    var zoomManager = new bitmapper.ZoomManager(sourceCanvas, displayCanvas,
+        imagePlaceholder, canvasViewport);
     zoomManager.drawDisplayCanvas();
 
     // Clear source canvas.
