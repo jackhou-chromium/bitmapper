@@ -60,7 +60,7 @@ function CursorGuide(canvasWrapper, zoomManager) {}
     this.cursorDiv = document.createElement('div');
     this.cursorDiv.className = 'cursorDiv';
 
-    if (!this.tool.updateCursorGuide(
+    if (!mouseCoordinates.inCanvas || !this.tool.updateCursorGuide(
         this.cursorDiv, mouseCoordinates, this.zoomManager.getZoomFactor())) {
       this.hide();
       this.canvasWrapper.style.cursor = 'default';

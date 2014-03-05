@@ -199,7 +199,7 @@ bitmapper.registerMouseEvents = function() {
   var canvasWrapper = document.getElementById('canvasWrapper');
 
   // Mouse support.
-  canvasWrapper.addEventListener('mousedown',
+  window.addEventListener('mousedown',
       function(mouseEvent) {
         // Hit test for selection canvas.
         if (bitmapper.selectionCanvasManager.isInHitArea(
@@ -211,7 +211,7 @@ bitmapper.registerMouseEvents = function() {
               bitmapper.getMouseCoordinates(mouseEvent));
         }
       }, false);
-  canvasWrapper.addEventListener('mouseup',
+  window.addEventListener('mouseup',
       function(mouseEvent) {
         bitmapper.updateFileNameMessage();
         bitmapper.selectedTool.mouseUp(
@@ -222,7 +222,7 @@ bitmapper.registerMouseEvents = function() {
         // Snapshot pushed for undo/redo functionality.
         bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
       }, false);
-  canvasWrapper.addEventListener('mousemove',
+  window.addEventListener('mousemove',
       function(mouseEvent) {
         bitmapper.showCoordinates(
             bitmapper.getMouseCoordinates(mouseEvent));
@@ -236,15 +236,6 @@ bitmapper.registerMouseEvents = function() {
         }
         bitmapper.cursorGuide.setPosition(
             bitmapper.getMouseCoordinates(mouseEvent));
-      }, false);
-  canvasWrapper.addEventListener('mouseleave',
-      function(mouseEvent) {
-        bitmapper.selectionCanvasManager.mouseLeave(
-            bitmapper.getMouseCoordinates(mouseEvent));
-        bitmapper.selectedTool.mouseLeave(
-            bitmapper.getMouseCoordinates(mouseEvent));
-        bitmapper.saveStateToLocalStorage();
-        bitmapper.cursorGuide.hide();
       }, false);
 
   // Touch Support.
@@ -410,21 +401,42 @@ bitmapper.updateFileNameMessage = function() {
 
 
 /**
+ * Generate mouse coordinates object from a page offset.
+ * @param {number} pageX
+ * @param {number} pageY
+ * @return {MouseCoordinates}
+ */
+bitmapper.generateMouseCoordinates = function(pageX, pageY) {
+  var canvasRect =
+      document.getElementById('canvasPlaceholder').getBoundingClientRect();
+  var canvasOffsetX = pageX - canvasRect.left;
+  var canvasOffsetY = pageY - canvasRect.top;
+  var mouseCoordinates = new MouseCoordinates();
+  mouseCoordinates.sourceX =
+      bitmapper.zoomManager.getSourceCoordinate(canvasOffsetX);
+  mouseCoordinates.sourceY =
+      bitmapper.zoomManager.getSourceCoordinate(canvasOffsetY);
+
+  var canvasViewRect =
+      document.getElementById('canvasViewport').getBoundingClientRect();
+  mouseCoordinates.inCanvas =
+      (pageX >= canvasRect.left) && (pageX < canvasRect.right) &&
+      (pageY >= canvasRect.top) && (pageY < canvasRect.bottom) &&
+      (pageX >= canvasViewRect.left) && (pageX < canvasViewRect.right) &&
+      (pageY >= canvasViewRect.top) && (pageY < canvasViewRect.bottom);
+
+  return mouseCoordinates;
+};
+
+
+/**
  * Bundle touch mouse coordinates to pass to tools.
  * @param {Event} touchEvent
  * @return {MouseCoordinates}
  */
 bitmapper.getTouchCoordinates = function(touchEvent) {
-  var mouseCoordinates = new MouseCoordinates();
-  var canvasWrapper = document.getElementById('canvasWrapper');
-  var canvasViewport = document.getElementById('canvasViewport');
-  mouseCoordinates.sourceX = bitmapper.zoomManager.getSourceCoordinate(
-      touchEvent.targetTouches[0].pageX - canvasWrapper.offsetLeft +
-      canvasViewport.scrollLeft);
-  mouseCoordinates.sourceY = bitmapper.zoomManager.getSourceCoordinate(
-      touchEvent.targetTouches[0].pageY - canvasWrapper.offsetTop +
-      canvasViewport.scrollTop);
-  return mouseCoordinates;
+  return bitmapper.generateMouseCoordinates(touchEvent.targetTouches[0].pageX,
+                                            touchEvent.targetTouches[0].pageY);
 };
 
 
@@ -434,12 +446,8 @@ bitmapper.getTouchCoordinates = function(touchEvent) {
  * @return {MouseCoordinates}
  */
 bitmapper.getMouseCoordinates = function(mouseEvent) {
-  var mouseCoordinates = new MouseCoordinates();
-  mouseCoordinates.sourceX =
-      bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetX);
-  mouseCoordinates.sourceY =
-      bitmapper.zoomManager.getSourceCoordinate(mouseEvent.offsetY);
-  return mouseCoordinates;
+  return bitmapper.generateMouseCoordinates(mouseEvent.pageX,
+                                            mouseEvent.pageY);
 };
 
 
@@ -448,10 +456,15 @@ bitmapper.getMouseCoordinates = function(mouseEvent) {
  * @param {MouseCoordinates} mouseCoordinates
  */
 bitmapper.showCoordinates = function(mouseCoordinates) {
-  document.getElementById('xCoordinate').textContent =
-      Math.round(mouseCoordinates.sourceX);
-  document.getElementById('yCoordinate').textContent =
-      Math.round(mouseCoordinates.sourceY);
+  if (mouseCoordinates.inCanvas) {
+    document.getElementById('coordinates').style.visibility = 'visible';
+    document.getElementById('xCoordinate').textContent =
+        Math.round(mouseCoordinates.sourceX);
+    document.getElementById('yCoordinate').textContent =
+        Math.round(mouseCoordinates.sourceY);
+    return;
+  }
+  document.getElementById('coordinates').style.visibility = 'hidden';
 };
 
 

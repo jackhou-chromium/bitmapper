@@ -20,6 +20,10 @@ function MouseCoordinates() {
    * @type {number}
    */
   this.sourceY = 0;
+  /**
+   * @type {boolean}
+   */
+  this.inCanvas = false;
 }
 
 
