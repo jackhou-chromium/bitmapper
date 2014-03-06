@@ -201,6 +201,9 @@ bitmapper.registerMouseEvents = function() {
   // Mouse support.
   window.addEventListener('mousedown',
       function(mouseEvent) {
+        if (mouseEvent.button != 0)
+          return;
+
         // Hit test for selection canvas.
         if (bitmapper.selectionCanvasManager.isInHitArea(
             bitmapper.getMouseCoordinates(mouseEvent))) {
@@ -213,6 +216,9 @@ bitmapper.registerMouseEvents = function() {
       }, false);
   window.addEventListener('mouseup',
       function(mouseEvent) {
+        if (mouseEvent.button != 0)
+          return;
+
         bitmapper.updateFileNameMessage();
         bitmapper.selectedTool.mouseUp(
             bitmapper.getMouseCoordinates(mouseEvent));
