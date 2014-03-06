@@ -199,7 +199,7 @@ bitmapper.registerMouseEvents = function() {
   var canvasWrapper = document.getElementById('canvasWrapper');
 
   // Mouse support.
-  window.addEventListener('mousedown',
+  canvasWrapper.addEventListener('mousedown',
       function(mouseEvent) {
         if (mouseEvent.button != 0)
           return;
