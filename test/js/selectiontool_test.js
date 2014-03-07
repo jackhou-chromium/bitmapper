@@ -51,20 +51,36 @@
           '9px', 'Start position');
 
     // Mouse move. Clamp to edges of canvas.
+    // First clamp on bottom right.
     var mouseMoveCoords = new MouseCoordinates;
     mouseMoveCoords.sourceX = 101;
     mouseMoveCoords.sourceY = 101;
     selectionTool.mouseMove(mouseMoveCoords);
     equal(selectionTool.dragging, true, 'Still dragging');
     // Retain position.
-    equal(selectionTool.selectionCanvasManager.selectionSourceCanvas.width, 1,
-          'Dragging beyond canvas returns');
-    equal(selectionTool.selectionCanvasManager.selectionSourceCanvas.height, 1,
-          'Draggong beyond canvas returns');
+    equal(selectionTool.selectionCanvasManager.selectionSourceCanvas.width, 70,
+          'Dragging beyond canvas clamps to canvas width');
+    equal(selectionTool.selectionCanvasManager.selectionSourceCanvas.height, 90,
+          'Dragging beyond canvas clamps to canvas height');
     equal(selectionTool.selectionCanvasManager.selectionCanvas.style.left,
           '29px', 'Retains same position');
     equal(selectionTool.selectionCanvasManager.selectionCanvas.style.top,
           '9px', 'Retains same position');
+
+    // Now clamp to top left.
+    mouseMoveCoords.sourceX = -10;
+    mouseMoveCoords.sourceY = -10;
+    selectionTool.mouseMove(mouseMoveCoords);
+    equal(selectionTool.dragging, true, 'Still dragging');
+    // Retain position.
+    equal(selectionTool.selectionCanvasManager.selectionSourceCanvas.width, 30,
+          'Dragging beyond canvas clamps to canvas width');
+    equal(selectionTool.selectionCanvasManager.selectionSourceCanvas.height, 10,
+          'Dragging beyond canvas clamps to canvas height');
+    equal(selectionTool.selectionCanvasManager.selectionCanvas.style.left,
+          '-1px', 'Position is at top left');
+    equal(selectionTool.selectionCanvasManager.selectionCanvas.style.top,
+          '-1px', 'Position is at top left');
 
     // Mouse move. Check selection source canvas has correct size and position.
     mouseMoveCoords.sourceX = 60;
