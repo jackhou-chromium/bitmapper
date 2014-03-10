@@ -13,9 +13,13 @@
   module('bitmapper.utils');
 
   test('constrain', function() {
+    expect(4);
     equal(10, bitmapper.utils.constrain(10, 5, 15));
     equal(12, bitmapper.utils.constrain(10, 12, 15));
     equal(8, bitmapper.utils.constrain(10, 5, 8));
+    throws(function() {
+      bitmapper.utils.constrain(10, 10, 5);
+    });
   });
 
 })();
