@@ -13,7 +13,6 @@
   module('bitmapper.util');
 
   test('constrain', function() {
-    expect(4);
     equal(10, bitmapper.util.constrain(10, 5, 15));
     equal(12, bitmapper.util.constrain(10, 12, 15));
     equal(8, bitmapper.util.constrain(10, 5, 8));
