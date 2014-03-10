@@ -14,7 +14,7 @@ bitmapper.utils = {};
 /**
  * Utility function to constrain a value between a min and max.
  *
- * Returns NaN if |minValue| is greater than |maxValue|.
+ * Throws an exception if |minValue| is greater than |maxValue|.
  * @param {number} value
  * @param {number} minValue
  * @param {number} maxValue
