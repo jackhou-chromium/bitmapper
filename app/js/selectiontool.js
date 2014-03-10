@@ -17,17 +17,6 @@ function SelectionTool(toolContext) {}
 (function() {
 
   /**
-   * Utility function to constrain a value between a min and max.
-   * @param {number} value
-   * @param {number} minValue
-   * @param {number} maxValue
-   * @return {number}
-   */
-  function constrain(value, minValue, maxValue) {
-    return Math.min(Math.max(minValue, value), maxValue);
-  }
-
-  /**
    * Selection tool.
    * @constructor
    * @struct
@@ -105,10 +94,10 @@ function SelectionTool(toolContext) {}
     if (!this.dragging || this.isSelected)
       return;
 
-    var sourceX = constrain(Math.floor(mouseCoordinates.sourceX),
-                            0, this.sourceCanvas.width);
-    var sourceY = constrain(Math.floor(mouseCoordinates.sourceY),
-                            0, this.sourceCanvas.height);
+    var sourceX = bitmapper.util.constrain(
+        Math.floor(mouseCoordinates.sourceX), 0, this.sourceCanvas.width);
+    var sourceY = bitmapper.util.constrain(
+        Math.floor(mouseCoordinates.sourceY), 0, this.sourceCanvas.height);
 
     var left = Math.min(sourceX, this.firstSourceX);
     var top = Math.min(sourceY, this.firstSourceY);
