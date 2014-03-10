@@ -57,7 +57,7 @@
         'Zoomed successfully');
 
     // Zoom Factor 2.
-    zoomManager.setZoomFactor(2);
+    zoomManager.setZoomFactor(2, 0, 0);
     equal(zoomManager.getZoomFactor(), 2, 'Zoom Factor 2');
     zoomManager.drawDisplayCanvas();
     equal(imagePlaceholder.style.width, '200px',
@@ -95,13 +95,13 @@
     equal(13, zoomManager.getSourceCoordinate(13), 'Correct Y coordinate');
 
     // Zoom Factor 8.
-    zoomManager.setZoomFactor(8);
+    zoomManager.setZoomFactor(8, 0, 0);
     ok(true, 'Zoom Factor 8');
     equal(5, zoomManager.getSourceCoordinate(40), 'Correct X coordinate');
     equal(32, zoomManager.getSourceCoordinate(256), 'Correct Y coordinate');
 
     // Zoom Factor 0.5
-    zoomManager.setZoomFactor(0.5);
+    zoomManager.setZoomFactor(0.5, 0, 0);
     ok(true, 'Zoom Factor 0.5');
     equal(40, zoomManager.getSourceCoordinate(20), 'Correct X coordinate');
     equal(60, zoomManager.getSourceCoordinate(30), 'Correct Y coordinate');
@@ -129,7 +129,7 @@
         imagePlaceholder, canvasViewport);
 
     // Zoom in.
-    zoomManager.setZoomFactor(2);
+    zoomManager.setZoomFactor(2, 0, 0);
     zoomManager.drawDisplayCanvas();
 
     // Compare expected canvas with display canvas.
@@ -172,10 +172,10 @@
     expectedContext.fillRect(40, 40, 20, 20);
 
     equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
-        'Zoomed transparency successfully');
+          'Square in center');
 
     // Zoom 2x.
-    zoomManager.setZoomFactor(2);
+    zoomManager.setZoomFactor(2, 0, 0);
     zoomManager.drawDisplayCanvas();
 
     expectedCanvas = bitmapper_test.createCanvas();
@@ -185,7 +185,7 @@
     expectedContext.fillRect(80, 80, 20, 20);
 
     equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
-        'Zoomed transparency successfully');
+          'Square in bottom right');
 
     // Scroll to right.
     canvasViewport.scrollLeft = 100;
@@ -197,7 +197,7 @@
     zoomManager.drawDisplayCanvas();
 
     equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
-        'Zoomed transparency successfully');
+          'Square in bottom left');
 
     // Scroll to bottom right.
     canvasViewport.scrollLeft = 100;
@@ -210,7 +210,7 @@
     zoomManager.drawDisplayCanvas();
 
     equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
-        'Zoomed transparency successfully');
+          'Square in top left');
   });
 
 
@@ -225,7 +225,7 @@
 
     var zoomManager = new bitmapper.ZoomManager(sourceCanvas, displayCanvas,
         imagePlaceholder, canvasViewport);
-    zoomManager.setZoomFactor(2);
+    zoomManager.setZoomFactor(2, 0, 0);
 
     // Locate test image and draw onto canvas.
     bitmapper_test.getLocalFileEntry('test-image.png', function(entry) {
@@ -308,5 +308,58 @@
 
     equal(expectedCanvas2.toDataURL(), displayCanvas.toDataURL(),
         'Redraw after clear successful');
+  });
+
+  test('zoomWithAnchor', function() {
+    var sourceCanvas = bitmapper_test.createCanvas();
+    sourceCanvas.width = 100;
+    sourceCanvas.height = 100;
+    var sourceContext = sourceCanvas.getContext('2d');
+    sourceContext.fillRect(40, 40, 20, 20);
+
+    var displayCanvas = bitmapper_test.createCanvas();
+
+    var imagePlaceholder = document.createElement('div');
+    var canvasViewport = new MockCanvasViewport(100, 100);
+
+    var zoomManager = new bitmapper.ZoomManager(sourceCanvas, displayCanvas,
+        imagePlaceholder, canvasViewport);
+
+    // Zoom 2x with center as anchor.
+    zoomManager.setZoomFactor(2, 50, 50);
+    zoomManager.drawDisplayCanvas();
+
+    var expectedCanvas = bitmapper_test.createCanvas();
+    var expectedContext = expectedCanvas.getContext('2d');
+    expectedCanvas.width = 100;
+    expectedCanvas.height = 100;
+    expectedContext = expectedCanvas.getContext('2d');
+    expectedContext.fillRect(30, 30, 40, 40);
+
+    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL());
+
+    // Zoom 2x more with top right as anchor.
+    zoomManager.setZoomFactor(4, 150, 50);
+    zoomManager.drawDisplayCanvas();
+
+    expectedCanvas = bitmapper_test.createCanvas();
+    expectedCanvas.width = 100;
+    expectedCanvas.height = 100;
+    expectedContext = expectedCanvas.getContext('2d');
+    expectedContext.fillRect(0, 60, 40, 40);
+
+    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL());
+
+    // Zoom back 2x with top left as anchor.
+    zoomManager.setZoomFactor(2, 300, 100);
+    zoomManager.drawDisplayCanvas();
+
+    expectedCanvas = bitmapper_test.createCanvas();
+    expectedCanvas.width = 100;
+    expectedCanvas.height = 100;
+    expectedContext = expectedCanvas.getContext('2d');
+    expectedContext.fillRect(30, 30, 40, 40);
+
+    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL());
   });
 })();
