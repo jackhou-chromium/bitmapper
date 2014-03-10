@@ -94,9 +94,9 @@ function SelectionTool(toolContext) {}
     if (!this.dragging || this.isSelected)
       return;
 
-    var sourceX = bitmapper.utils.constrain(
+    var sourceX = bitmapper.util.constrain(
         Math.floor(mouseCoordinates.sourceX), 0, this.sourceCanvas.width);
-    var sourceY = bitmapper.utils.constrain(
+    var sourceY = bitmapper.util.constrain(
         Math.floor(mouseCoordinates.sourceY), 0, this.sourceCanvas.height);
 
     var left = Math.min(sourceX, this.firstSourceX);
