@@ -178,6 +178,9 @@ function SelectionCanvasManager(selectionCanvas, zoomManager) {}
    * Scales and redraws the source selection canvas onto selection canvas.
    */
   SelectionCanvasManager.prototype.drawSelectionCanvas = function() {
+    if (!this.isVisible)
+      return;
+
     // Scaling.
     var borderWidth = parseInt(this.selectionCanvas.style.borderWidth, 10);
     var zoomFactor = this.zoomManager.getZoomFactor();
