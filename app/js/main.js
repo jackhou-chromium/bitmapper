@@ -149,7 +149,12 @@ bitmapper.clearCanvas = function() {
  */
 bitmapper.zoomCanvas = function() {
   var zoomValue = document.getElementById('zoomSelector').value;
-  bitmapper.zoomManager.setZoomFactor(zoomValue);
+  var canvasViewport = document.getElementById('canvasViewport');
+  // Use the center of the viewport as the anchor point.
+  bitmapper.zoomManager.setZoomFactor(
+      zoomValue,
+      canvasViewport.scrollLeft + bitmapper.displayCanvas.width / 2,
+      canvasViewport.scrollTop + bitmapper.displayCanvas.height / 2);
   bitmapper.zoomManager.drawDisplayCanvas();
   document.getElementById('zoomValue').textContent = (zoomValue * 100) + '%';
   bitmapper.selectionCanvasManager.drawSelectionCanvas();
