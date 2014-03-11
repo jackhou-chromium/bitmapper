@@ -37,7 +37,6 @@ function SelectionCanvasManager(selectionCanvas, zoomManager) {}
      * @type {HTMLElement}
      */
     this.selectionCanvas = selectionCanvas;
-    this.selectionCanvas.style.borderWidth = '1px';
     this.selectionCanvas.style.display = 'none';
 
     /**
@@ -182,7 +181,6 @@ function SelectionCanvasManager(selectionCanvas, zoomManager) {}
       return;
 
     // Scaling.
-    var borderWidth = parseInt(this.selectionCanvas.style.borderWidth, 10);
     var zoomFactor = this.zoomManager.getZoomFactor();
     this.selectionCanvas.width =
         this.selectionSourceCanvas.width * zoomFactor;
@@ -193,11 +191,23 @@ function SelectionCanvasManager(selectionCanvas, zoomManager) {}
     selectionCanvasContext.imageSmoothingEnabled = false;
     selectionCanvasContext.drawImage(this.selectionSourceCanvas, 0, 0,
         this.selectionCanvas.width, this.selectionCanvas.height);
+    selectionCanvasContext.save();
+    selectionCanvasContext.beginPath();
+    selectionCanvasContext.strokeStyle = '#FFF';
+    selectionCanvasContext.strokeRect(0.5, 0.5,
+                                      this.selectionCanvas.width - 1,
+                                      this.selectionCanvas.height - 1);
+    selectionCanvasContext.strokeStyle = '#000';
+    selectionCanvasContext.setLineDash([2, 2]);
+    selectionCanvasContext.strokeRect(0.5, 0.5,
+                                      this.selectionCanvas.width - 1,
+                                      this.selectionCanvas.height - 1);
+    selectionCanvasContext.restore();
     // Positioning.
     this.selectionCanvas.style.left =
-        this.canvasX * zoomFactor - borderWidth + 'px';
+        this.canvasX * zoomFactor + 'px';
     this.selectionCanvas.style.top =
-        this.canvasY * zoomFactor - borderWidth + 'px';
+        this.canvasY * zoomFactor + 'px';
   };
 
   /**

@@ -46,9 +46,9 @@
     equal(selectionTool.dragging, true, 'Dragging selection box');
     equal(selectionTool.isSelected, false, 'Dragging selection box');
     equal(selectionTool.selectionCanvasManager.selectionCanvas.style.left,
-          '29px', 'Start position');
+          '30px', 'Start position');
     equal(selectionTool.selectionCanvasManager.selectionCanvas.style.top,
-          '9px', 'Start position');
+          '10px', 'Start position');
 
     // Mouse move. Clamp to edges of canvas.
     // First clamp on bottom right.
@@ -63,9 +63,9 @@
     equal(selectionTool.selectionCanvasManager.selectionSourceCanvas.height, 90,
           'Dragging beyond canvas clamps to canvas height');
     equal(selectionTool.selectionCanvasManager.selectionCanvas.style.left,
-          '29px', 'Retains same position');
+          '30px', 'Retains same position');
     equal(selectionTool.selectionCanvasManager.selectionCanvas.style.top,
-          '9px', 'Retains same position');
+          '10px', 'Retains same position');
 
     // Now clamp to top left.
     mouseMoveCoords.sourceX = -10;
@@ -78,9 +78,9 @@
     equal(selectionTool.selectionCanvasManager.selectionSourceCanvas.height, 10,
           'Dragging beyond canvas clamps to canvas height');
     equal(selectionTool.selectionCanvasManager.selectionCanvas.style.left,
-          '-1px', 'Position is at top left');
+          '0px', 'Position is at top left');
     equal(selectionTool.selectionCanvasManager.selectionCanvas.style.top,
-          '-1px', 'Position is at top left');
+          '0px', 'Position is at top left');
 
     // Mouse move. Check selection source canvas has correct size and position.
     mouseMoveCoords.sourceX = 60;
@@ -93,9 +93,9 @@
     equal(selectionTool.selectionCanvasManager.selectionSourceCanvas.height, 30,
           'Selection canvas correct height');
     equal(selectionTool.selectionCanvasManager.selectionCanvas.style.left,
-          '29px', 'Retains same position');
+          '30px', 'Retains same position');
     equal(selectionTool.selectionCanvasManager.selectionCanvas.style.top,
-          '9px', 'Retains same position');
+          '10px', 'Retains same position');
 
     // Mouse up. Retains same size and position.
     selectionTool.mouseUp(mouseMoveCoords);
@@ -106,9 +106,9 @@
     equal(selectionTool.selectionCanvasManager.selectionSourceCanvas.height, 30,
           'Selection canvas correct height');
     equal(selectionTool.selectionCanvasManager.selectionCanvas.style.left,
-          '29px', 'Retains same position');
+          '30px', 'Retains same position');
     equal(selectionTool.selectionCanvasManager.selectionCanvas.style.top,
-          '9px', 'Retains same position');
+          '10px', 'Retains same position');
 
     // Check selection with expected selection canvas.
     var expectedCanvas = bitmapper_test.createCanvas();

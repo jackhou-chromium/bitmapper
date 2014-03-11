@@ -49,18 +49,18 @@
     // No zoom.
     selectionCanvasManager.setPosition(2, 4);
     selectionCanvasManager.drawSelectionCanvas();
-    equal(selectionCanvasManager.selectionCanvas.style.left, '1px',
-          'Correct zoomed position, accounts for border');
-    equal(selectionCanvasManager.selectionCanvas.style.top, '3px',
-          'Correct zoomed position, accounts for border');
+    equal(selectionCanvasManager.selectionCanvas.style.left, '2px',
+          'Correct zoomed position');
+    equal(selectionCanvasManager.selectionCanvas.style.top, '4px',
+          'Correct zoomed position');
 
     // Zoom level 2.
     mockZoomManager.zoomFactor = 2;
     selectionCanvasManager.drawSelectionCanvas();
-    equal(selectionCanvasManager.selectionCanvas.style.left, '3px',
-        'Correct zoomed position, accounts for border');
-    equal(selectionCanvasManager.selectionCanvas.style.top, '7px',
-        'Correct zoomed position, accounts for border');
+    equal(selectionCanvasManager.selectionCanvas.style.left, '4px',
+        'Correct zoomed position');
+    equal(selectionCanvasManager.selectionCanvas.style.top, '8px',
+        'Correct zoomed position');
   });
 
 
@@ -91,17 +91,17 @@
     selectionCanvasManager.setSize(5, 3);
     selectionCanvasManager.drawSelectionCanvas();
     equal(selectionCanvasManager.selectionCanvas.width, 5,
-          'Correct zoomed size, accounts for border');
+          'Correct zoomed size');
     equal(selectionCanvasManager.selectionCanvas.height, 3,
-        'Correct zoomed size, accounts for border');
+        'Correct zoomed size');
 
     // Zoom level 2.
     mockZoomManager.zoomFactor = 2;
     selectionCanvasManager.drawSelectionCanvas();
     equal(selectionCanvasManager.selectionCanvas.width, 10,
-        'Correct zoomed size, accounts for border');
+        'Correct zoomed size');
     equal(selectionCanvasManager.selectionCanvas.height, 6,
-        'Correct zoomed size, accounts for border');
+        'Correct zoomed size');
   });
 
 
@@ -157,19 +157,17 @@
     mouseMoveCoords.sourceY = 6;
     selectionCanvasManager.mouseMove(mouseMoveCoords);
     equal(selectionCanvasManager.isDragging(), true, 'Still dragging');
-    // Accounts for border.
-    equal(selectionCanvasManager.selectionCanvas.style.left, '4px',
+    equal(selectionCanvasManager.selectionCanvas.style.left, '5px',
           'Canvas moved');
-    equal(selectionCanvasManager.selectionCanvas.style.top, '2px',
+    equal(selectionCanvasManager.selectionCanvas.style.top, '3px',
         'Canvas moved');
 
     // Mouse up where the selection canvas was moved.
     selectionCanvasManager.mouseUp(mouseMoveCoords);
     equal(selectionCanvasManager.isDragging(), false, 'Finished dragging');
-    // Accounts for border.
-    equal(selectionCanvasManager.selectionCanvas.style.left, '4px',
+    equal(selectionCanvasManager.selectionCanvas.style.left, '5px',
           'Canvas moved');
-    equal(selectionCanvasManager.selectionCanvas.style.top, '2px',
+    equal(selectionCanvasManager.selectionCanvas.style.top, '3px',
           'Canvas moved');
 
     // Mousemove whilst not dragging does nothing.
@@ -179,9 +177,9 @@
     selectionCanvasManager.mouseMove(mouseMoveCoords);
     equal(selectionCanvasManager.isDragging(), false,
           'Not dragging so cannot move');
-    equal(selectionCanvasManager.selectionCanvas.style.left, '4px',
+    equal(selectionCanvasManager.selectionCanvas.style.left, '5px',
           'Position remained the same');
-    equal(selectionCanvasManager.selectionCanvas.style.top, '2px',
+    equal(selectionCanvasManager.selectionCanvas.style.top, '3px',
           'Position remained the same');
   });
 
