@@ -20,6 +20,7 @@
     /** @type {SelectionCanvasManager} **/
     var selectionCanvasManager =
         new bitmapper.SelectionCanvasManager(testCanvas, mockZoomManager);
+    selectionCanvasManager.setVisible(true);
 
     var testContext = {
       selectionCanvasManager: selectionCanvasManager,
@@ -118,6 +119,7 @@
     mouseCoordinates.sourceY = 11;
 
     // Currently not visible.
+    selectionCanvasManager.setVisible(false);
     equal(selectionCanvasManager.isInHitArea(mouseCoordinates), false,
         'Canvas not visible so do not do hit test');
     // Set visible.
