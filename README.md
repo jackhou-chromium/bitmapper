@@ -17,8 +17,18 @@ Get the code:
 
 Build and test:
 
-    make run_app
+    make run_debug
     make run_test
+
+Release
+-------
+
+Make a release build:
+
+    make release
+
+Load `out/release` as an unpacked app, or upload `out/bitmapper.zip` to the
+Chrome Web Store.
 
 Contribute
 ----------
