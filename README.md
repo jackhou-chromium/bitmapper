@@ -51,9 +51,13 @@ Upload a change:
 This uploads all commits in the current branch relative to the branch's
 upstream.
 
+Before landing a change, you need to set the branch to push to GitHub:
+
+    git config branch.<your-branch-name>.remote origin
+
 Push your change (after getting an lgtm):
 
-    git cl push
+    git cl land
 
 The presubmit will prompt you to set the current branch's remote to 'origin' so
 that the change will be pushed to this GitHub repo.
