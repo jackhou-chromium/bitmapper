@@ -3,8 +3,8 @@ PROJECT := bitmapper
 
 # URLs for auto-collected resources.
 CLOSURE_URL := http://dl.google.com/closure-compiler/compiler-latest.zip
-CHROME_EXTERNS_URL := https://closure-compiler.googlecode.com/git/contrib/externs/chrome_extensions.js
-QUNIT_EXTERNS_URL := https://raw.github.com/lukeasrodgers/qunit-js-externs/master/qunit-externs.js
+CHROME_EXTERNS_URL := https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/chrome_extensions.js
+QUNIT_EXTERNS_URL := https://raw.githubusercontent.com/lukeasrodgers/qunit-js-externs/master/qunit-externs.js
 
 # Directory structure.
 APPDIR := app
