@@ -67,8 +67,15 @@ def CheckChangeOnCommit(input_api, output_api):
   if not results:
     branch = subprocess.check_output(
         ['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
-    remote = subprocess.check_output(
-        ['git', 'config', 'branch.%s.remote' % branch]).strip()
+
+    # `git config` exits with failure if the key doesn't exist. Ignore that.
+    remote = ""
+    try:
+      remote = subprocess.check_output(
+          ['git', 'config', 'branch.%s.remote' % branch]).strip()
+    except subprocess.CalledProcessError:
+      pass
+
     if (remote != 'origin'):
       set_remote = raw_input(
           'Remote (%s) should be set to \'origin\', set it now [y|n]?' % remote)
