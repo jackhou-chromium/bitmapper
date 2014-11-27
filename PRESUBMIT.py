@@ -15,11 +15,23 @@ def CheckChangeOnUpload(input_api, output_api):
   """Checks that the linter has been run on all .js files"""
   results = []
 
+  results += input_api.canned_checks.CheckLongLines(
+      input_api, output_api, 80)
+  results += input_api.canned_checks.CheckChangeHasNoCrAndHasOnlyOneEol(
+      input_api, output_api)
+  results += input_api.canned_checks.CheckChangeTodoHasOwner(
+      input_api, output_api)
+  results += input_api.canned_checks.CheckChangeHasNoStrayWhitespace(
+      input_api, output_api)
+  results += input_api.canned_checks.CheckChangeHasNoTabs(
+      input_api, output_api)
+
   try:
     subprocess.check_output(['make', 'lint'])
-  except subprocess.CalledProcessError:
+  except subprocess.CalledProcessError, e:
     results.append(output_api.PresubmitError(
-        'Linter has errors or could not be run.'))
+        'Linter has errors or could not be run. Run `make lint` to re-run.\n'
+        '\n%s' % (e.output)))
 
   return results
 
@@ -69,7 +81,7 @@ def CheckChangeOnCommit(input_api, output_api):
         ['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
 
     # `git config` exits with failure if the key doesn't exist. Ignore that.
-    remote = ""
+    remote = ''
     try:
       remote = subprocess.check_output(
           ['git', 'config', 'branch.%s.remote' % branch]).strip()
