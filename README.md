@@ -6,10 +6,11 @@ Pixel art editor Chrome App
 Build
 -----
 
-Install the linter:
+Install the build dependencies:
 
-    sudo apt-get install python-setuptools
+    sudo apt-get install python-setuptools npm nodejs-legacy
     sudo easy_install http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz
+    sudo npm install -g bower vulcanize
 
 Get the code:
 

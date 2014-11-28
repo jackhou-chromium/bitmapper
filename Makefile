@@ -43,6 +43,10 @@ CLOSURE_ARGS := --warning_level VERBOSE \
   --summary_detail_level 3 \
   --externs $(EXTERNS) --externs $(CHROME_EXTERNS) --externs $(QUNIT_EXTERNS)
 
+# Polymer path to download required components through bower.
+BOWER_INSTALL := bower install --save 
+BOWER_PATH := $(BUILDDIR)/bower_components
+
 # 'all' builds everything.
 all : debug release test
 
@@ -92,7 +96,7 @@ copy_release_files :
 	rm -rf $(OUTDIR)/$(RELEASEDIR)/$(SRCDIR)
 
 # Compile a release build.
-release : setup copy_release_files $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js
+release : setup copy_release_files $(OUTDIR)/$(RELEASEDIR)/build.html $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js
 	# Create a zipped copy of the $(OUTDIR)/$(APPDIR) directory.
 	rm -f $(OUTDIR)/$(PROJECT).zip
 	(cd $(OUTDIR)/$(RELEASEDIR); zip -r ../$(PROJECT).zip ./*)
@@ -114,7 +118,7 @@ $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js : $(APP_SRCS) $(TEST_SRCS) $(EXTERNS)
 		$(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js
 
 copy_test_files :
-	# Copy the $(TESTDIR) into $(OUTDIR)/$(TESTDIR)
+	# Copy the $(TESTDIR) into $(OUTDIR)/$(TESTDIR).
 	mkdir -p $(OUTDIR)/$(TESTDIR)
 	cp -r $(TESTDIR)/* $(OUTDIR)/$(TESTDIR)
 	# Add in all the original source files to be tested.
@@ -122,12 +126,31 @@ copy_test_files :
 	# Copy apps deps.
 	cp -r $(APPDIR)/$(DEPSDIR)/* $(OUTDIR)/$(TESTDIR)/$(DEPSDIR)/
 
-# Compile the test app.
-test : setup copy_test_files $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js
+# Run vulcanize on the app/main.html file output to out/debug/build.html|js).
+$(OUTDIR)/$(DEBUGDIR)/build.html : $(APPDIR)/main.html
+	vulcanize -o $(OUTDIR)/$(DEBUGDIR)/build.html $(APPDIR)/main.html --csp
 
+# Run vulcanize on the app/main.html file output to out/release/build.(html|js).
+$(OUTDIR)/$(RELEASEDIR)/build.html : $(APPDIR)/main.html
+	vulcanize -o $(OUTDIR)/$(RELEASEDIR)/build.html $(APPDIR)/main.html \
+		--csp
+
+# Run vulcanize on the app/main.html file output to out/test/build.(html|js).
+$(OUTDIR)/$(TESTDIR)/build.html : $(APPDIR)/main.html
+	vulcanize -o $($OUTDIR)/$(TESTDIR)/build.html $(APPDIR)/main.html --csp
+
+# Save polymer to build directory.
+polymer :
+	mkdir -p build/bower_components
+	$(BOWER_INSTALL) Polymer/polymer
+	$(BOWER_INSTALL) Polymer/core-elements
+	$(BOWER_INSTALL) Polymer/paper-elements
+
+# Compile the test app.
+test : setup copy_test_files $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js $(OUTDIR)/$(TESTDIR)/build.html
 
 # Prepare the $(BUILD) directory.
-setup : $(CLOSURE_COMPILER) $(CHROME_EXTERNS) $(QUNIT_EXTERNS)
+setup : $(CLOSURE_COMPILER) $(CHROME_EXTERNS) $(QUNIT_EXTERNS) polymer
 
 # Download the closure compiler.
 $(CLOSURE_COMPILER) :
