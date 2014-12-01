@@ -73,7 +73,8 @@ copy_debug_files :
 
 # Compile a debug build. This depends on the release build so the debug build
 # gets type checking.
-debug : setup $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js copy_debug_files \
+debug : setup $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js \
+        $(OUTDIR)/$(DEBUGDIR)/build.html copy_debug_files \
         $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js
 
 # Closure compiled output js for Release.
