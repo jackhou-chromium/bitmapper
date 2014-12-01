@@ -19,7 +19,7 @@ chrome.app.runtime.onRestarted.addListener(function() {
  * @param {boolean} isRestart
  */ 
 function runApp(isRestart) {
-  chrome.app.window.create('main.html', {
+  chrome.app.window.create('build.html', {
     'width': 900,
     'height': 700,
     'minWidth': 900,

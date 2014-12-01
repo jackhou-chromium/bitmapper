@@ -36,6 +36,10 @@ QUNIT_EXTERNS := $(CURDIR)/$(BUILDDIR)/$(notdir $(QUNIT_EXTERNS_URL))
 CLOSURE_COMPILER := $(CURDIR)/$(BUILDDIR)/compiler.jar
 CLOSURE := java -jar $(CLOSURE_COMPILER)
 
+# Vulcanize and arguments.
+VULCANIZE = vulcanize
+VULCANIZE_FLAGS = --csp -p $(APPDIR)
+
 # --compilation_level options:
 #   WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS, ADVANCED_OPTIMIZATIONS
 CLOSURE_ARGS := --warning_level VERBOSE \
@@ -127,18 +131,21 @@ copy_test_files :
 	# Copy apps deps.
 	cp -r $(APPDIR)/$(DEPSDIR)/* $(OUTDIR)/$(TESTDIR)/$(DEPSDIR)/
 
-# Run vulcanize on the app/main.html file output to out/debug/build.html|js).
+# TODO(mgiuca): Remove main.html from the out directory.
+# Run vulcanize on the app/main.html file output to out/debug/build.(html|js).
 $(OUTDIR)/$(DEBUGDIR)/build.html : $(APPDIR)/main.html
-	vulcanize -o $(OUTDIR)/$(DEBUGDIR)/build.html $(APPDIR)/main.html --csp
+	$(VULCANIZE) $(VULCANIZE_FLAGS) -o $(OUTDIR)/$(DEBUGDIR)/build.html \
+		$(APPDIR)/main.html
 
 # Run vulcanize on the app/main.html file output to out/release/build.(html|js).
 $(OUTDIR)/$(RELEASEDIR)/build.html : $(APPDIR)/main.html
-	vulcanize -o $(OUTDIR)/$(RELEASEDIR)/build.html $(APPDIR)/main.html \
-		--csp
+	$(VULCANIZE) $(VULCANIZE_FLAGS) -o $(OUTDIR)/$(RELEASEDIR)/build.html \
+		$(APPDIR)/main.html
 
 # Run vulcanize on the app/main.html file output to out/test/build.(html|js).
 $(OUTDIR)/$(TESTDIR)/build.html : $(APPDIR)/main.html
-	vulcanize -o $($OUTDIR)/$(TESTDIR)/build.html $(APPDIR)/main.html --csp
+	$(VULCANIZE) $(VULCANIZE_FLAGS) -o $(OUTDIR)/$(TESTDIR)/build.html \
+		$(APPDIR)/main.html
 
 # Save polymer to build directory.
 polymer :
