@@ -1,11 +1,6 @@
 # Project name
 PROJECT := bitmapper
 
-# URLs for auto-collected resources.
-CLOSURE_URL := http://dl.google.com/closure-compiler/compiler-latest.zip
-CHROME_EXTERNS_URL := https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/chrome_extensions.js
-QUNIT_EXTERNS_URL := https://raw.githubusercontent.com/lukeasrodgers/qunit-js-externs/master/qunit-externs.js
-
 # Directory structure.
 APPDIR := app
 DEPSDIR := deps
@@ -22,23 +17,33 @@ TEST_EXCLUDES := main.js
 SRCS := namespace.js util.js imagefile.js zoommanager.js colorpalette.js \
     tool.js penciltool.js brushtool.js buckettool.js pipettetool.js \
     selectiontool.js selectioncanvasmanager.js cursorguide.js main.js
+
 APP_SRCS := $(patsubst %,$(APPDIR)/$(SRCDIR)/%,$(SRCS))
+
 TEST_SRCS := $(TESTDIR)/$(SRCDIR)/setup.js \
     $(shell find $(TESTDIR)/$(SRCDIR) -type f -name '*_test.js')
+
 ALL_SRCS := $(APP_SRCS) $(TEST_SRCS)
 
-# Externs files (required for closure compilation).
-EXTERNS := $(CURDIR)/$(BUILDDIR)/externs.js
-CHROME_EXTERNS := $(CURDIR)/$(BUILDDIR)/$(notdir $(CHROME_EXTERNS_URL))
-QUNIT_EXTERNS := $(CURDIR)/$(BUILDDIR)/$(notdir $(QUNIT_EXTERNS_URL))
+APP_HTML_FILES := $(shell find $(APPDIR) -type f -name '*.html')
 
-# Closure compiler and arguments.
-CLOSURE_COMPILER := $(CURDIR)/$(BUILDDIR)/compiler.jar
-CLOSURE := java -jar $(CLOSURE_COMPILER)
+# TODO(tapted): Ideally this would filter out source files that get bundled up
+# in the closure-compiled .js, as well as un-vulcanized html. But having those
+# files in the output dir is useful for debugging, so keep the dependency.
+APP_FILES := $(shell find $(APPDIR) -type f)
 
-# Vulcanize and arguments.
-VULCANIZE = vulcanize
-VULCANIZE_FLAGS = --csp -p $(APPDIR)
+# First target in the file is the default target. Default to `debug`.
+default: debug
+	@echo '== `rm polymer.updated` to update bower_components.'
+	@echo '== `rm $(CLOSURE_COMPILER)` to update closure.'
+	@echo '== `make test` to build tests.'
+	@echo '== `make debug` or `make out/$(PROJECT).zip` if you do not want'\
+	  'to see this message.'
+
+# 'all' builds everything.
+all : debug release test
+
+include requirements.mk
 
 # --compilation_level options:
 #   WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS, ADVANCED_OPTIMIZATIONS
@@ -46,14 +51,6 @@ CLOSURE_ARGS := --warning_level VERBOSE \
   --language_in ECMASCRIPT5_STRICT \
   --summary_detail_level 3 \
   --externs $(EXTERNS) --externs $(CHROME_EXTERNS) --externs $(QUNIT_EXTERNS)
-
-# Polymer path to download required components through bower.
-BOWER_INSTALL := bower install --save 
-BOWER_PATH := $(BUILDDIR)/bower_components
-
-# 'all' builds everything.
-all : debug release test
-
 
 # Closure compiled output js for Debug. WHITESPACE_ONLY for ease of debugging.
 $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
@@ -70,15 +67,18 @@ $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
 	echo "//@ sourceMappingURL=$(PROJECT).js.map" >> \
 		$(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js
 
-copy_debug_files :
-	# Copy the $(APPDIR) into $(OUTDIR)/$(DEBUGDIR).
-	mkdir -p $(OUTDIR)/$(DEBUGDIR)
-	cp -r $(APPDIR)/* $(OUTDIR)/$(DEBUGDIR)
+%.prepared : $(APP_FILES)
+	# Copy the $(APPDIR) into $(dir $@)
+	mkdir -p $(dir $@)
+	cp -r $(APPDIR)/* $(dir $@)
+	touch $@
 
 # Compile a debug build. This depends on the release build so the debug build
 # gets type checking.
-debug : setup $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js \
-        $(OUTDIR)/$(DEBUGDIR)/build.html copy_debug_files \
+debug : $(SETUP) \
+        $(OUTDIR)/$(DEBUGDIR)/.prepared \
+        $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js \
+        $(OUTDIR)/$(DEBUGDIR)/build.html \
         $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js
 
 # Closure compiled output js for Release.
@@ -92,19 +92,18 @@ $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
 		$(patsubst %, --js $(CURDIR)/%, $(APP_SRCS)) \
 		--js_output_file $(PROJECT).js
 
-copy_release_files :
-	# Copy the $(APPDIR) into $(OUTDIR)/$(RELEASEDIR).
-	mkdir -p $(OUTDIR)/$(RELEASEDIR)
-	cp -r $(APPDIR)/* $(OUTDIR)/$(RELEASEDIR)
-
+out/$(PROJECT).zip : $(SETUP) \
+          $(OUTDIR)/$(RELEASEDIR)/.prepared \
+          $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js \
+          $(OUTDIR)/$(RELEASEDIR)/build.html
 	# Remove the original source files.
-	rm -rf $(OUTDIR)/$(RELEASEDIR)/$(SRCDIR)
-
-# Compile a release build.
-release : setup copy_release_files $(OUTDIR)/$(RELEASEDIR)/build.html $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js
+	rm -rf "$(OUTDIR)/$(RELEASEDIR)/$(SRCDIR)"
 	# Create a zipped copy of the $(OUTDIR)/$(APPDIR) directory.
 	rm -f $(OUTDIR)/$(PROJECT).zip
 	(cd $(OUTDIR)/$(RELEASEDIR); zip -r ../$(PROJECT).zip ./*)
+
+# Compile a release build.
+release : out/$(PROJECT).zip
 
 # Closure compiled output js for Test. WHITESPACE_ONLY for ease of debugging.
 $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js : $(APP_SRCS) $(TEST_SRCS) $(EXTERNS)
@@ -132,51 +131,15 @@ copy_test_files :
 	cp -r $(APPDIR)/$(DEPSDIR)/* $(OUTDIR)/$(TESTDIR)/$(DEPSDIR)/
 
 # TODO(mgiuca): Remove main.html from the out directory.
-# Run vulcanize on the app/main.html file output to out/debug/build.(html|js).
-$(OUTDIR)/$(DEBUGDIR)/build.html : $(APPDIR)/main.html
-	$(VULCANIZE) $(VULCANIZE_FLAGS) -o $(OUTDIR)/$(DEBUGDIR)/build.html \
-		$(APPDIR)/main.html
-
-# Run vulcanize on the app/main.html file output to out/release/build.(html|js).
-$(OUTDIR)/$(RELEASEDIR)/build.html : $(APPDIR)/main.html
-	$(VULCANIZE) $(VULCANIZE_FLAGS) -o $(OUTDIR)/$(RELEASEDIR)/build.html \
-		$(APPDIR)/main.html
-
-# Run vulcanize on the app/main.html file output to out/test/build.(html|js).
-$(OUTDIR)/$(TESTDIR)/build.html : $(APPDIR)/main.html
-	$(VULCANIZE) $(VULCANIZE_FLAGS) -o $(OUTDIR)/$(TESTDIR)/build.html \
-		$(APPDIR)/main.html
-
-# Save polymer to build directory.
-polymer :
-	mkdir -p build/bower_components
-	$(BOWER_INSTALL) Polymer/polymer
-	$(BOWER_INSTALL) Polymer/core-elements
-	$(BOWER_INSTALL) Polymer/paper-elements
+# Run vulcanize on the app/main.html file output to out/debug/build.(html|js)
+# whenever any html file changed.
+%/build.html : $(APP_HTML_FILES)
+	$(VULCANIZE) $(VULCANIZE_FLAGS) -o $@ $(APPDIR)/main.html
 
 # Compile the test app.
-test : setup copy_test_files $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js $(OUTDIR)/$(TESTDIR)/build.html
-
-# Prepare the $(BUILD) directory.
-setup : $(CLOSURE_COMPILER) $(CHROME_EXTERNS) $(QUNIT_EXTERNS) polymer
-
-# Download the closure compiler.
-$(CLOSURE_COMPILER) :
-	mkdir -p $(BUILDDIR)
-	curl $(CLOSURE_URL) -o $(BUILDDIR)/compiler-latest.zip
-	unzip $(BUILDDIR)/compiler-latest.zip compiler.jar -d $(BUILDDIR)
-	rm $(BUILDDIR)/compiler-latest.zip
-
-# Download externs for the chrome.* APIs.
-$(CHROME_EXTERNS) :
-	mkdir -p $(BUILDDIR)
-	curl $(CHROME_EXTERNS_URL) -o $(CHROME_EXTERNS)
-
-# Download externs for QUnit.
-$(QUNIT_EXTERNS) :
-	mkdir -p $(BUILDDIR)
-	curl $(QUNIT_EXTERNS_URL) -o $(QUNIT_EXTERNS)
-
+test : $(SETUP) copy_test_files \
+       $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js \
+       $(OUTDIR)/$(TESTDIR)/build.html
 
 # Lints all .js files.
 lint :
@@ -194,7 +157,7 @@ run_debug : debug
 
 
 # Run the release build in Chrome.
-run_release : release
+run_release : out/$(PROJECT).zip
 	google-chrome --load-and-launch-app="$(CURDIR)/$(OUTDIR)/$(RELEASEDIR)"
 
 
@@ -203,5 +166,6 @@ run_test : test
 	google-chrome --load-and-launch-app="$(CURDIR)/$(OUTDIR)/$(TESTDIR)"
 
 
-.PHONY : run_debug run_release run_test clean lint setup debug release test \
-         copy_debug_files copy_release_files copy_test_files all
+.PHONY : debug release run_debug run_release \
+         test copy_test_files run_test \
+         clean lint all default
