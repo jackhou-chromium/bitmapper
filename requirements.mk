@@ -20,11 +20,11 @@ VULCANIZE_FLAGS = --csp -p $(APPDIR)
 
 # Polymer path to download required components through bower.
 BOWER_INSTALL := bower install --save
-BOWER_PATH := $(BUILDDIR)/bower_components
+BOWER_PATH := $(APPDIR)/bower_components
 
-# Save polymer to build directory.
+# Save polymer to app directory.
 polymer.updated :
-	mkdir -p build/bower_components
+	mkdir -p $(BOWER_PATH)
 	$(BOWER_INSTALL) Polymer/polymer
 	$(BOWER_INSTALL) Polymer/core-elements
 	$(BOWER_INSTALL) Polymer/paper-elements
