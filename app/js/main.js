@@ -734,17 +734,14 @@ bitmapper.start = function(localStorageObject) {
   bitmapper.displayCanvas = document.getElementById('imageCanvas');
   bitmapper.sourceCanvas = document.createElement('canvas');
 
-  document.getElementById('newButton')
-      .addEventListener('click', bitmapper.newFile, false);
+  var toolbar = document.getElementById('bitmapperToolbar');
   bitmapper.updateFileNameMessage();
 
   // Initialise handlers for filesystem buttons.
-  document.getElementById('openButton')
-      .addEventListener('click', bitmapper.openFile, false);
-  document.getElementById('saveButton')
-      .addEventListener('click', bitmapper.saveFile, false);
-  document.getElementById('saveAsButton')
-      .addEventListener('click', bitmapper.saveAsFile, false);
+  toolbar.newHandler = bitmapper.newFile;
+  toolbar.openHandler = bitmapper.openFile;
+  toolbar.saveHandler = bitmapper.saveFile;
+  toolbar.saveAsHandler = bitmapper.saveAsFile;
 
   // Initialise zoom functionality.
   bitmapper.zoomManager = new bitmapper.ZoomManager(

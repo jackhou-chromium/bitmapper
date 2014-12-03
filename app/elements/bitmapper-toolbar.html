@@ -1,0 +1,43 @@
+<!-- Copyright 2014 Google Inc. All Rights Reserved. -->
+
+<!--
+The bitmapper-toolbar Polymer element encapsulates a toolbar with a bitmapper
+logo and buttons such as New, Open, Save and Save As.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<polymer-element name="bitmapper-toolbar"
+                 attributes="newHandler openHandler saveHandler saveAsHandler">
+  <template>
+    <style>
+      span {
+        display: inline;
+        padding-right: 50px;
+        text-transform: uppercase;
+      }
+      .button-panel {
+        display: inline;
+      }
+      paper-button {
+        background: rgba(0, 0, 0, 0.2);
+        font-size: 15px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+      }
+    </style>
+
+    <span>Bitmapper</span>
+    <div class="button-panel">
+      <paper-button on-click="{{ newHandler }}">New</paper-button>
+      <paper-button on-click="{{ openHandler }}">Open</paper-button>
+      <paper-button on-click="{{ saveHandler }}">Save</paper-button>
+      <paper-button on-click="{{ saveAsHandler }}">Save As</paper-button>
+    </div>
+  </template>
+
+  <script>
+    Polymer ('bitmapper-toolbar');
+  </script>
+</polymer-element>

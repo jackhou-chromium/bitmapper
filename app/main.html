@@ -2,18 +2,30 @@
 <!-- Copyright 2013 Google Inc. All Rights Reserved. -->
 <html>
   <head>
-    <link href="style.css" rel="stylesheet">
+    <script src="bower_components/webcomponentsjs/webcomponents.min.js">
+    </script>
     <script type="text/javascript" src="deps/canvasfloodfill.js"></script>
     <script type="text/javascript" src="bitmapper.js"></script>
+
+    <link rel="stylesheet"
+          href="style.css">
+
+    <link rel="import"
+          href="bower_components/polymer/polymer.html">
+
+    <link rel="import"
+          href="bower_components/core-header-panel/core-header-panel.html">
+    <link rel="import"
+          href="bower_components/core-toolbar/core-toolbar.html">
+    <link rel="import"
+          href="elements/bitmapper-toolbar.html">
   </head>
   <body>
-    <header>
-        <span id="logo">Bitmapper</span>
-        <button id="newButton" class="headerbutton">New</button>
-        <button id="openButton" class="headerbutton">Open</button>
-        <button id="saveButton" class="headerbutton">Save</button>
-        <button id="saveAsButton" class="headerbutton">Save As</button>
-    </header>
+    <core-header-panel>
+      <core-toolbar>
+        <bitmapper-toolbar id="bitmapperToolbar"></bitmapper-toolbar>
+      </core-toolbar>
+    </core-header-panel>
     <div id="bar">
       <div id="fileName"></div>
       <div id="output"></div>

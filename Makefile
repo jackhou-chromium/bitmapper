@@ -133,7 +133,7 @@ copy_test_files :
 # TODO(mgiuca): Remove main.html from the out directory.
 # Run vulcanize on the app/main.html file output to out/debug/build.(html|js)
 # whenever any html file changed.
-%/build.html : $(APP_HTML_FILES)
+%/build.html : $(APP_HTML_FILES) %/.prepared
 	$(VULCANIZE) $(VULCANIZE_FLAGS) -o $@ $(APPDIR)/main.html
 
 # Compile the test app.
