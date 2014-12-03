@@ -16,6 +16,10 @@ Get the code:
 
     git clone https://github.com/jackhou-chromium/bitmapper.git
 
+Initialise bower:
+
+    bower init
+
 Build and test:
 
     make run_debug
