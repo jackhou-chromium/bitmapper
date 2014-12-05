@@ -19,6 +19,8 @@
           href="bower_components/core-toolbar/core-toolbar.html">
     <link rel="import"
           href="elements/bitmapper-toolbar.html">
+    <link rel="import"
+          href="elements/bitmapper-toolpanel.html">
   </head>
   <body>
     <core-header-panel>
@@ -36,13 +38,7 @@
     </div>
     <div id="content">
       <div id="leftToolBar">
-        <div class="tools">
-          <button class="toolbutton" id="pencilToolButton" title="Pencil"></button>
-          <button class="toolbutton" id="brushToolButton" title="Brush"></button>
-          <button class="toolbutton" id="bucketToolButton" title="Bucket Fill"></button>
-          <button class="toolbutton" id="pipetteToolButton" title="Color Picker"></button>
-          <button class="toolbutton" id="selectionToolButton" title="Selection Tool"></button>
-        </div>
+        <bitmapper-toolpanel id="toolButtonPanel"></bitmapper-toolpanel>
         <div class="colorSelector">
             <input id="colorSelector" type="color">
         </div>

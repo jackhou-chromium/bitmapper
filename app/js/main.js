@@ -529,74 +529,47 @@ bitmapper.setUpTools = function() {
         bitmapper.zoomManager.drawDisplayCanvas();
       });
 
-  // Initialise tools.
-  var brushTool = new bitmapper.BrushTool(
-      toolContext, bitmapper.optionProviders);
-  var bucketTool = new bitmapper.BucketTool(
-      toolContext, bitmapper.optionProviders);
+
+
+  // Initialize tools.
+  var toolPanel = document.getElementById('toolButtonPanel');
+
   var pencilTool = new bitmapper.PencilTool(
       toolContext, bitmapper.optionProviders);
-  var pipetteTool = new bitmapper.PipetteTool(
-      toolContext, function(color, opacity, done) {
-        bitmapper.optionProviders.colorPalette.updateCellColor(
-            color,
-            bitmapper.optionProviders.colorPalette.getSelectedIndex());
-        bitmapper.setSelectedColorBox();
-        var opacityPercent = Math.round(opacity * 100);
-        document.getElementById('opacitySelector').value = opacityPercent;
-        document.getElementById('opacityValue').innerHTML =
-            opacityPercent + '%';
-        bitmapper.optionProviders.colorPalette.setOpacity(opacity);
-        if (done)
-          bitmapper.setSelectedTool(bitmapper.tools.pencilTool);
-      });
-  var selectionTool = new bitmapper.SelectionTool(toolContext);
 
-  bitmapper.tools =
-      /** @struct */ {
-        /** @type {BrushTool} */
-        brushTool: brushTool,
-        /** @type {BucketTool} */
-        bucketTool: bucketTool,
-        /** @type {PencilTool} */
-        pencilTool: pencilTool,
-        /** @type {PipetteTool} */
-        pipetteTool: pipetteTool,
-        /** @type {SelectionTool} */
-        selectionTool: selectionTool
-      };
+  bitmapper.tools = {
+    'brushTool' :
+        new bitmapper.BrushTool(toolContext, bitmapper.optionProviders),
+    'defaultTool' : pencilTool,
+    'pencilTool' : pencilTool,
+    'bucketTool' : new bitmapper.BucketTool(
+        toolContext, bitmapper.optionProviders),
+    'pipetteTool' : new bitmapper.PipetteTool(
+        toolContext, function(color, opacity, done) {
+          bitmapper.optionProviders.colorPalette.updateCellColor(
+              color,
+              bitmapper.optionProviders.colorPalette.getSelectedIndex());
+          bitmapper.setSelectedColorBox();
+          var opacityPercent = Math.round(opacity * 100);
+          document.getElementById('opacitySelector').value = opacityPercent;
+          document.getElementById('opacityValue').innerHTML =
+              opacityPercent + '%';
+          bitmapper.optionProviders.colorPalette.setOpacity(opacity);
+          if (done)
+            bitmapper.setSelectedTool(toolPanel.tools['pencilTool']);
+        }),
+    'selectionTool' : new bitmapper.SelectionTool(toolContext)
+  };
 
-  // Handlers for tool buttons.
-  document.getElementById('brushToolButton').addEventListener(
-      'click',
-      function() {
-        bitmapper.setSelectedTool(bitmapper.tools.brushTool);
-      },
-      false);
-  document.getElementById('bucketToolButton').addEventListener(
-      'click',
-      function() {
-        bitmapper.setSelectedTool(bitmapper.tools.bucketTool);
-      },
-      false);
-  document.getElementById('pencilToolButton').addEventListener(
-      'click',
-      function() {
-        bitmapper.setSelectedTool(bitmapper.tools.pencilTool);
-      },
-      false);
-  document.getElementById('pipetteToolButton').addEventListener(
-      'click',
-      function() {
-        bitmapper.setSelectedTool(bitmapper.tools.pipetteTool);
-      },
-      false);
-  document.getElementById('selectionToolButton').addEventListener(
-      'click',
-      function() {
-        bitmapper.setSelectedTool(bitmapper.tools.selectionTool);
-      },
-      false);
+  toolPanel.tools = bitmapper.tools;
+
+  // Handler for tool buttons.
+  toolPanel.activeToolChanged = function(oldTool, newTool) {
+    if (oldTool)
+      oldTool.tearDown();
+    bitmapper.selectedTool = newTool;
+    bitmapper.cursorGuide.setTool(newTool);
+  };
 };
 
 
@@ -772,9 +745,6 @@ bitmapper.start = function(localStorageObject) {
   bitmapper.setUpOptionProviders(localStorageObject);
   bitmapper.setUpTools();
 
-  // Set default tool.
-  bitmapper.selectedTool = bitmapper.tools.pencilTool;
-  bitmapper.setSelectedTool(bitmapper.tools.pencilTool);
   // Set up mouse event listeners.
   bitmapper.registerMouseEvents();
   bitmapper.setSelectedColorBox();

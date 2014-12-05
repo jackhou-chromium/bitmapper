@@ -1,0 +1,87 @@
+<!-- Copyright 2014 Google Inc. All Rights Reserved. -->
+
+<!--
+The bitmapper-toolpanel Polymer element encapsulates the panel of tool buttons,
+including pencil, brush, bucket, pipette, and select.
+
+`tools` is a map of objects. When assigned, if there is a 'defaultTool' key, it
+is set as the 'activeTool'.
+`activeTool` is the object from `tools` associated with the most recently
+selected tool icon.
+
+@element bitmapper-toolpanel
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import"
+      href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/font-roboto/roboto.html">
+
+<polymer-element name="bitmapper-toolpanel" attributes="tools activeTool">
+  <template>
+    <style>
+    :host {
+      height: 156px;
+      display: block;
+      position: relative;
+      margin: 5px;
+    }
+    .tools {
+      color: white;
+      margin: 15px;
+    }
+    paper-icon-button {
+      background: #363636;
+      border-radius: 40px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    </style>
+
+    <div class="tools">
+      <paper-icon-button
+          src="bitmapper-toolpanel/pencil_40.png"
+          on-click="{{ activate }}"
+          title="Pencil"
+          name="pencilTool">
+      </paper-icon-button>
+      <paper-icon-button
+          src="bitmapper-toolpanel/brush_40.png"
+          on-click="{{ activate }}"
+          title="Brush"
+          name="brushTool">
+      </paper-icon-button>
+      <paper-icon-button
+          src="bitmapper-toolpanel/bucket_40.png"
+          on-click="{{ activate }}"
+          title="Bucket Fill"
+          name="bucketTool">
+      </paper-icon-button>
+      <paper-icon-button
+          src="bitmapper-toolpanel/pipette_40.png"
+          on-click="{{ activate }}"
+          title="Color Picker"
+          name="pipetteTool">
+      </paper-icon-button>
+      <paper-icon-button
+          src="bitmapper-toolpanel/selection_40.png"
+          on-click="{{ activate }}"
+          title="Selection Tool"
+          name="selectionTool">
+      </paper-icon-button>
+    </div>
+  </template>
+
+  <script>
+    Polymer('bitmapper-toolpanel', {
+      tools: {},
+      activeToolChanged: function(oldVal, newVal) {},
+      toolsChanged: function(oldVal, newVal) {
+        this.activeTool = newVal['defaultTool'];
+      },
+      activate: function (event, detail, sender) {
+        this.activeTool = this.tools[sender.getAttribute("name")];
+      }
+    });
+  </script>
+</polymer-element>

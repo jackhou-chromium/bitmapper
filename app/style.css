@@ -142,14 +142,6 @@ core-header-panel {
 }
 
 /* Tools */
-
-.tools {
-  color: white;
-  font-size: 15px;
-  margin-top: 15px;
-  margin-left: 25px;
-}
-
 .toolbutton {
   background: #009999;
   border-bottom: 2px solid #1B7E7E;
@@ -245,26 +237,6 @@ input[type='range']::-webkit-slider-thumb {
   display: inline;
   margin: 0px;
   width: 80px;
-}
-
-#brushToolButton {
-  background-image: url('images/brush_40.png');
-}
-
-#pencilToolButton {
-  background-image: url('images/pencil_40.png');
-}
-
-#pipetteToolButton {
-  background-image: url('images/pipette_40.png');
-}
-
-#bucketToolButton {
-  background-image: url('images/bucket_40.png');
-}
-
-#selectionToolButton {
-  background-image: url('images/selection_40.png');
 }
 
 #eraser {
