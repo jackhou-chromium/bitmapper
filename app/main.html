@@ -49,7 +49,10 @@
           <div id="brushSize"></div>
           <div>Opacity</div>
           <input type="range" id="opacitySelector" min="0" max="100" step="1" value="100"></input>
-          <div class="tools" id="opacityValue">100%</div>
+          <div id="opacityValue">100%</div>
+          <div>Zoom</div>
+          <input type="range" id="zoomSelector" min="1" max="32" step="1" value="1"></input>
+          <div id="zoomValue">100%</div>
         </div>
       </div>
       <div id="canvasViewport">
@@ -64,11 +67,6 @@
       <div id="coordinates">
       (X: <span id="xCoordinate">0</span>
       , Y: <span id="yCoordinate">0</span>)
-      </div>
-      <div id="zoomContainer">
-        Zoom
-        <input type="range" id="zoomSelector" min="1" max="32" step="1" value="1">
-        <div id="zoomValue">100%</div>
       </div>
       <div id="resizeContainer">
         <input type="number" id="resizeCanvasWidth" class="dimensions" placeholder="W:300">

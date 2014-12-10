@@ -272,10 +272,6 @@ input[type='range']::-webkit-slider-thumb {
   width: 10px;
 }
 
-#zoomContainer {
-  display: inherit;
-}
-
 #resizeContainer {
   display: inherit;
 }
