@@ -8,34 +8,22 @@
     <script type="text/javascript" src="bitmapper.js"></script>
 
     <link rel="stylesheet"
-          href="style.css">
+      href="style.css">
 
     <link rel="import"
-          href="bower_components/polymer/polymer.html">
+      href="bower_components/polymer/polymer.html">
 
     <link rel="import"
-          href="bower_components/core-header-panel/core-header-panel.html">
+      href="elements/bitmapper-toast.html">
     <link rel="import"
-          href="bower_components/core-toolbar/core-toolbar.html">
+      href="elements/bitmapper-toolbar.html">
     <link rel="import"
-          href="elements/bitmapper-toolbar.html">
-    <link rel="import"
-          href="elements/bitmapper-toolpanel.html">
+      href="elements/bitmapper-toolpanel.html">
+
   </head>
   <body>
-    <core-header-panel>
-      <core-toolbar>
-        <bitmapper-toolbar id="bitmapperToolbar"></bitmapper-toolbar>
-      </core-toolbar>
-    </core-header-panel>
-    <div id="bar">
-      <div id="fileName"></div>
-      <div id="output"></div>
-      <div id="undoButtons">
-        <button class="undo" id="undoButton">Undo</button>
-        <button class="undo" id="redoButton">Redo</button>
-      </div>
-    </div>
+    <bitmapper-toolbar id="bitmapperToolbar"></bitmapper-toolbar>
+    <bitmapper-toast id="bitmapperToast"></bitmapper-toast>
     <div id="content">
       <div id="leftToolBar">
         <bitmapper-toolpanel id="toolButtonPanel"></bitmapper-toolpanel>

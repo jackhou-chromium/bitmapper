@@ -9,15 +9,6 @@ body {
   background: #181818;
 }
 
-core-toolbar {
-  display: flex;
-  height: 70px;
-  width: 100%;
-  color: white;
-  background: #009999;
-  align-items: center;
-}
-
 li {
   text-decoration: none
   color: white;
@@ -31,12 +22,6 @@ footer {
   height: 30px;
   justify-content: space-between;
   margin: 10px 20px;
-}
-
-#bar {
-  background: rgb(49, 66, 78);
-  display: flex;
-  height: 45px;
 }
 
 #fileName {
@@ -71,7 +56,6 @@ footer {
   display: flex;
   flex-direction: row;
   height: 100%;
-  margin-top: 0px;
 }
 
 #rightToolBar {
@@ -81,37 +65,10 @@ footer {
   margin: 10px;
 }
 
-/* Header */
+/* Toolbar */
 
-core-header-panel {
-  height: 70px;
-}
-
-#undoButtons {
-  flex-direction: column;
-  margin: 5px;
-}
-
-.undo {
-  background: #009999;
-  border-bottom: 2px solid #1B7E7E;
-  border-radius: 6px;
-  border: 0;
-  box-shadow: inset 0 -2px #1B7E7E;
-  color: white;
-  cursor: pointer;
-  font-size: 14px;
-  height: 25px;
-  margin-right: 10px;
-  padding: 0;
-  position: relative;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-  width: 44px;
-}
-
-.undo:hover {
-  background: #055555;
+bitmapper-toolbar {
+  min-height: 60px;
 }
 
 /* Canvas */
@@ -142,36 +99,6 @@ core-header-panel {
 }
 
 /* Tools */
-.toolbutton {
-  background: #009999;
-  border-bottom: 2px solid #1B7E7E;
-  border-radius: 6px;
-  border: 0;
-  box-shadow: inset 0 -2px #1B7E7E;
-  color: white;
-  cursor: pointer;
-  font-size: 15px;
-  height: 40px;
-  margin: 5px;
-  padding: 0;
-  position: relative;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-  vertical-align: top;
-  width: 40px;
-}
-
-.toolbutton:active {
-  border-radius: 10px;
-  box-shadow: none;
-  box-shadow: none;
-  outline: blue;
-  top: 1px;
-}
-
-.toolbutton:hover {
-  background: #055555;
-}
 
 .paletteContainer {
   display: flex;

@@ -129,7 +129,8 @@ bitmapper.saveFile = function() {
  * @param {string} status
  */
 bitmapper.statusMessage = function(status) {
-  document.getElementById('output').textContent = status;
+  var toast = document.getElementById('bitmapperToast');
+  toast.showToast(status);
 };
 
 
@@ -397,16 +398,15 @@ bitmapper.handleKeyDown = function(keyEvent) {
  * file name message accordingly.
  */
 bitmapper.updateFileNameMessage = function() {
-  var fileNameStatus = document.getElementById('fileName');
   // App first launched or new file.
   if (!bitmapper.imageFile || !bitmapper.imageFile.fileEntry) {
-    fileNameStatus.textContent = 'Untitled_image.';
+    bitmapper.toolbar.fileName = 'untitled';
     return;
   }
   if (bitmapper.imageFile.matchesOriginal(bitmapper.sourceCanvas)) {
-    fileNameStatus.textContent = bitmapper.imageFile.getFileName();
+    bitmapper.toolbar.fileName = bitmapper.imageFile.getFileName();
   } else {
-    fileNameStatus.textContent = bitmapper.imageFile.getFileName() + '*';
+    bitmapper.toolbar.fileName = bitmapper.imageFile.getFileName() + '*';
   }
 };
 
@@ -708,13 +708,14 @@ bitmapper.start = function(localStorageObject) {
   bitmapper.sourceCanvas = document.createElement('canvas');
 
   var toolbar = document.getElementById('bitmapperToolbar');
+  bitmapper.toolbar = toolbar;
   bitmapper.updateFileNameMessage();
 
   // Initialise handlers for filesystem buttons.
-  toolbar.newHandler = bitmapper.newFile;
-  toolbar.openHandler = bitmapper.openFile;
-  toolbar.saveHandler = bitmapper.saveFile;
-  toolbar.saveAsHandler = bitmapper.saveAsFile;
+  bitmapper.toolbar.newHandler = bitmapper.newFile;
+  bitmapper.toolbar.openHandler = bitmapper.openFile;
+  bitmapper.toolbar.saveHandler = bitmapper.saveFile;
+  bitmapper.toolbar.saveAsHandler = bitmapper.saveAsFile;
 
   // Initialise zoom functionality.
   bitmapper.zoomManager = new bitmapper.ZoomManager(
@@ -778,11 +779,8 @@ bitmapper.start = function(localStorageObject) {
   bitmapper.imageFile = new bitmapper.ImageFile();
   // Push first snapshot.
   bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
-  document.getElementById('undoButton')
-    .addEventListener('click', bitmapper.undo, false);
-
-  document.getElementById('redoButton')
-    .addEventListener('click', bitmapper.redo, false);
+  bitmapper.toolbar.undoHandler = bitmapper.undo;
+  bitmapper.toolbar.redoHandler = bitmapper.redo;
 };
 
 

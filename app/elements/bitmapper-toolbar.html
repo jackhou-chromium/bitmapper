@@ -1,40 +1,104 @@
 <!-- Copyright 2014 Google Inc. All Rights Reserved. -->
 
 <!--
-The bitmapper-toolbar Polymer element encapsulates a toolbar with a bitmapper
-logo and buttons such as New, Open, Save and Save As.
+The bitmapper-toolbar Polymer element encapsulates a toolbar with a dropdown
+menu (with New, Open, Save, and Save As options), a logo, the name of the open
+image, and Undo/Redo buttons.
+
+`newHandler` handles creating a new file
+`openHandler` handles opening a file
+`saveHandler` handles saving a file
+`saveAsHandler` handles saving as a new file
+`undoHandler` handles undoing an action
+`redoHandler` handles redoing an action
+`fileName` is the name of the file, originally set to 'untitled'
+
+@element bitmapper-toolbar
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import"
+  href="../bower_components/core-header-panel/core-header-panel.html">
+<link rel="import" href="../bower_components/core-menu/core-menu.html">
+<link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
+<link rel="import"
+  href="../bower_components/paper-dropdown/paper-dropdown.html">
+<link rel="import"
+  href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import"
+  href="../bower_components/paper-menu-button/paper-menu-button.html">
 
 <polymer-element name="bitmapper-toolbar"
-                 attributes="newHandler openHandler saveHandler saveAsHandler">
+  attributes="newHandler openHandler saveHandler saveAsHandler undoHandler redoHandler fileName">
   <template>
     <style>
+      core-header-panel {
+        /* Inherit min-height so that the element is filled, but still changes
+         * height as the window is resized. */
+        min-height: inherit;
+        height: 100%;
+      }
+      core-toolbar {
+        display: block;
+        height: 100%;
+        width: 100%;
+        color: white;
+        background: #26A69A;
+        align-items: center;
+      }
+      paper-icon-button {
+        background: #00897B;
+        border-radius: 40px;
+      }
+      paper-item {
+        color: black;
+      }
       span {
         display: inline;
-        padding-right: 50px;
         text-transform: uppercase;
-      }
-      .button-panel {
-        display: inline;
-      }
-      paper-button {
-        background: rgba(0, 0, 0, 0.2);
-        font-size: 15px;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipses;
       }
     </style>
 
-    <span>Bitmapper</span>
-    <div class="button-panel">
-      <paper-button on-click="{{ newHandler }}">New</paper-button>
-      <paper-button on-click="{{ openHandler }}">Open</paper-button>
-      <paper-button on-click="{{ saveHandler }}">Save</paper-button>
-      <paper-button on-click="{{ saveAsHandler }}">Save As</paper-button>
-    </div>
+    <core-header-panel>
+      <core-toolbar>
+        <paper-menu-button>
+          <paper-icon-button icon="menu"></paper-icon-button>
+          <!-- TODO(hbeder): Investigate why 'transition' is needed. -->
+          <paper-dropdown class="dropdown" transition>
+            <!-- TODO(hbeder): This will currently leave the selected item
+            highlighted. -->
+            <core-menu class="menu">
+              <paper-item role="button" on-click="{{ newHandler }}">
+                New
+              </paper-item>
+              <paper-item role="button" on-click="{{ openHandler }}">
+                Open
+              </paper-item>
+              <paper-item role="button" on-click="{{ saveHandler }}">
+                Save
+              </paper-item>
+              <paper-item role="button" on-click="{{ saveAsHandler }}">
+                Save As
+              </paper-item>
+            </core-menu>
+          </paper-dropdown>
+        </paper-menu-button>
+
+        <span flex>Bitmapper - {{ fileName }}</span>
+
+        <paper-icon-button
+          icon="undo" title="Undo" on-click="{{ undoHandler }}">
+        </paper-icon-button>
+        <paper-icon-button
+          icon="redo" title="Redo" on-click="{{ redoHandler }}">
+        </paper-icon-button>
+      </core-toolbar>
+    </core-header-panel>
   </template>
 
   <script>
