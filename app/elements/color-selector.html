@@ -1,0 +1,41 @@
+<!-- Copyright 2014 Google Inc. All Rights Reserved. -->
+
+<!--
+The color-selector Polymer element is an element for selecting a color.
+
+@element color-selector
+-->
+
+<polymer-element name="color-selector" attributes="colorValue">
+  <template>
+    <style>
+      .colorSelector {
+        margin: 8px;
+        background: #181818;
+        border: #181818;
+        height: 40px;
+        width: 134px;
+      }
+      ::-webkit-color-swatch {
+        border-radius: 40px;
+        border-width: 2px;
+        border-color: black;
+      }
+    </style>
+
+    <input class="colorSelector"
+      id="colorInput"
+      value="{{ colorValue }}"
+      on-input="{{ update }}"
+      type="color">
+  </template>
+
+  <script>
+    Polymer ('color-selector', {
+      update: function(event, detail, sender) {
+        this.colorValue = this.$.colorInput.value;
+      },
+      colorValueChanged: function() {},
+    });
+  </script>
+</polymer-element>

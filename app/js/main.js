@@ -166,7 +166,7 @@ bitmapper.zoomCanvas = function() {
  * Set background color of selected color box to selected color.
  */
 bitmapper.setSelectedColorBox = function() {
-  document.getElementById('colorSelector').value =
+  document.getElementById('colorSelector').colorValue =
       bitmapper.rgbToHex(
           bitmapper.optionProviders.colorPalette.getSelectedColor());
 };
@@ -177,7 +177,7 @@ bitmapper.setSelectedColorBox = function() {
  */
 bitmapper.updatePalette = function() {
   bitmapper.optionProviders.colorPalette.updateCellColor(
-      document.getElementById('colorSelector').value,
+      document.getElementById('colorSelector').colorValue,
       bitmapper.optionProviders.colorPalette.getSelectedIndex());
 
   var storageEntry = {};
@@ -752,7 +752,9 @@ bitmapper.start = function(localStorageObject) {
 
   // Other UI elements.
   var colorSelector = document.getElementById('colorSelector');
-  colorSelector.addEventListener('change', bitmapper.updatePalette, false);
+  colorSelector.colorValueChanged = function() {
+    bitmapper.updatePalette();
+  };
 
   var opacitySelector = document.getElementById('opacitySelector');
   opacitySelector.addEventListener('input', bitmapper.updateOpacity, false);

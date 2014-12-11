@@ -126,18 +126,6 @@ bitmapper-toolbar {
   width: 28px;
 }
 
-.colorSelector {
-  margin: 8px;
-}
-
-#colorSelector {
-  background: #181818;
-  border: #181818;
-  height: 40px;
-  width: 134px;
-}
-
-
 /* Option Providers */
 
 input[type='range'] {
