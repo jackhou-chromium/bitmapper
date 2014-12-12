@@ -1,0 +1,64 @@
+<!-- Copyright 2014 Google Inc. All Rights Reserved. -->
+
+<!--
+The resize-canvas Polymer element encapsulates input fields and a button to
+submit changes to the size of the canvas.
+
+`dimensions` is a `{ width: "value", height: "value"}` object updated when the
+Resize button is clicked. Unfortunately no input validation is performed, as
+Polymer doesn't handle forms.
+
+@element resize-canvas
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+
+<polymer-element name="resize-canvas" attributes="dimension">
+  <template>
+    <style>
+      paper-input {
+        width: 80px;
+        margin-right: 15px;
+      }
+      /* Using /deep/ allows access to nested shadow DOM. */
+      paper-input /deep/ ::-webkit-input-placeholder {
+        color: white;
+      }
+      paper-button {
+        background: #00897B;
+      }
+    </style>
+
+    <!-- Note that Polymer currently ignores `type` and `min` attributes. -->
+    <paper-input
+      type="number"
+      min="1"
+      id="widthInput"
+      label="W:">
+    </paper-input>
+    <paper-input
+      type="number"
+      min="1"
+      id="heightInput"
+      label="H:">
+    </paper-input>
+    <paper-button on-click="{{ commit }}">Resize</paper-button>
+  </template>
+
+  <script>
+    Polymer ('resize-canvas', {
+      dimensionChanged: function(newVal, oldVal) {},
+      commit: function() {
+        this.dimension = {
+          'width': this.$.widthInput.value,
+          'height': this.$.heightInput.value
+        };
+        this.$.widthInput.value = '';
+        this.$.heightInput.value = '';
+      },
+    });
+  </script>
+</polymer-element>

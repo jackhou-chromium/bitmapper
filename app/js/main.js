@@ -611,13 +611,13 @@ bitmapper.saveStateToLocalStorage = function() {
  */
 bitmapper.resizeCanvas = function(newWidth, newHeight) {
   // Error handling.
-  if (!newWidth || !newHeight || newWidth < 1 || newHeight < 1) {
+  if (Number(newWidth) < 1 || Number(newHeight) < 1) {
     bitmapper.statusMessage('Please enter valid dimensions.');
     return;
   }
   if (newWidth > bitmapper.MAX_RESIZE_CANVAS_WIDTH ||
       newHeight > bitmapper.MAX_RESIZE_CANVAS_HEIGHT) {
-    bitmapper.statusMessage('Maximum is' + bitmapper.MAX_RESIZE_CANVAS_WIDTH +
+    bitmapper.statusMessage('Maximum is ' + bitmapper.MAX_RESIZE_CANVAS_WIDTH +
         'x' + bitmapper.MAX_RESIZE_CANVAS_HEIGHT + 'px.');
     return;
   }
@@ -639,21 +639,9 @@ bitmapper.resizeCanvas = function(newWidth, newHeight) {
   bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
   // Draw display canvas.
   bitmapper.zoomManager.drawDisplayCanvas();
-  bitmapper.statusMessage('Resized the canvas.');
+  bitmapper.statusMessage('Resized the canvas to ' + newWidth +
+                          'x' + newHeight + 'px.');
   bitmapper.updateFileNameMessage();
-
-  bitmapper.displayCanvasDimensions(newWidth, newHeight);
-};
-
-
-/**
- * Displays canvas dimensions in UI as placeholders.
- * @param {number} width
- * @param {number} height
- */
-bitmapper.displayCanvasDimensions = function(width, height) {
-  document.getElementById('resizeCanvasWidth').placeholder = 'W: ' + width;
-  document.getElementById('resizeCanvasHeight').placeholder = 'H: ' + height;
 };
 
 
@@ -760,13 +748,9 @@ bitmapper.start = function(localStorageObject) {
   opacitySelector.addEventListener('input', bitmapper.updateOpacity, false);
   opacitySelector.addEventListener('change', bitmapper.updateOpacity, false);
 
-  document.getElementById('resizeCanvasButton').addEventListener(
-      'click',
-      function() {
-        bitmapper.resizeCanvas(
-            document.getElementById('resizeCanvasWidth').value,
-            document.getElementById('resizeCanvasHeight').value);
-      }, false);
+  bitmapper.toolbar.$.resizeInput.dimensionChanged = function(oldVal, newVal) {
+    bitmapper.resizeCanvas(newVal.width, newVal.height);
+  };
 
   // Load canvas in local storage if there is one.
   if (localStorageObject[bitmapper.SAVED_CANVAS_STORAGE_KEY]) {

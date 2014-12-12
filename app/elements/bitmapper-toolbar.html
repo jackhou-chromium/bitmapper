@@ -18,6 +18,7 @@ image, and Undo/Redo buttons.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
+<link rel="import" href="resize-canvas.html">
 <link rel="import"
   href="../bower_components/core-header-panel/core-header-panel.html">
 <link rel="import" href="../bower_components/core-menu/core-menu.html">
@@ -90,6 +91,8 @@ image, and Undo/Redo buttons.
         </paper-menu-button>
 
         <span flex>Bitmapper - {{ fileName }}</span>
+
+        <resize-canvas id="resizeInput"></resize-canvas>
 
         <paper-icon-button
           icon="undo" title="Undo" on-click="{{ undoHandler }}">

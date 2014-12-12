@@ -193,49 +193,6 @@ input[type='range']::-webkit-slider-thumb {
   width: 10px;
 }
 
-#resizeContainer {
-  display: inherit;
-  position: absolute;
-  right: 10px;
-}
-
-#resizeCanvasWidth {
-  border-radius: 3px;
-  height: 15px;
-  padding: 2px;
-  width: 70px;
-}
-
-#resizeCanvasHeight {
-  border-radius: 3px;
-  height: 15px;
-  margin-left: 10px;
-  margin-right: 10px;
-  padding: 2px;
-  width: 70px;
-}
-
-#resizeCanvasButton {
-  background: rgb(49, 66, 78);
-  border-radius: 6px;
-  border: 0;
-  color: white;
-  float: right;
-  height: 23px;
-  right: 10px;
-  width: 70px;
-}
-
-#resizeCanvasButton:hover {
-  background: rgba(49, 66, 78, 0.5);
-}
-
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
 .cursorDiv {
   display: 'block';
   left: 0;
