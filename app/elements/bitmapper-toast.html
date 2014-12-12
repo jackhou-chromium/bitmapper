@@ -1,0 +1,37 @@
+<!-- Copyright 2014 Google Inc. All Rights Reserved. -->
+
+<!--
+The bitmapper-toast Polymer element is a pop up message indicating changes made
+while using the app (for example, resizing the canvas).
+
+@element bitmapper-toast
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+
+<polymer-element name="bitmapper-toast">
+  <template>
+    <paper-toast id="toast"
+      text="{{ message }}"
+      class="core-transition core-transition-bottom">
+    </paper-toast>
+  </template>
+
+  <script>
+    Polymer ('bitmapper-toast', {
+      message: '',
+
+      /**
+       * Shows a toast with a given message.
+       *
+       * @param {string} message The message displayed in the toast popup.
+       */
+      showToast: function(message) {
+        this.message = message;
+        this.$.toast.show();
+      }
+    });
+  </script>
+</polymer-element>
