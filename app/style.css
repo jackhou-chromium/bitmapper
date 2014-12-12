@@ -16,6 +16,7 @@ li {
 }
 
 footer {
+  position: relative;
   color: gray;
   display: flex;
   font-size: 15px;
@@ -44,6 +45,7 @@ footer {
   width: 150px;
   margin: 10px;
   margin-top: 0px;
+  position: relative;
 }
 
 #options {
@@ -174,6 +176,10 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 #coordinates {
+  color: white;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
   display: inherit;
   width: 120px;
 }
@@ -189,6 +195,8 @@ input[type='range']::-webkit-slider-thumb {
 
 #resizeContainer {
   display: inherit;
+  position: absolute;
+  right: 10px;
 }
 
 #resizeCanvasWidth {

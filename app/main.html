@@ -42,6 +42,10 @@
           <input type="range" id="zoomSelector" min="1" max="32" step="1" value="1"></input>
           <div id="zoomValue">100%</div>
         </div>
+        <div id="coordinates">
+          (X: <span id="xCoordinate">0</span>
+          , Y: <span id="yCoordinate">0</span>)
+        </div>
       </div>
       <div id="canvasViewport">
         <div id="canvasWrapper">
@@ -52,10 +56,6 @@
       </div>
     </div>
     <footer>
-      <div id="coordinates">
-      (X: <span id="xCoordinate">0</span>
-      , Y: <span id="yCoordinate">0</span>)
-      </div>
       <div id="resizeContainer">
         <input type="number" id="resizeCanvasWidth" class="dimensions" placeholder="W:300">
         <input type="number" id="resizeCanvasHeight" class="dimensions" placeholder="H:150">
