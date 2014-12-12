@@ -13,6 +13,8 @@ selected tool icon.
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-icons/editor-icons.html">
+<link rel="import" href="../bower_components/core-icons/image-icons.html">
 <link rel="import"
   href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/font-roboto/roboto.html">
@@ -40,31 +42,31 @@ selected tool icon.
 
     <div class="tools">
       <paper-icon-button
-          src="bitmapper-toolpanel/pencil_40.png"
+          icon="image:edit"
           on-click="{{ activate }}"
           title="Pencil"
           name="pencilTool">
       </paper-icon-button>
       <paper-icon-button
-          src="bitmapper-toolpanel/brush_40.png"
+          icon="image:brush"
           on-click="{{ activate }}"
           title="Brush"
           name="brushTool">
       </paper-icon-button>
       <paper-icon-button
-          src="bitmapper-toolpanel/bucket_40.png"
+          icon="editor:format-color-fill"
           on-click="{{ activate }}"
           title="Bucket Fill"
           name="bucketTool">
       </paper-icon-button>
       <paper-icon-button
-          src="bitmapper-toolpanel/pipette_40.png"
+          icon="image:colorize"
           on-click="{{ activate }}"
           title="Color Picker"
           name="pipetteTool">
       </paper-icon-button>
       <paper-icon-button
-          src="bitmapper-toolpanel/selection_40.png"
+          icon="image:crop-free"
           on-click="{{ activate }}"
           title="Selection Tool"
           name="selectionTool">
