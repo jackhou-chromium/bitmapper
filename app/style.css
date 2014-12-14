@@ -25,22 +25,6 @@ footer {
   margin: 10px 20px;
 }
 
-#fileName {
-  color: white;
-  font-size: 15px;
-  margin: 7px;
-  margin-left: 22px;
-  width: 150px;
-}
-
-#output {
-  color: white;
-  flex: 3;
-  font-size: 14px;
-  text-align: center;
-  margin: 7px;
-}
-
 #leftToolBar {
   width: 150px;
   margin: 10px;
@@ -58,13 +42,6 @@ footer {
   display: flex;
   flex-direction: row;
   height: 100%;
-}
-
-#rightToolBar {
-  width: 150px;
-  color: white;
-  font-size: 15px;
-  margin: 10px;
 }
 
 /* Toolbar */
@@ -172,7 +149,7 @@ input[type='range']::-webkit-slider-thumb {
 #zoomSelector {
   height: 10px;
   margin: 6px;
-  width: 120px;
+  width: 86px;
 }
 
 #coordinates {
