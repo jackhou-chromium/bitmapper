@@ -19,18 +19,16 @@ VULCANIZE = vulcanize
 VULCANIZE_FLAGS = --csp -p $(APPDIR)
 
 # Polymer path to download required components through bower.
-BOWER_INSTALL := bower install --save
-BOWER_PATH := $(APPDIR)/bower_components
+BOWER_INSTALL := bower install
+BOWER_UPDATE := bower update
 
-# Save polymer to app directory.
-polymer.updated :
-	mkdir -p $(BOWER_PATH)
-	$(BOWER_INSTALL) Polymer/polymer
-	$(BOWER_INSTALL) Polymer/core-elements
-	$(BOWER_INSTALL) Polymer/paper-elements
+# Update Polymer dependencies.
+bower.updated : bower.json
+	$(BOWER_INSTALL)
+	$(BOWER_UPDATE)
 	touch $@
 
-SETUP := $(CLOSURE_COMPILER) $(CHROME_EXTERNS) $(QUNIT_EXTERNS) polymer.updated
+SETUP := $(CLOSURE_COMPILER) $(CHROME_EXTERNS) $(QUNIT_EXTERNS) bower.updated
 
 # Download the closure compiler.
 $(CLOSURE_COMPILER) :

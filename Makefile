@@ -34,7 +34,7 @@ APP_FILES := $(shell find $(APPDIR) -type f)
 
 # First target in the file is the default target. Default to `debug`.
 default: debug
-	@echo '== `rm polymer.updated` to update bower_components.'
+	@echo '== `rm bower.updated` to update bower_components.'
 	@echo '== `rm $(CLOSURE_COMPILER)` to update closure.'
 	@echo '== `make test` to build tests.'
 	@echo '== `make debug` or `make out/$(PROJECT).zip` if you do not want'\

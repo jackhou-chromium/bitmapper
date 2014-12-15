@@ -1,0 +1,19 @@
+{
+  "name": "bitmapper",
+  "version": "0.8",
+  "homepage": "https://github.com/jackhou-chromium/bitmapper",
+  "authors": [
+    "Davina Adisusila <dadisusila@google.com>",
+    "Hannah Beder <hbeder@google.com>",
+    "Marie-Jo Ta <mjt@google.com>",
+    "Sara Kato <sarakato@google.com>"
+  ],
+  "description": "Bitmap editor Chrome App",
+  "license": "Apache 2.0",
+  "private": true,
+  "dependencies": {
+    "core-elements": "Polymer/core-elements#~0.5.2",
+    "paper-elements": "Polymer/paper-elements#~0.5.2",
+    "polymer": "Polymer/polymer#~0.5.2"
+  }
+}

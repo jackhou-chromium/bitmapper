@@ -16,10 +16,6 @@ Get the code:
 
     git clone https://github.com/jackhou-chromium/bitmapper.git
 
-Initialise bower:
-
-    bower init
-
 Build and test:
 
     make run_debug
@@ -64,5 +60,3 @@ Push your change (after getting an lgtm):
 
     git cl land
 
-The presubmit will prompt you to set the current branch's remote to 'origin' so
-that the change will be pushed to this GitHub repo.
