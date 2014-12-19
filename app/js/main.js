@@ -40,12 +40,9 @@ bitmapper.setCanvasToImage = function() {
   bitmapper.drawImageToCanvas(image.src);
 
   // Set initial zoom properties.
-  var zoomSelector = document.getElementById('zoomSelector');
-  zoomSelector.value = 1;
   bitmapper.zoomCanvas();
 
   bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
-  bitmapper.displayCanvasDimensions(image.width, image.height);
 };
 
 
@@ -130,7 +127,7 @@ bitmapper.saveFile = function() {
  */
 bitmapper.statusMessage = function(status) {
   var toast = document.getElementById('bitmapperToast');
-  toast.showToast(status);
+  toast['showToast'](status);
 };
 
 
