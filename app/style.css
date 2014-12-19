@@ -35,7 +35,6 @@ footer {
 #options {
   color: white;
   font-size: 15px;
-  margin: 10px;
 }
 
 #content {
@@ -106,49 +105,12 @@ bitmapper-toolbar {
 
 /* Option Providers */
 
-input[type='range'] {
-  /* Appearance property doesn't work without -webkit- prefix*/
-  -webkit-appearance: none;
-  background-color: white;
-  margin-bottom: 10px;
-  margin-top: 10px;
-}
-
-input[type='range']::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  background-color: gray;
-  height: 10px;
-  width: 15px;
-}
-
-#opacitySelector {
-  height: 10px;
-  width: 86px;
-}
-
-#opacityValue {
-  display: inline;
-  margin: 0px;
-  width: 80px;
-}
-
 #eraser {
   background-image: url('images/eraser_40.png');
 }
 
 #shape {
   background-image: url('images/rect_40.png');
-}
-
-#sizeSelector {
-  height: 10px;
-  width: 86px;
-}
-
-#zoomSelector {
-  height: 10px;
-  margin: 6px;
-  width: 86px;
 }
 
 #coordinates {
@@ -158,15 +120,6 @@ input[type='range']::-webkit-slider-thumb {
   bottom: 10px;
   display: inherit;
   width: 120px;
-}
-
-#brushSize {
-  background: white;
-  border-radius: 50%;
-  display: inline-block;
-  height: 10px;
-  margin-left: 10px;
-  width: 10px;
 }
 
 .cursorDiv {

@@ -1,0 +1,70 @@
+<!-- Copyright 2014 Google Inc. All Rights Reserved. -->
+
+<!--
+The slider-panel Polymer element encapsulates three slider inputs for zoom,
+opacity and brush size. Each slider can be manipulated by an input box.
+
+@element bitmapper-sliders
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+
+<polymer-element name="bitmapper-sliders" attributes="sliderModel">
+  <template>
+    <style>
+      #options {
+        color: white;
+      }
+    </style>
+
+    <div id="options">
+      <div center horizontal layout>
+        <label for="sizeSelector">Size</label>
+        <paper-slider
+          id="sizeSelector"
+          value="{{ sliderModel.size }}"
+          min="1"
+          max="10"
+          step="1"
+          editable role="slider">
+        </paper-slider>
+      </div>
+      <div center horizontal layout>
+        <label for="opacitySelector">Opacity</label>
+        <paper-slider
+          id="opacitySelector"
+          value="{{ sliderModel.opacity }}"
+          min="0"
+          max="100"
+          step="1"
+          editable role="slider">
+        </paper-slider>
+      </div>
+      <div center horizontal layout>
+        <label for="zoomSelector">Zoom</label>
+        <paper-slider
+          id="zoomSelector"
+          value="{{ sliderModel.zoom }}"
+          min="1"
+          max="32"
+          step="1"
+          editable role="slider">
+        </paper-slider>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer ('bitmapper-sliders', {
+      created: function() {
+        this.sliderModel = {
+          size: 5,
+          opacity: 100,
+          zoom: 1
+        };
+      }
+    });
+  </script>
+</polymer-element>

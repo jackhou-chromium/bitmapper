@@ -146,10 +146,11 @@ bitmapper.clearCanvas = function() {
 
 
 /**
- * Scales the canvas to the value from the zoom input range element.
+ * Scales the canvas to the value from the zoom input range element
+ *
+ * @param {number} zoomValue The zoom scale factor where 1.0 means actual size.
  */
-bitmapper.zoomCanvas = function() {
-  var zoomValue = document.getElementById('zoomSelector').value;
+bitmapper.zoomCanvas = function(zoomValue) {
   var canvasViewport = document.getElementById('canvasViewport');
   // Use the center of the viewport as the anchor point.
   bitmapper.zoomManager.setZoomFactor(
@@ -157,7 +158,6 @@ bitmapper.zoomCanvas = function() {
       canvasViewport.scrollLeft + bitmapper.displayCanvas.width / 2,
       canvasViewport.scrollTop + bitmapper.displayCanvas.height / 2);
   bitmapper.zoomManager.drawDisplayCanvas();
-  document.getElementById('zoomValue').textContent = (zoomValue * 100) + '%';
   bitmapper.selectionCanvasManager.drawSelectionCanvas();
 };
 
@@ -495,8 +495,8 @@ bitmapper.setUpOptionProviders = function(localStorageObject) {
                      '#cc00ff', '#9900ff', '#ff6600', '#0099ff'];
   }
   colorPalette.generatePalette(initialColors);
-  var sizeSelector = document.getElementById('sizeSelector');
 
+  var sizeSelector = document.getElementById('sliderInputs').$.sizeSelector;
   // Option providers passed to Tools as an Object so there is no type safety.
   bitmapper.optionProviders =
       /** @struct */ {
@@ -505,15 +505,6 @@ bitmapper.setUpOptionProviders = function(localStorageObject) {
         /** @type {HTMLElement} */
         sizeSelector: sizeSelector
       };
-
-  // Change UI brush size arc.
-  var updateBrushSize = function() {
-    var brushSize = document.getElementById('brushSize');
-    brushSize.style.height = (sizeSelector.value * 2) + 'px';
-    brushSize.style.width = (sizeSelector.value * 2) + 'px';
-  };
-  sizeSelector.addEventListener('input', updateBrushSize, false);
-  sizeSelector.addEventListener('change', updateBrushSize, false);
 };
 
 
@@ -528,8 +519,6 @@ bitmapper.setUpTools = function() {
       function() {
         bitmapper.zoomManager.drawDisplayCanvas();
       });
-
-
 
   // Initialize tools.
   var toolPanel = document.getElementById('toolButtonPanel');
@@ -550,11 +539,8 @@ bitmapper.setUpTools = function() {
               color,
               bitmapper.optionProviders.colorPalette.getSelectedIndex());
           bitmapper.setSelectedColorBox();
-          var opacityPercent = Math.round(opacity * 100);
-          document.getElementById('opacitySelector').value = opacityPercent;
-          document.getElementById('opacityValue').innerHTML =
-              opacityPercent + '%';
-          bitmapper.optionProviders.colorPalette.setOpacity(opacity);
+          document.getElementById('sliderInputs').$.sliderModel.opacity =
+              Math.round(opacity * 100.0);
           if (done)
             bitmapper.setSelectedTool(toolPanel.tools['pencilTool']);
         }),
@@ -570,16 +556,6 @@ bitmapper.setUpTools = function() {
     bitmapper.selectedTool = newTool;
     bitmapper.cursorGuide.setTool(newTool);
   };
-};
-
-
-/**
- * Updates the current opacity level.
- */
-bitmapper.updateOpacity = function() {
-  var opacity = document.getElementById('opacitySelector').value;
-  document.getElementById('opacityValue').innerHTML = opacity + '%';
-  bitmapper.optionProviders.colorPalette.setOpacity(opacity / 100);
 };
 
 
@@ -719,9 +695,17 @@ bitmapper.start = function(localStorageObject) {
       },
       false);
 
-  var zoomSelector = document.getElementById('zoomSelector');
-  zoomSelector.addEventListener('input', bitmapper.zoomCanvas, false);
-  zoomSelector.addEventListener('change', bitmapper.zoomCanvas, false);
+  // Handler for change in zoom and opacity
+  Object.observe(
+      document.getElementById('sliderInputs').sliderModel,
+      function(changes) {
+        var sliderModel = changes.slice(-1)[0].object;
+        bitmapper.zoomCanvas(sliderModel.zoom);
+        // setOpacity method takes opacity in the range 0-1
+        bitmapper.optionProviders.colorPalette.setOpacity(
+            sliderModel.opacity / 100.0);
+      }
+  );
 
   bitmapper.selectionCanvasManager = new bitmapper.SelectionCanvasManager(
       document.getElementById('selectionCanvas'), bitmapper.zoomManager);
@@ -744,10 +728,7 @@ bitmapper.start = function(localStorageObject) {
     bitmapper.updatePalette();
   };
 
-  var opacitySelector = document.getElementById('opacitySelector');
-  opacitySelector.addEventListener('input', bitmapper.updateOpacity, false);
-  opacitySelector.addEventListener('change', bitmapper.updateOpacity, false);
-
+  // Handler for change in dimension.
   bitmapper.toolbar.$.resizeInput.dimensionChanged = function(oldVal, newVal) {
     bitmapper.resizeCanvas(newVal.width, newVal.height);
   };
