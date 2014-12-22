@@ -91,11 +91,12 @@ function BrushTool(toolContext, optionProviders) {}
 
     var ctx = this.sourceContext;
     ctx.beginPath();
+    ctx.globalCompositeOperation = 'source-over';
     ctx.moveTo(this.lastX, this.lastY);
     ctx.lineWidth = this.sizeSelector.value;
     ctx.lineTo(Math.floor(mouseCoordinates.sourceX),
         Math.floor(mouseCoordinates.sourceY));
-    ctx.strokeStyle = this.colorPalette.getSelectedColor();
+    ctx.strokeStyle = this.colorPalette.getSelectedColorWithOpacity();
     ctx.lineCap = 'round';
     ctx.stroke();
     this.lastX = mouseCoordinates.sourceX;
