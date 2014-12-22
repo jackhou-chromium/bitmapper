@@ -17,11 +17,14 @@ opacity and brush size. Each slider can be manipulated by an input box.
       #options {
         color: white;
       }
+      label {
+        text-transform: uppercase;
+      }
     </style>
 
     <div id="options">
+      <label for="sizeSelector">Size</label>
       <div center horizontal layout>
-        <label for="sizeSelector">Size</label>
         <paper-slider
           id="sizeSelector"
           value="{{ sliderModel.size }}"
@@ -31,8 +34,8 @@ opacity and brush size. Each slider can be manipulated by an input box.
           editable role="slider">
         </paper-slider>
       </div>
+      <label for="opacitySelector">Opacity</label>
       <div center horizontal layout>
-        <label for="opacitySelector">Opacity</label>
         <paper-slider
           id="opacitySelector"
           value="{{ sliderModel.opacity }}"
@@ -42,8 +45,8 @@ opacity and brush size. Each slider can be manipulated by an input box.
           editable role="slider">
         </paper-slider>
       </div>
+      <label for="zoomSelector">Zoom</label>
       <div center horizontal layout>
-        <label for="zoomSelector">Zoom</label>
         <paper-slider
           id="zoomSelector"
           value="{{ sliderModel.zoom }}"

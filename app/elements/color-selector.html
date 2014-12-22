@@ -9,12 +9,16 @@ The color-selector Polymer element is an element for selecting a color.
 <polymer-element name="color-selector" attributes="colorValue">
   <template>
     <style>
+      :host {
+        display: block;
+        margin-bottom: 15px;
+      }
       .colorSelector {
-        margin: 8px;
         background: #181818;
         border: #181818;
         height: 40px;
-        width: 134px;
+        width: 150px;
+        padding: 0px;
       }
       ::-webkit-color-swatch {
         border-radius: 40px;
