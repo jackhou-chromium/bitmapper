@@ -36,18 +36,23 @@ image, and Undo/Redo buttons.
   <template>
     <style>
       core-header-panel {
+        height: 100%;
         /* Inherit min-height so that the element is filled, but still changes
          * height as the window is resized. */
         min-height: inherit;
-        height: 100%;
       }
       core-toolbar {
-        display: block;
+        align-items: center;
+        background: #26A69A;
+        color: white;
         height: 100%;
         width: 100%;
-        color: white;
-        background: #26A69A;
-        align-items: center;
+      }
+      /* This offsets the 4px shadow from the core toolbar. !important overrides
+       * the shadow DOM rule which didn't allow any margin-bottom to be greater
+       * than 0px. */
+      core-toolbar > * {
+        margin: 0 8px 4px 8px !important;
       }
       paper-icon-button {
         background: #00897B;
@@ -56,12 +61,16 @@ image, and Undo/Redo buttons.
       paper-item {
         color: black;
       }
+      /* overflow, text-overflow and white-space styling are rules for
+       * displaying the filename. */
       span {
-        display: inline;
-        text-transform: uppercase;
-        white-space: nowrap;
+        display: inline-block;
+        line-height: 40px;
         overflow: hidden;
         text-overflow: ellipsis;
+        text-transform: uppercase;
+        vertical-align: middle;
+        white-space: nowrap;
       }
     </style>
 
