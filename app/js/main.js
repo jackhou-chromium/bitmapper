@@ -521,7 +521,12 @@ bitmapper.setUpTools = function() {
   var toolPanel = document.getElementById('toolButtonPanel');
 
   var pencilTool = new bitmapper.PencilTool(
-      toolContext, bitmapper.optionProviders);
+      toolContext, bitmapper.optionProviders,
+      bitmapper.PencilTool.ToolType.PENCIL);
+
+  var eraserTool = new bitmapper.PencilTool(
+      toolContext, bitmapper.optionProviders,
+      bitmapper.PencilTool.ToolType.ERASER);
 
   bitmapper.tools = {
     'brushTool' :
@@ -541,7 +546,8 @@ bitmapper.setUpTools = function() {
           if (done)
             bitmapper.setSelectedTool(toolPanel.tools['pencilTool']);
         }),
-    'selectionTool' : new bitmapper.SelectionTool(toolContext)
+    'selectionTool' : new bitmapper.SelectionTool(toolContext),
+    'eraserTool' : eraserTool
   };
 
   toolPanel.tools = bitmapper.tools;

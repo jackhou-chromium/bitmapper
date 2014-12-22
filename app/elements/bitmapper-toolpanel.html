@@ -2,7 +2,7 @@
 
 <!--
 The bitmapper-toolpanel Polymer element encapsulates the panel of tool buttons,
-including pencil, brush, bucket, pipette, and select.
+including pencil, brush, bucket, pipette, select and erase.
 
 `tools` is a map of objects. When assigned, if there is a 'defaultTool' key, it
 is set as the 'activeTool'.
@@ -71,6 +71,12 @@ selected tool icon.
           on-click="{{ activate }}"
           title="Selection Tool"
           name="selectionTool">
+      </paper-icon-button>
+      <paper-icon-button
+          icon="editor:format-color-reset"
+          on-click="{{ activate }}"
+          title="Eraser Tool"
+          name="eraserTool">
       </paper-icon-button>
     </div>
   </template>

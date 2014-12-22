@@ -12,9 +12,10 @@
  * @implements {Tool}
  * @param {ToolContext} toolContext
  * @param {Object} optionProviders
- *
+ * @param {PencilTool.ToolType} type
  */
-function PencilTool(toolContext, optionProviders) {}
+function PencilTool(toolContext, optionProviders, type) {}
+
 
 (function() {
 
@@ -26,8 +27,9 @@ function PencilTool(toolContext, optionProviders) {}
    * @implements {Tool}
    * @param {ToolContext} toolContext
    * @param {Object} optionProviders
+   * @param {PencilTool.ToolType} type
    */
-  function PencilTool(toolContext, optionProviders) {
+  function PencilTool(toolContext, optionProviders, type) {
     /**
      * @type {CanvasRenderingContext2D}
      */
@@ -68,8 +70,22 @@ function PencilTool(toolContext, optionProviders) {}
      */
     this.lastY = 0;
 
+    /**
+     * Type of pencil tool.
+     * @type {PencilTool.ToolType}
+     */
+    this.type = type;
   };
 
+
+  /**
+   * Pencil tool types.
+   * @enum {number}
+   */
+  PencilTool.ToolType = {
+    PENCIL: 0,
+    ERASER: 1
+  };
 
   /**
    * Start draw.
@@ -133,7 +149,14 @@ function PencilTool(toolContext, optionProviders) {}
     var run = true;
     var dx = Math.abs(x1 - x0);
     var dy = Math.abs(y1 - y0);
-    ctx.fillStyle = this.colorPalette.getSelectedColorWithOpacity();
+
+
+    if (this.type == PencilTool.ToolType.ERASER) {
+      // Only set opacity.
+      ctx.fillStyle = 'rgba(0,0,0,0)';
+    } else {
+      ctx.fillStyle = this.colorPalette.getSelectedColorWithOpacity();
+    }
     var sx = x0 < x1 ? 1 : -1;
     var sy = y0 < y1 ? 1 : -1;
     var err = dx - dy;
