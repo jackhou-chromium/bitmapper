@@ -80,27 +80,15 @@ bitmapper-toolbar {
 .paletteContainer {
   display: flex;
   flex-wrap: wrap;
-  width: 130px;
-  background: white;
-  margin: auto;
   margin-bottom: 20px;
-  padding-bottom: 2px;
 }
 .paletteCell {
-  height: 28px;
-  width: 28px;
-  margin-left: 2px;
-  margin-top: 2px;
-  border: 1px #181818 solid;
-}
-
-.paletteCell:hover {
-  border: 1px #009999 solid;
-  box-shadow: inset 0 0 5px #009999;
-  height: 28px;
-  margin-left: 2px;
-  margin-top: 2px;
-  width: 28px;
+  border-radius: 40px;
+  height: 32px;
+  width: 32px;
+  margin: auto;
+  margin-bottom: 5px;
+  border: 2px #26A69A solid;
 }
 
 /* Option Providers */
