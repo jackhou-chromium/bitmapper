@@ -515,7 +515,9 @@ bitmapper.setUpTools = function() {
 
   bitmapper.tools = {
     'brushTool' :
-        new bitmapper.BrushTool(toolContext, bitmapper.optionProviders),
+        new bitmapper.PencilTool(
+            toolContext, bitmapper.optionProviders,
+            bitmapper.PencilTool.ToolType.BRUSH),
     'defaultTool' : pencilTool,
     'pencilTool' : pencilTool,
     'bucketTool' : new bitmapper.BucketTool(

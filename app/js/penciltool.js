@@ -84,7 +84,8 @@ function PencilTool(toolContext, optionProviders, type) {}
    */
   PencilTool.ToolType = {
     PENCIL: 0,
-    ERASER: 1
+    ERASER: 1,
+    BRUSH: 2
   };
 
   /**
@@ -107,8 +108,12 @@ function PencilTool(toolContext, optionProviders, type) {}
     if (!this.dragging)
       return;
 
-    this.drawLine(this.lastX, this.lastY, mouseCoordinates.sourceX,
-        mouseCoordinates.sourceY);
+    if (this.type == PencilTool.ToolType.BRUSH) {
+      this.drawBrush(mouseCoordinates);
+    } else {
+      this.drawLine(this.lastX, this.lastY, mouseCoordinates.sourceX,
+          mouseCoordinates.sourceY);
+    }
     this.lastX = mouseCoordinates.sourceX;
     this.lastY = mouseCoordinates.sourceY;
   };
@@ -130,6 +135,7 @@ function PencilTool(toolContext, optionProviders, type) {}
   };
 
   /**
+   * Draw using pencil/ eraser.
    * Takes into account size selector value and draws to centre of rect.
    * @param {number} x0
    * @param {number} y0
@@ -185,6 +191,25 @@ function PencilTool(toolContext, optionProviders, type) {}
     this.drawDisplayCanvas();
   };
 
+  /**
+   * Draw using brush tool.
+   * @param {MouseCoordinates} mouseCoordinates
+   */
+  PencilTool.prototype.drawBrush = function(mouseCoordinates) {
+    var ctx = this.sourceContext;
+    ctx.beginPath();
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.moveTo(this.lastX, this.lastY);
+    ctx.lineWidth = this.sizeSelector.value;
+    ctx.lineTo(Math.floor(mouseCoordinates.sourceX),
+        Math.floor(mouseCoordinates.sourceY));
+    ctx.strokeStyle = this.colorPalette.getSelectedColorWithOpacity();
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    // Redraw display canvas.
+    this.drawDisplayCanvas();
+  };
+
   PencilTool.prototype.tearDown = function() {
   };
 
@@ -200,14 +225,18 @@ function PencilTool(toolContext, optionProviders, type) {}
     // Styling.
     cursorDiv.style.width = (this.sizeSelector.value * zoomFactor) + 'px';
     cursorDiv.style.height = (this.sizeSelector.value * zoomFactor) + 'px';
-    cursorDiv.style.backgroundColor =
-        this.colorPalette.getSelectedColorWithOpacity();
-    // Give cursor div border when opacity is low.
-    if (this.colorPalette.getOpacity() < 0.2) {
-      cursorDiv.style.border = '1px solid black';
-      // Account for border.
-      cursorDiv.style.width = parseInt(cursorDiv.style.width, 10) - 1 + 'px';
-      cursorDiv.style.height = parseInt(cursorDiv.style.height, 10) - 1 + 'px';
+    cursorDiv.style.border = '1px solid black';
+
+    if (this.type == PencilTool.ToolType.BRUSH)
+      cursorDiv.style.borderRadius = '50%';
+    else
+      cursorDiv.style.removeProperty('borderRadius');
+
+    if (this.type == PencilTool.ToolType.ERASER) {
+      cursorDiv.style.removeProperty('backgroundColor');
+    } else {
+      cursorDiv.style.backgroundColor =
+          this.colorPalette.getSelectedColorWithOpacity();
     }
     // Position with centred pixel alignment.
     var shift = this.sizeSelector.value / 2;

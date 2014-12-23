@@ -15,7 +15,7 @@ TEST_EXCLUDES := main.js
 # Javascript source files to edit.
 # IMPORTANT: These must be in dependency order.
 SRCS := namespace.js util.js imagefile.js zoommanager.js colorpalette.js \
-    tool.js penciltool.js brushtool.js buckettool.js pipettetool.js \
+    tool.js penciltool.js buckettool.js pipettetool.js \
     selectiontool.js selectioncanvasmanager.js cursorguide.js main.js
 
 APP_SRCS := $(patsubst %,$(APPDIR)/$(SRCDIR)/%,$(SRCS))
