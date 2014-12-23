@@ -40,7 +40,7 @@ bitmapper.setCanvasToImage = function() {
   bitmapper.drawImageToCanvas(image.src);
 
   // Set initial zoom properties.
-  bitmapper.zoomCanvas();
+  bitmapper.zoomCanvas(1.0);
 
   bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
 };
@@ -163,7 +163,7 @@ bitmapper.zoomCanvas = function(zoomValue) {
  * Set background color of selected color box to selected color.
  */
 bitmapper.setSelectedColorBox = function() {
-  document.getElementById('colorSelector').colorValue =
+  document.getElementById('colorSelector')['colorValue'] =
       bitmapper.rgbToHex(
           bitmapper.optionProviders.colorPalette.getSelectedColor());
 };
@@ -174,7 +174,7 @@ bitmapper.setSelectedColorBox = function() {
  */
 bitmapper.updatePalette = function() {
   bitmapper.optionProviders.colorPalette.updateCellColor(
-      document.getElementById('colorSelector').colorValue,
+      document.getElementById('colorSelector')['colorValue'],
       bitmapper.optionProviders.colorPalette.getSelectedIndex());
 
   var storageEntry = {};
@@ -186,7 +186,7 @@ bitmapper.updatePalette = function() {
 
 /**
  * Set selected tool.
- * @param {Object} tool
+ * @param {Tool} tool
  */
 bitmapper.setSelectedTool = function(tool) {
   bitmapper.selectedTool.tearDown();
@@ -335,32 +335,17 @@ bitmapper.handleKeyDown = function(keyEvent) {
         // Zoom in.
         document.getElementById('zoomSelector').value =
             bitmapper.zoomManager.getZoomFactor() + 1;
-        bitmapper.zoomCanvas();
+        bitmapper.zoomCanvas(1.0);
         break;
       case 189: // -
         // Zoom out.
         document.getElementById('zoomSelector').value =
             bitmapper.zoomManager.getZoomFactor() - 1;
-        bitmapper.zoomCanvas();
+        bitmapper.zoomCanvas(1.0);
         break;
     }
   } else {
     switch (keyEvent.keyCode) {
-      case 49: // 1
-        bitmapper.setSelectedTool(bitmapper.tools.pencilTool);
-        break;
-      case 50: // 2
-        bitmapper.setSelectedTool(bitmapper.tools.brushTool);
-        break;
-      case 51: // 3
-        bitmapper.setSelectedTool(bitmapper.tools.bucketTool);
-        break;
-      case 52: // 4
-        bitmapper.setSelectedTool(bitmapper.tools.pipetteTool);
-        break;
-      case 53: // 5
-        bitmapper.setSelectedTool(bitmapper.tools.selectionTool);
-        break;
       case 81: // q
         bitmapper.optionProviders.colorPalette.setSelectedIndex(0);
         break;
@@ -544,16 +529,16 @@ bitmapper.setUpTools = function() {
           document.getElementById('sliderInputs').$.sliderModel.opacity =
               Math.round(opacity * 100.0);
           if (done)
-            bitmapper.setSelectedTool(toolPanel.tools['pencilTool']);
+            bitmapper.setSelectedTool(toolPanel['tools']['pencilTool']);
         }),
     'selectionTool' : new bitmapper.SelectionTool(toolContext),
     'eraserTool' : eraserTool
   };
 
-  toolPanel.tools = bitmapper.tools;
+  toolPanel['tools'] = bitmapper.tools;
 
   // Handler for tool buttons.
-  toolPanel.activeToolChanged = function(oldTool, newTool) {
+  toolPanel['activeToolChanged'] = function(oldTool, newTool) {
     if (oldTool)
       oldTool.tearDown();
     bitmapper.selectedTool = newTool;
@@ -700,7 +685,7 @@ bitmapper.start = function(localStorageObject) {
 
   // Handler for change in zoom and opacity
   Object.observe(
-      document.getElementById('sliderInputs').sliderModel,
+      document.getElementById('sliderInputs')['sliderModel'],
       function(changes) {
         var sliderModel = changes.slice(-1)[0].object;
         bitmapper.zoomCanvas(sliderModel.zoom);
@@ -727,12 +712,13 @@ bitmapper.start = function(localStorageObject) {
 
   // Other UI elements.
   var colorSelector = document.getElementById('colorSelector');
-  colorSelector.colorValueChanged = function() {
+  colorSelector['colorValueChanged'] = function() {
     bitmapper.updatePalette();
   };
 
   // Handler for change in dimension.
-  bitmapper.toolbar.$.resizeInput.dimensionChanged = function(oldVal, newVal) {
+  bitmapper.toolbar.$.resizeInput['dimensionChanged'] = function(
+      oldVal, newVal) {
     bitmapper.resizeCanvas(newVal.width, newVal.height);
   };
 

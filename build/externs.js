@@ -8,12 +8,6 @@
 
 
 /**
- * @param {function(Entry)} callback callback
- */
-chrome.runtime.getPackageDirectoryEntry = function(callback) {};
-
-
-/**
  * @param {string} data data
  */
 var atob = function(data) {};
@@ -29,6 +23,26 @@ var atob = function(data) {};
  * @param {number} tolerance
  */
 var floodfill = function(x, y, fillcolor, ctx, width, height, tolerance) {};
+
+
+/**
+ * Declare all our polymer properties so Closure doesn't optimize them out.
+ *
+ * @type {Object}
+ * @const
+ */
+HTMLElement.prototype.$ = {
+  sliderModel: { size: 0, opacity: 0, zoom: 0},
+  resizeInput: {},
+  sizeSelector: {}
+};
+
+
+/**
+ * Expose Object.observe to closure. Eventually this should be bundled inside
+ * the Closure compiler.jar and this can be removed. But it's not there yet.
+ */
+Object.observe = function(object, callback) {};
 
 
 /**

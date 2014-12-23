@@ -90,7 +90,7 @@ $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
 	$(CLOSURE) $(CLOSURE_ARGS) \
 		--compilation_level ADVANCED_OPTIMIZATIONS \
 		$(patsubst %, --js $(CURDIR)/%, $(APP_SRCS)) \
-		--js_output_file $(PROJECT).js
+		--js_output_file $(PROJECT).js --formatting PRETTY_PRINT
 
 out/$(PROJECT).zip : $(SETUP) \
           $(OUTDIR)/$(RELEASEDIR)/.prepared \
@@ -143,7 +143,7 @@ test : $(SETUP) copy_test_files \
 
 # Lints all .js files.
 lint :
-	gjslint --jslint_error=all $(ALL_SRCS) $(EXTERNS)
+	gjslint --jslint_error=all $(ALL_SRCS)
 
 
 # Clean up output files.

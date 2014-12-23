@@ -167,7 +167,7 @@ function ColorPalette(divContainer, callback) {}
   /**
    * Converts rgba color format to an object.
    * @param {string} rgbaColor
-   * @return {Object}
+   * @return {Array.<number>}
    */
   function rgbaToArray(rgbaColor) {
     var digits = rgbaColor.match(

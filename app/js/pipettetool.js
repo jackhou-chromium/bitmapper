@@ -4,17 +4,6 @@
  * found in the LICENSE file.
  */
 
-
-
-/**
- * @constructor
- * @struct
- * @implements {Tool}
- * @param {ToolContext} toolContext
- * @param {function()} callback
- */
-function PipetteTool(toolContext, callback) {}
-
 (function() {
 
   /**
@@ -30,7 +19,7 @@ function PipetteTool(toolContext, callback) {}
    * @struct
    * @implements {Tool}
    * @param {ToolContext} toolContext
-   * @param {function()} callback
+   * @param {function(string, number, boolean)} callback
    */
   function PipetteTool(toolContext, callback) {
     /**

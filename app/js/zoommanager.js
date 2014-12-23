@@ -9,7 +9,7 @@
 /**
  * @constructor
  * @struct
- * @param {HTMLElement} sourceCanvas
+ * @param {Element} sourceCanvas
  * @param {HTMLElement} displayCanvas
  * @param {HTMLElement} canvasPlaceholder
  * @param {HTMLElement} canvasViewport
@@ -26,7 +26,7 @@ function ZoomManager(sourceCanvas,
    * Encapsulates data related to the zoom manager.
    * @constructor
    * @struct
-   * @param {HTMLElement} sourceCanvas
+   * @param {Element} sourceCanvas
    * @param {HTMLElement} displayCanvas
    * @param {HTMLElement} canvasPlaceholder
    * @param {HTMLElement} canvasViewport
@@ -41,7 +41,7 @@ function ZoomManager(sourceCanvas,
     this.zoomFactor = 1;
 
     /**
-     * @type {HTMLElement}
+     * @type {Element}
      */
     this.sourceCanvas = sourceCanvas;
 

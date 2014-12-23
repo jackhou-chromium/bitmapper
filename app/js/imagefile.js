@@ -28,7 +28,7 @@ function ImageFile() {}
   function ImageFile() {
     /**
      * Initially set to null and set upon loading a file.
-     * @type {FileEntry}
+     * @type {Entry}
      */
     this.fileEntry = null;
 
@@ -59,7 +59,7 @@ function ImageFile() {}
 
   /**
    * Sets the current file entry to the given file entry.
-   * @param {FileEntry} fileEntry
+   * @param {Entry} fileEntry
    */
   ImageFile.prototype.setFileEntry = function(fileEntry) {
     this.fileEntry = fileEntry;
@@ -67,7 +67,7 @@ function ImageFile() {}
 
   /**
    * Loads the chosen file entry to the canvas.
-   * @param {FileEntry} fileEntry
+   * @param {Entry} fileEntry
    * @param {function()} callback
    */
   ImageFile.prototype.loadFile = function(fileEntry, callback) {
