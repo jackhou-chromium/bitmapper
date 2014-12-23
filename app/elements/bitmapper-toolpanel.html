@@ -39,46 +39,46 @@ selected tool icon.
       cursor: pointer;
       margin: 5px;
     }
+    .core-selected {
+      border: 2px #26A69A solid;
+      margin: 3px;
+    }
     </style>
 
-    <div class="tools">
+    <!-- Clear selectedAttribute to prevent
+        background color changing when "active". -->
+    <core-selector class="tools" selected="0" selectedAttribute="">
       <paper-icon-button
           icon="image:edit"
-          on-click="{{ activate }}"
           title="Pencil"
           name="pencilTool">
       </paper-icon-button>
       <paper-icon-button
           icon="image:brush"
-          on-click="{{ activate }}"
           title="Brush"
           name="brushTool">
       </paper-icon-button>
       <paper-icon-button
           icon="editor:format-color-fill"
-          on-click="{{ activate }}"
           title="Bucket Fill"
           name="bucketTool">
       </paper-icon-button>
       <paper-icon-button
           icon="image:colorize"
-          on-click="{{ activate }}"
           title="Color Picker"
           name="pipetteTool">
       </paper-icon-button>
       <paper-icon-button
           icon="image:crop-free"
-          on-click="{{ activate }}"
           title="Selection Tool"
           name="selectionTool">
       </paper-icon-button>
       <paper-icon-button
           icon="editor:format-color-reset"
-          on-click="{{ activate }}"
           title="Eraser Tool"
           name="eraserTool">
       </paper-icon-button>
-    </div>
+    </core-selector>
   </template>
 
   <script>
@@ -88,9 +88,6 @@ selected tool icon.
       toolsChanged: function(oldVal, newVal) {
         this.activeTool = newVal['defaultTool'];
       },
-      activate: function (event, detail, sender) {
-        this.activeTool = this.tools[sender.getAttribute("name")];
-      }
     });
   </script>
 </polymer-element>

@@ -536,6 +536,10 @@ bitmapper.setUpTools = function() {
   };
 
   toolPanel['tools'] = bitmapper.tools;
+  toolPanel.addEventListener('core-activate', function(e) {
+    toolPanel['activeTool'] =
+        toolPanel['tools'][e.detail.item.getAttribute('name')];
+  });
 
   // Handler for tool buttons.
   toolPanel['activeToolChanged'] = function(oldTool, newTool) {
