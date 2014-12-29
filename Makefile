@@ -78,7 +78,7 @@ $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
 	# TODO(tapted): Make this more selective -- there is too much stuff in
 	# app/ that doesn't need to be put in the webstore release.
 	mkdir -p $(dir $@)
-	mkdir $(dir $@)/icons
+	mkdir -p $(dir $@)/icons
 	cp -r $(APPDIR)/* $(dir $@)
 	touch $@
 
