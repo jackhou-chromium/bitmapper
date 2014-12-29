@@ -1,0 +1,44 @@
+<!-- Copyright 2014 Google Inc. All Rights Reserved. -->
+
+<!--
+The color-palette Polymer element is an element for selecting a color.
+
+@element color-palette
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/core-selector/core-selector.html">
+
+<polymer-element name="color-palette" attributes="colors">
+  <template>
+    <style>
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      .cell {
+        border-radius: 40px;
+        height: 32px;
+        width: 32px;
+        margin: auto;
+        margin-bottom: 5px;
+        border: 2px #26A69A solid;
+      }
+    </style>
+
+    <core-selector id="paletteSelector" class="container">
+      <template repeat="{{ color in colors }}">
+        <div class="cell" style="background-color: {{ color }}">
+        </div>
+      </template>
+    </core-selector>
+  </template>
+
+  <script>
+    Polymer ('color-palette', {
+      colors: []
+    });
+  </script>
+</polymer-element>

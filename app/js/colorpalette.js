@@ -9,10 +9,8 @@
 /**
  * @constructor
  * @struct
- * @param {HTMLElement} divContainer
- * @param {function()} callback
  */
-function ColorPalette(divContainer, callback) {}
+function ColorPalette() {}
 
 
 /**
@@ -24,33 +22,13 @@ function ColorPalette(divContainer, callback) {}
    * Encapsulates data related to the color palette.
    * @constructor
    * @struct
-   * @param {HTMLElement} divContainer
-   * @param {function()} callback
    */
-  function ColorPalette(divContainer, callback) {
+  function ColorPalette() {
     /**
-     * Color palette cells appended to this div container.
-     * @type {HTMLElement}
+     * Most recently selected div.
+     * @type {Element}
      */
-    this.divContainer = divContainer;
-
-    /**
-     * Called when selectedColorIndex is set.
-     * @type {function()}
-     */
-    this.callback = callback;
-
-    /**
-     * The palette position of selected color.
-     * @type {number}
-     */
-    this.selectedColorIndex = 0;
-
-    /**
-     * Array of given colors.
-     * @type {Array.<Element>}
-     */
-    this.colorDivs = [];
+    this.selectedDiv = null;
 
     /**
      * Default opacity is 1 (fully opaque).
@@ -60,58 +38,19 @@ function ColorPalette(divContainer, callback) {}
   };
 
   /**
-   * Generates html for color palette.
-   * @param {Array.<string>} colorArray
+   * Sets selected div.
+   * @param {Element} selected
    */
-  ColorPalette.prototype.generatePalette = function(colorArray) {
-    for (var i = 0; i < colorArray.length; i++) {
-      // Styling.
-      var cellDiv = document.createElement('div');
-      cellDiv.className = 'paletteCell';
-      cellDiv.style.backgroundColor = colorArray[i];
-      this.divContainer.className = 'paletteContainer';
-      this.divContainer.appendChild(cellDiv);
-      this.colorDivs[i] = cellDiv;
-      // Mouse event.
-      this.addClickListenerToColorDiv(i);
-    }
-  };
-
-  /**
-   * Sets correct selected index when div is clicked.
-   * @param {number} cellIndex
-   */
-  ColorPalette.prototype.addClickListenerToColorDiv = function(cellIndex) {
-    // Without this, the cell index would be the last i value in for loop of
-    // generatePalette function.
-    this.colorDivs[cellIndex].addEventListener('click',
-        function() {this.setSelectedIndex(cellIndex)}.bind(this), false);
+  ColorPalette.prototype.setSelectedCell = function(selected) {
+    this.selectedDiv = selected;
   };
 
   /**
    * Changes background color of selected cell in palette.
    * @param {string} color
-   * @param {number} index
    */
-  ColorPalette.prototype.updateCellColor = function(color, index) {
-    this.colorDivs[index].style.backgroundColor = color;
-  };
-
-  /**
-   * Sets selected index in color palette array.
-   * @param {number} index
-   */
-  ColorPalette.prototype.setSelectedIndex = function(index) {
-    this.selectedColorIndex = index;
-    this.callback();
-  };
-
-  /**
-   * Gets selected index in color palette array.
-   * @return {number}
-   */
-  ColorPalette.prototype.getSelectedIndex = function() {
-    return this.selectedColorIndex;
+  ColorPalette.prototype.updateCellColor = function(color) {
+    this.selectedDiv.style.backgroundColor = color;
   };
 
   /**
@@ -119,7 +58,7 @@ function ColorPalette(divContainer, callback) {}
    * @return {string}
    */
   ColorPalette.prototype.getSelectedColor = function() {
-    return this.colorDivs[this.selectedColorIndex].style.backgroundColor;
+    return this.selectedDiv.style.backgroundColor;
   };
 
   /**
@@ -177,18 +116,6 @@ function ColorPalette(divContainer, callback) {}
             parseInt(digits[3], 10),
             Math.floor(parseFloat(digits[4]) * 255)];
   }
-
-  /**
-   * Gets the colors of the color palette.
-   * @return {Array.<string>}
-   */
-  ColorPalette.prototype.getColorArray = function() {
-    var colorArray = [];
-    for (var i = 0; i < this.colorDivs.length; i++) {
-      colorArray.push(this.colorDivs[i].style.backgroundColor);
-    }
-    return colorArray;
-  };
 
   bitmapper.rgbToHex = rgbToHex;
   bitmapper.rgbaToArray = rgbaToArray;

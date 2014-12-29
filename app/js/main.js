@@ -173,13 +173,12 @@ bitmapper.setSelectedColorBox = function() {
  * Changes background of selected cell in palette to selected color.
  */
 bitmapper.updatePalette = function() {
-  bitmapper.optionProviders.colorPalette.updateCellColor(
-      document.getElementById('colorSelector')['colorValue'],
-      bitmapper.optionProviders.colorPalette.getSelectedIndex());
+  var newColor = document.getElementById('colorSelector')['colorValue'];
+  bitmapper.optionProviders.colorPalette.updateCellColor(newColor);
 
   var storageEntry = {};
-  storageEntry[bitmapper.COLOR_ARRAY_STORAGE_KEY] =
-      bitmapper.optionProviders.colorPalette.getColorArray();
+  var colors = document.getElementById('colorPalette').colors;
+  storageEntry[bitmapper.COLOR_ARRAY_STORAGE_KEY] = colors;
   chrome.storage.local.set(storageEntry, function() {});
 };
 
@@ -344,33 +343,6 @@ bitmapper.handleKeyDown = function(keyEvent) {
         bitmapper.zoomCanvas(1.0);
         break;
     }
-  } else {
-    switch (keyEvent.keyCode) {
-      case 81: // q
-        bitmapper.optionProviders.colorPalette.setSelectedIndex(0);
-        break;
-      case 87: // w
-        bitmapper.optionProviders.colorPalette.setSelectedIndex(1);
-        break;
-      case 69: // e
-        bitmapper.optionProviders.colorPalette.setSelectedIndex(2);
-        break;
-      case 82: // r
-        bitmapper.optionProviders.colorPalette.setSelectedIndex(3);
-        break;
-      case 65: // a
-        bitmapper.optionProviders.colorPalette.setSelectedIndex(4);
-        break;
-      case 83: // s
-        bitmapper.optionProviders.colorPalette.setSelectedIndex(5);
-        break;
-      case 68: // d
-        bitmapper.optionProviders.colorPalette.setSelectedIndex(6);
-        break;
-      case 70: // f
-        bitmapper.optionProviders.colorPalette.setSelectedIndex(7);
-        break;
-    }
   }
 };
 
@@ -466,17 +438,24 @@ bitmapper.showCoordinates = function(mouseCoordinates) {
  * @param {Object} localStorageObject
  */
 bitmapper.setUpOptionProviders = function(localStorageObject) {
-  // Callback sets the color selector box to the selected color.
-  var colorPalette = new bitmapper.ColorPalette(
-      document.getElementById('paletteContainer'),
-      bitmapper.setSelectedColorBox);
+  var colorPalette = new bitmapper.ColorPalette();
 
   var initialColors = localStorageObject[bitmapper.COLOR_ARRAY_STORAGE_KEY];
   if (!initialColors) {
     initialColors = ['#000000', '#ffff00', '#0000ff', '#ff00ff',
                      '#cc00ff', '#9900ff', '#ff6600', '#0099ff'];
   }
-  colorPalette.generatePalette(initialColors);
+  var palette = document.getElementById('colorPalette');
+  palette.colors = initialColors;
+  palette.addEventListener('core-select', function(e) {
+    // We need to ignore deselection.
+    if (!e.detail.isSelected)
+      return;
+    colorPalette.setSelectedCell(e.detail.item);
+    bitmapper.setSelectedColorBox();
+  });
+  // Now the event listener is added, set the initial selection.
+  palette.$['paletteSelector'].selected = 0;
 
   var sizeSelector = document.getElementById('sliderInputs').$.sizeSelector;
   // Option providers passed to Tools as an Object so there is no type safety.
@@ -524,9 +503,7 @@ bitmapper.setUpTools = function() {
         toolContext, bitmapper.optionProviders),
     'pipetteTool' : new bitmapper.PipetteTool(
         toolContext, function(color, opacity, done) {
-          bitmapper.optionProviders.colorPalette.updateCellColor(
-              color,
-              bitmapper.optionProviders.colorPalette.getSelectedIndex());
+          bitmapper.optionProviders.colorPalette.updateCellColor(color);
           bitmapper.setSelectedColorBox();
           document.getElementById('sliderInputs').$.sliderModel.opacity =
               Math.round(opacity * 100.0);
@@ -722,7 +699,6 @@ bitmapper.start = function(localStorageObject) {
 
   // Set up mouse event listeners.
   bitmapper.registerMouseEvents();
-  bitmapper.setSelectedColorBox();
 
   // Other UI elements.
   var colorSelector = document.getElementById('colorSelector');
