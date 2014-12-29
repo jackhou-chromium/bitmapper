@@ -694,7 +694,15 @@ bitmapper.start = function(localStorageObject) {
       document.getElementById('sliderInputs')['sliderModel'],
       function(changes) {
         var sliderModel = changes.slice(-1)[0].object;
-        bitmapper.zoomCanvas(sliderModel.zoom);
+        if (sliderModel.zoom < -1) {
+          // Invert zoom.
+          bitmapper.zoomCanvas(1 / (Math.abs(sliderModel.zoom)));
+        } else if (sliderModel.zoom <= 1) {
+          // Set zoom level to initial value.
+          bitmapper.zoomCanvas(1);
+        } else {
+          bitmapper.zoomCanvas(sliderModel.zoom);
+        }
         // setOpacity method takes opacity in the range 0-1
         bitmapper.optionProviders.colorPalette.setOpacity(
             sliderModel.opacity / 100.0);

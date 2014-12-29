@@ -9,6 +9,10 @@ opacity and brush size. Each slider can be manipulated by an input box.
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../bower_components/core-icons/core-icons.html">
+<link rel="import" href="../bower_components/core-icons/image-icons.html">
+<link rel="import"
+  href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
 
 <polymer-element name="bitmapper-sliders" attributes="sliderModel">
@@ -19,6 +23,13 @@ opacity and brush size. Each slider can be manipulated by an input box.
       }
       label {
         text-transform: uppercase;
+      }
+      .slider-title {
+        display: inline-block;
+      }
+      .slider-title paper-icon-button {
+        margin-bottom: -7px;
+        padding: 0px;
       }
     </style>
 
@@ -45,12 +56,22 @@ opacity and brush size. Each slider can be manipulated by an input box.
           editable role="slider">
         </paper-slider>
       </div>
-      <label for="zoomSelector">Zoom</label>
+      <div class="slider-title">
+        <label for="zoomSelector">Zoom</label>
+        <paper-icon-button
+            icon="icons:remove-circle-outline"
+            on-click="{{ decreaseZoom }}">
+          </paper-icon-button>
+          <paper-icon-button
+            icon="icons:add-circle-outline"
+            on-click="{{ increaseZoom }}">
+          </paper-icon-button>
+        </div>
       <div center horizontal layout>
         <paper-slider
           id="zoomSelector"
           value="{{ sliderModel.zoom }}"
-          min="1"
+          min="-32"
           max="32"
           step="1"
           editable role="slider">
@@ -67,6 +88,20 @@ opacity and brush size. Each slider can be manipulated by an input box.
           opacity: 100,
           zoom: 1
         };
+      },
+      decreaseZoom: function() {
+        var currSliderValue = this.sliderModel.zoom;
+        var newValue = currSliderValue - 1;
+        if (currSliderValue == 1)
+          newValue = -2;
+        this.sliderModel.zoom = Math.max(-32, newValue);
+      },
+      increaseZoom: function() {
+        var currSliderValue = this.sliderModel.zoom;
+        var newValue = currSliderValue + 1;
+        if (currSliderValue == -2)
+          newValue = 1;
+        this.sliderModel.zoom = Math.min(32, newValue);
       }
     });
   </script>
