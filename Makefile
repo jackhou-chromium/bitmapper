@@ -27,6 +27,12 @@ ALL_SRCS := $(APP_SRCS) $(TEST_SRCS)
 
 APP_HTML_FILES := $(shell find $(APPDIR) -type f -name '*.html')
 
+ICON_SIZES := 16x16 32x32 48x48 64x64 96x96 128x128
+DEBUG_ICONS := $(patsubst \
+    %,$(OUTDIR)/$(DEBUGDIR)/icons/bitmapper_icon_%.png,$(ICON_SIZES))
+RELEASE_ICONS := $(patsubst \
+    %,$(OUTDIR)/$(RELEASEDIR)/icons/bitmapper_icon_%.png,$(ICON_SIZES))
+
 # TODO(tapted): Ideally this would filter out source files that get bundled up
 # in the closure-compiled .js, as well as un-vulcanized html. But having those
 # files in the output dir is useful for debugging, so keep the dependency.
@@ -68,15 +74,27 @@ $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
 		$(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js
 
 %.prepared : $(APP_FILES)
-	# Copy the $(APPDIR) into $(dir $@)
+	# Copy the $(APPDIR) into $(dir $@).
+	# TODO(tapted): Make this more selective -- there is too much stuff in
+	# app/ that doesn't need to be put in the webstore release.
 	mkdir -p $(dir $@)
+	mkdir $(dir $@)/icons
 	cp -r $(APPDIR)/* $(dir $@)
 	touch $@
+
+# Icons for debug build come from icons/badge.
+$(OUTDIR)/$(DEBUGDIR)/icons/%.png : icons/badge/%.png
+	cp $< $@
+
+# Icons for release build come from icons.
+$(OUTDIR)/$(RELEASEDIR)/icons/%.png : icons/%.png
+	cp $< $@
 
 # Compile a debug build. This depends on the release build so the debug build
 # gets type checking.
 debug : $(SETUP) \
         $(OUTDIR)/$(DEBUGDIR)/.prepared \
+        $(DEBUG_ICONS) \
         $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js \
         $(OUTDIR)/$(DEBUGDIR)/build.html \
         $(OUTDIR)/$(DEBUGDIR)/$(PROJECT).js
@@ -94,6 +112,7 @@ $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js : $(APP_SRCS) $(EXTERNS)
 
 out/$(PROJECT).zip : $(SETUP) \
           $(OUTDIR)/$(RELEASEDIR)/.prepared \
+          $(RELEASE_ICONS) \
           $(OUTDIR)/$(RELEASEDIR)/$(PROJECT).js \
           $(OUTDIR)/$(RELEASEDIR)/build.html
 	# Remove the original source files.
