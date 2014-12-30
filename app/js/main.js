@@ -32,6 +32,13 @@ bitmapper.SAVED_CANVAS_STORAGE_KEY = 'savedCanvas';
 
 
 /**
+ * Allow for a margin of 5px when resizing via handles.
+ * @const {number}
+ */
+bitmapper.RESIZE_BORDER_WIDTH = 5;
+
+
+/**
  * Draws the image file to the canvas and sets initial properties.
  * Pushes this state as first snapshot.
  */
@@ -199,6 +206,50 @@ bitmapper.setSelectedTool = function(tool) {
  */
 bitmapper.registerMouseEvents = function() {
   var canvasWrapper = document.getElementById('canvasWrapper');
+  var canvasViewport = document.getElementById('canvasViewport');
+
+  // The edge which resize operation should take place on.
+  var resizeHeight = false;
+  var resizeWidth = false;
+
+  canvasViewport.addEventListener('mousedown',
+      function(mouseEvent) {
+        // Determine which edge to perform resize on.
+        var currentCursor = bitmapper.getCursorStyle();
+        if (currentCursor == 'e-resize') {
+          resizeWidth = true;
+        } else if (currentCursor == 's-resize') {
+          resizeHeight = true;
+        } else if (currentCursor == 'se-resize') {
+          resizeHeight = true;
+          resizeWidth = true;
+        }
+      }, false);
+  canvasViewport.addEventListener('mouseup',
+      function(mouseEvent) {
+        if (!resizeHeight && !resizeWidth)
+          return;
+
+        var coords = bitmapper.getMouseCoordinates(mouseEvent);
+        var newWidth = resizeWidth ? coords.sourceX :
+            bitmapper.sourceCanvas.width;
+        var newHeight = resizeHeight ? coords.sourceY :
+            bitmapper.sourceCanvas.height;
+        bitmapper.resizeCanvas(newWidth, newHeight);
+
+        resizeWidth = resizeHeight = false;
+      }, false);
+  canvasViewport.addEventListener('mousemove',
+      function(mouseEvent) {
+        var canvasPlaceholder = document.getElementById('canvasPlaceholder');
+        var coords = bitmapper.getMouseCoordinates(mouseEvent);
+        if (resizeHeight) {
+          canvasPlaceholder.style.height = coords.sourceY + 'px';
+        }
+        if (resizeWidth) {
+          canvasPlaceholder.style.width = coords.sourceX + 'px';
+        }
+      }, false);
 
   // Mouse support.
   canvasWrapper.addEventListener('mousedown',
@@ -233,6 +284,8 @@ bitmapper.registerMouseEvents = function() {
   window.addEventListener('mousemove',
       function(mouseEvent) {
         bitmapper.showCoordinates(
+            bitmapper.getMouseCoordinates(mouseEvent));
+        bitmapper.resizeCursorIcon(
             bitmapper.getMouseCoordinates(mouseEvent));
         // Check if selection canvas is being dragged.
         if (bitmapper.selectionCanvasManager.isDragging()) {
@@ -430,6 +483,79 @@ bitmapper.showCoordinates = function(mouseCoordinates) {
     return;
   }
   document.getElementById('coordinates').style.visibility = 'hidden';
+};
+
+
+/**
+ * Set cursor icon to allow canvas to be resized via handles.
+ * @param {MouseCoordinates} mouseCoordinates
+ */
+bitmapper.resizeCursorIcon = function(mouseCoordinates) {
+  if (!mouseCoordinates.inCanvas) {
+    if (bitmapper.resizeHeight(mouseCoordinates) &&
+        bitmapper.resizeWidth(mouseCoordinates)) {
+      document.getElementById('canvasViewport').style.cursor = 'se-resize';
+    } else if (bitmapper.resizeHeight(mouseCoordinates)) {
+      document.getElementById('canvasViewport').style.cursor = 's-resize';
+    } else if (bitmapper.resizeWidth(mouseCoordinates)) {
+      document.getElementById('canvasViewport').style.cursor = 'e-resize';
+    } else {
+      // Restore initial cursor icon.
+      document.getElementById('canvasViewport').style.cursor = 'initial';
+    }
+  }
+};
+
+
+/**
+ * Check if mouse is in resize bounds.
+ * @param {MouseCoordinates} mouseCoordinates
+ * @return {boolean}
+ */
+bitmapper.inResizeBound = function(mouseCoordinates) {
+  return bitmapper.checkCursorResize();
+};
+
+
+/**
+ * Returns current cursor style.
+ * @return {string}
+ */
+bitmapper.getCursorStyle = function() {
+  return document.getElementById('canvasViewport').style.cursor;
+};
+
+
+/**
+  * Check if cursor indicates if resize is taking place.
+  * @return {boolean}
+ */
+bitmapper.checkCursorResize = function() {
+  return bitmapper.getCursorStyle() == 'e-resize' ||
+      bitmapper.getCursorStyle() == 's-resize' ||
+      bitmapper.getCursorStyle() == 'se-resize';
+};
+
+
+/**
+ * Check if width should be resized.
+ * @param {MouseCoordinates} mouseCoordinates
+ * @return {boolean}
+ */
+bitmapper.resizeWidth = function(mouseCoordinates) {
+  var delta = mouseCoordinates.sourceX - bitmapper.sourceCanvas.width;
+  return delta >= 0 && delta <= bitmapper.RESIZE_BORDER_WIDTH;
+};
+
+
+/**
+ * Check if width should be resized.
+ * @param {MouseCoordinates} mouseCoordinates
+ * @return {boolean}
+ */
+bitmapper.resizeHeight = function(mouseCoordinates) {
+  var delta = mouseCoordinates.sourceY - bitmapper.sourceCanvas.height;
+  return delta >= 0 && delta <= bitmapper.RESIZE_BORDER_WIDTH;
 };
 
 
