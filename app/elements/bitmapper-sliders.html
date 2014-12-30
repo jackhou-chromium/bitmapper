@@ -93,7 +93,7 @@ opacity and brush size. Each slider can be manipulated by an input box.
       <div center horizontal layout>
         <paper-slider
           id="zoomSelector"
-          value="{{ zoomFactor }}"
+          immediateValue="{{ zoomFactor }}"
           min="-16"
           max="16"
           step="1"
@@ -101,7 +101,8 @@ opacity and brush size. Each slider can be manipulated by an input box.
         </paper-slider>
         <paper-input
           id="zoom-value"
-          value="{{ zoomPercent }}">
+          value="{{ zoomPercent }}"
+          disabled>
         </paper-input>
         <label id="zoom-percentage" for="zoomSelector">%</label>
       </div>
