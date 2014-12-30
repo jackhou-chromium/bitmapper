@@ -42,6 +42,16 @@ opacity and brush size. Each slider can be manipulated by an input box.
       }
       paper-slider /deep/ #secondaryProgress {
         background-color: #E0F2F1;
+      #zoom-percentage {
+        display: inline-block;
+        width: 5px;
+        padding-bottom: 22px;
+        margin-left: -3px;
+      }
+      #zoom-value {
+        width: 60px;
+        margin-bottom: 25px;
+        text-align: right;
       }
     </style>
 
@@ -82,12 +92,17 @@ opacity and brush size. Each slider can be manipulated by an input box.
       <div center horizontal layout>
         <paper-slider
           id="zoomSelector"
-          value="{{ sliderModel.zoom }}"
-          min="-32"
-          max="32"
+          value="{{ zoomFactor }}"
+          min="-16"
+          max="16"
           step="1"
-          editable role="slider">
+          role="slider">
         </paper-slider>
+        <paper-input
+          id="zoom-value"
+          value="{{ zoomPercent }}">
+        </paper-input>
+        <label id="zoom-percentage" for="zoomSelector">%</label>
       </div>
     </div>
   </template>
@@ -100,21 +115,53 @@ opacity and brush size. Each slider can be manipulated by an input box.
           opacity: 100,
           zoom: 1
         };
+        this.zoomPercent = 100;
+        this.zoomFactor = 1;
       },
       decreaseZoom: function() {
         var currSliderValue = this.sliderModel.zoom;
         var newValue = currSliderValue - 1;
         if (currSliderValue == 1)
           newValue = -2;
-        this.sliderModel.zoom = Math.max(-32, newValue);
+        this.zoomFactor = newValue;
       },
       increaseZoom: function() {
         var currSliderValue = this.sliderModel.zoom;
         var newValue = currSliderValue + 1;
-        if (currSliderValue == -2)
-          newValue = 1;
-        this.sliderModel.zoom = Math.min(32, newValue);
+        this.zoomFactor = newValue;
+      },
+      zoomPercentChanged: function(oldVal, newVal) {
+        this.zoomFactor = percentToFactor(newVal);
+      },
+      zoomFactorChanged: function(oldVal, newVal) {
+        if (newVal >= -1 && newVal < 1)
+          newVal = 1;
+        this.sliderModel.zoom = newVal;
+        this.zoomPercent = factorToPercent(newVal);
       }
     });
+
+    /**
+     * Convert pecentage to factor.
+     * @param {decimal} percent
+     * @return {integer}
+     */
+    function percentToFactor(percent) {
+      return percent > 50 ? Math.ceil(percent / 100) :
+          -Math.floor(100 / percent);
+    }
+
+
+    /**
+     * Convert factor to pecentage.
+     * @param {integer} factor
+     * @return {decimal}
+     */
+    function factorToPercent(factor) {
+      var percent = factor > 0 ? factor * 100 : 100 / -factor;
+      // Round percent value to 2 decimal places.
+      percent = Math.round(percent*100)/100;
+      return percent;
+    }
   </script>
 </polymer-element>
