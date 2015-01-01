@@ -243,11 +243,13 @@ bitmapper.registerMouseEvents = function() {
       function(mouseEvent) {
         var canvasPlaceholder = document.getElementById('canvasPlaceholder');
         var coords = bitmapper.getMouseCoordinates(mouseEvent);
+        var currentZoom = bitmapper.zoomManager.getZoomFactor();
         if (resizeHeight) {
-          canvasPlaceholder.style.height = coords.sourceY + 'px';
+          canvasPlaceholder.style.height = (coords.sourceY * currentZoom) +
+              'px';
         }
         if (resizeWidth) {
-          canvasPlaceholder.style.width = coords.sourceX + 'px';
+          canvasPlaceholder.style.width = (coords.sourceX * currentZoom) + 'px';
         }
       }, false);
 
