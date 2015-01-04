@@ -9,6 +9,8 @@ The color-palette Polymer element is an element for selecting a color.
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <link rel="import" href="../bower_components/core-selector/core-selector.html">
+<link rel="import"
+  href="../bower_components/paper-button/paper-button.html">
 
 <polymer-element name="color-palette" attributes="colors">
   <template>
@@ -18,20 +20,19 @@ The color-palette Polymer element is an element for selecting a color.
         flex-wrap: wrap;
         margin-bottom: 20px;
       }
-      .cell {
-        border-radius: 40px;
-        height: 32px;
-        width: 32px;
+      paper-button {
+        min-width: 35px;
+        min-height: 35px;
+        border-radius: 35px;
+        border: 2px #26A69A solid;
         margin: auto;
         margin-bottom: 5px;
-        border: 2px #26A69A solid;
       }
     </style>
 
     <core-selector id="paletteSelector" class="container">
       <template repeat="{{ color in colors }}">
-        <div class="cell" style="background-color: {{ color }}">
-        </div>
+        <paper-button style="background-color: {{ color }}"></paper-button>
       </template>
     </core-selector>
   </template>
