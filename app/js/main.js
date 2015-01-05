@@ -39,6 +39,24 @@ bitmapper.RESIZE_BORDER_WIDTH = 5;
 
 
 /**
+ * Type of resize operation taking place.
+ * @enum {number}
+ */
+bitmapper.ResizeOperation = {
+  NONE: 0x0,
+  WIDTH: 0x1,
+  HEIGHT: 0x2,
+  BOTH: 0x3
+};
+
+
+/**
+ * @type {bitmapper.ResizeOperation}
+ */
+bitmapper.activeResizeOperation = bitmapper.ResizeOperation.NONE;
+
+
+/**
  * Draws the image file to the canvas and sets initial properties.
  * Pushes this state as first snapshot.
  */
@@ -208,48 +226,52 @@ bitmapper.registerMouseEvents = function() {
   var canvasWrapper = document.getElementById('canvasWrapper');
   var canvasViewport = document.getElementById('canvasViewport');
 
-  // The edge which resize operation should take place on.
-  var resizeHeight = false;
-  var resizeWidth = false;
-
   canvasViewport.addEventListener('mousedown',
       function(mouseEvent) {
         // Determine which edge to perform resize on.
         var currentCursor = bitmapper.getCursorStyle();
         if (currentCursor == 'e-resize') {
-          resizeWidth = true;
+          bitmapper.activeResizeOperation = bitmapper.ResizeOperation.WIDTH;
         } else if (currentCursor == 's-resize') {
-          resizeHeight = true;
+          bitmapper.activeResizeOperation = bitmapper.ResizeOperation.HEIGHT;
         } else if (currentCursor == 'se-resize') {
-          resizeHeight = true;
-          resizeWidth = true;
+          bitmapper.activeResizeOperation = bitmapper.ResizeOperation.BOTH;
         }
       }, false);
   canvasViewport.addEventListener('mouseup',
       function(mouseEvent) {
-        if (!resizeHeight && !resizeWidth)
+        if (bitmapper.activeResizeOperation == bitmapper.ResizeOperation.NONE)
           return;
 
         var coords = bitmapper.getMouseCoordinates(mouseEvent);
-        var newWidth = resizeWidth ? coords.sourceX :
+        var newWidth = (bitmapper.activeResizeOperation &
+            bitmapper.ResizeOperation.WIDTH) ? coords.sourceX :
             bitmapper.sourceCanvas.width;
-        var newHeight = resizeHeight ? coords.sourceY :
+        var newHeight = (bitmapper.activeResizeOperation &
+            bitmapper.ResizeOperation.HEIGHT) ? coords.sourceY :
             bitmapper.sourceCanvas.height;
         bitmapper.resizeCanvas(newWidth, newHeight);
 
-        resizeWidth = resizeHeight = false;
+        bitmapper.activeResizeOperation = bitmapper.ResizeOperation.NONE;
+
+        // Change cursor icon to default on mouse up, regardless of
+        // finishing position.
+        document.getElementById('canvasViewport').style.cursor = 'initial';
       }, false);
   canvasViewport.addEventListener('mousemove',
       function(mouseEvent) {
         var canvasPlaceholder = document.getElementById('canvasPlaceholder');
         var coords = bitmapper.getMouseCoordinates(mouseEvent);
-        var currentZoom = bitmapper.zoomManager.getZoomFactor();
-        if (resizeHeight) {
-          canvasPlaceholder.style.height = (coords.sourceY * currentZoom) +
-              'px';
+
+        // Update mouse icon.
+        bitmapper.resizeCursorIcon(coords);
+        if (bitmapper.activeResizeOperation &
+            bitmapper.ResizeOperation.HEIGHT) {
+          canvasPlaceholder.style.height = coords.sourceY + 'px';
         }
-        if (resizeWidth) {
-          canvasPlaceholder.style.width = (coords.sourceX * currentZoom) + 'px';
+        if (bitmapper.activeResizeOperation &
+            bitmapper.ResizeOperation.WIDTH) {
+          canvasPlaceholder.style.width = coords.sourceX + 'px';
         }
       }, false);
 
@@ -494,12 +516,17 @@ bitmapper.showCoordinates = function(mouseCoordinates) {
  */
 bitmapper.resizeCursorIcon = function(mouseCoordinates) {
   if (!mouseCoordinates.inCanvas) {
-    if (bitmapper.resizeHeight(mouseCoordinates) &&
-        bitmapper.resizeWidth(mouseCoordinates)) {
+    var resizeOperation = bitmapper.activeResizeOperation;
+    var inWidth = bitmapper.resizeWidth(mouseCoordinates);
+    var inHeight = bitmapper.resizeHeight(mouseCoordinates);
+    if ((inHeight && inWidth) ||
+        resizeOperation == bitmapper.ResizeOperation.BOTH) {
       document.getElementById('canvasViewport').style.cursor = 'se-resize';
-    } else if (bitmapper.resizeHeight(mouseCoordinates)) {
+    } else if (inHeight ||
+        resizeOperation == bitmapper.ResizeOperation.HEIGHT) {
       document.getElementById('canvasViewport').style.cursor = 's-resize';
-    } else if (bitmapper.resizeWidth(mouseCoordinates)) {
+    } else if (inWidth ||
+        resizeOperation == bitmapper.ResizeOperation.WIDTH) {
       document.getElementById('canvasViewport').style.cursor = 'e-resize';
     } else {
       // Restore initial cursor icon.
