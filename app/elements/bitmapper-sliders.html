@@ -152,7 +152,7 @@ opacity and brush size. Each slider can be manipulated by an input box.
      */
     function percentToFactor(percent) {
       return percent > 50 ? Math.ceil(percent / 100) :
-          -Math.floor(100 / percent);
+          -Math.round(100 / percent);
     }
 
 
