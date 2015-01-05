@@ -708,15 +708,13 @@ bitmapper.saveStateToLocalStorage = function() {
 
 /**
  * Resizes the canvas using input dimensions.
- * @param {number} newWidth
- * @param {number} newHeight
+ * @param {string} newWidth
+ * @param {string} newHeight
  */
 bitmapper.resizeCanvas = function(newWidth, newHeight) {
-  // Error handling.
-  var isNumber = (Number(newWidth) >= 1 && Number(newHeight) >= 1);
-  var isInteger = (newWidth === parseInt(newWidth, 10) &&
-                   newHeight === parseInt(newHeight, 10));
-  if (!isNumber || !isInteger) {
+  // Error handling: dimensions must be positive integer.
+  var numTest = /^[1-9][0-9]*$/;
+  if (!numTest.test(newWidth) || !numTest.test(newHeight)) {
     bitmapper.statusMessage('Please enter valid dimensions.');
     return;
   }
