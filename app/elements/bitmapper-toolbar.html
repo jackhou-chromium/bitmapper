@@ -21,7 +21,6 @@ image, and Undo/Redo buttons.
 <link rel="import" href="resize-canvas.html">
 <link rel="import"
   href="../bower_components/core-header-panel/core-header-panel.html">
-<link rel="import" href="../bower_components/core-menu/core-menu.html">
 <link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
 <link rel="import"
   href="../bower_components/paper-dropdown/paper-dropdown.html">
@@ -61,6 +60,9 @@ image, and Undo/Redo buttons.
       paper-item {
         color: black;
       }
+      paper-item:hover {
+        background-color: #E0F2F1;
+      }
       /* overflow, text-overflow and white-space styling are rules for
        * displaying the filename. */
       span {
@@ -78,24 +80,21 @@ image, and Undo/Redo buttons.
       <core-toolbar>
         <paper-menu-button>
           <paper-icon-button icon="menu"></paper-icon-button>
-          <!-- TODO(hbeder): Investigate why 'transition' is needed. -->
+          <!-- Adding the transition attribute so that the menu doesn't
+          transition. -->
           <paper-dropdown class="dropdown" transition>
-            <!-- TODO(hbeder): This will currently leave the selected item
-            highlighted. -->
-            <core-menu class="menu">
-              <paper-item role="button" on-click="{{ newHandler }}">
-                New
-              </paper-item>
-              <paper-item role="button" on-click="{{ openHandler }}">
-                Open
-              </paper-item>
-              <paper-item role="button" on-click="{{ saveHandler }}">
-                Save
-              </paper-item>
-              <paper-item role="button" on-click="{{ saveAsHandler }}">
-                Save As
-              </paper-item>
-            </core-menu>
+            <paper-item on-click="{{ newHandler }}">
+              New
+            </paper-item>
+            <paper-item on-click="{{ openHandler }}">
+              Open
+            </paper-item>
+            <paper-item on-click="{{ saveHandler }}">
+              Save
+            </paper-item>
+            <paper-item on-click="{{ saveAsHandler }}">
+              Save As
+            </paper-item>
           </paper-dropdown>
         </paper-menu-button>
 
