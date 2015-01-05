@@ -83,7 +83,9 @@ selected tool icon.
 
   <script>
     Polymer('bitmapper-toolpanel', {
-      tools: {},
+      created: function() {
+        this.tools = {};
+      },
       activeToolChanged: function(oldVal, newVal) {},
       toolsChanged: function(oldVal, newVal) {
         this.activeTool = newVal['defaultTool'];
