@@ -103,7 +103,7 @@ opacity and brush size. Each slider can be manipulated by an input box.
         </paper-slider>
         <paper-input
           id="zoom-value"
-          value="{{ zoomPercent }}"
+          value="{{ sliderModel.zoom | percentToString }}"
           disabled>
         </paper-input>
         <label id="zoom-percentage" for="zoomSelector">%</label>
@@ -117,31 +117,36 @@ opacity and brush size. Each slider can be manipulated by an input box.
         this.sliderModel = {
           size: 5,
           opacity: 100,
+          // zoom represents zoom percentage, 1 corresponds to 100%.
           zoom: 1
         };
-        this.zoomPercent = 100;
-        this.zoomFactor = 1;
+        // zoomFactor is an arbitrary integer which corresponds to the
+        // current slider postion.
+        // The default value is 0, which corresponds to a zoom level of 100%.
+        // Positive values represent 'zooming in'. (eg. 1 == 200%, 2 == 300% )
+        // Negative values represent 'zooming out'.
+        // (eg. -1 == 50%, -2 == 33.33%)
+        this.zoomFactor = 0;
       },
       decreaseZoom: function() {
-        var currSliderValue = this.sliderModel.zoom;
-        var newValue = currSliderValue - 1;
-        if (currSliderValue == 1)
-          newValue = -2;
-        this.zoomFactor = newValue;
+        this.zoomFactor--;
       },
       increaseZoom: function() {
-        var currSliderValue = this.sliderModel.zoom;
-        var newValue = currSliderValue + 1;
-        this.zoomFactor = newValue;
-      },
-      zoomPercentChanged: function(oldVal, newVal) {
-        this.zoomFactor = percentToFactor(newVal);
+        this.zoomFactor++;
       },
       zoomFactorChanged: function(oldVal, newVal) {
-        if (newVal >= -1 && newVal < 1)
-          newVal = 1;
-        this.sliderModel.zoom = newVal;
-        this.zoomPercent = factorToPercent(newVal);
+        this.sliderModel.zoom = factorToPercent(newVal);
+      },
+      percentToString: function(value) {
+        var precision = 2;
+        value *= 100;
+        // Ensures that when value is a whole number, trailing zeros
+        // will not be shown.
+        // eg - 100% as opposed to 100.00%.
+        if (Math.floor(value) == value)
+          return value.toString();
+        else
+          return value.toFixed(precision);
       }
     });
 
@@ -151,8 +156,7 @@ opacity and brush size. Each slider can be manipulated by an input box.
      * @return {integer}
      */
     function percentToFactor(percent) {
-      return percent > 50 ? Math.ceil(percent / 100) :
-          -Math.round(100 / percent);
+      return percent >= 1 ? percent - 1 : (-1 / percent) + 1;
     }
 
 
@@ -162,10 +166,7 @@ opacity and brush size. Each slider can be manipulated by an input box.
      * @return {decimal}
      */
     function factorToPercent(factor) {
-      var percent = factor > 0 ? factor * 100 : 100 / -factor;
-      // Round percent value to 2 decimal places.
-      percent = Math.round(percent*100)/100;
-      return percent;
+      return factor >= 0 ? factor + 1 : -1 / (factor - 1);
     }
   </script>
 </polymer-element>
