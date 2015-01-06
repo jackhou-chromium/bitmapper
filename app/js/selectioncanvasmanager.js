@@ -9,7 +9,7 @@
 /**
  * @constructor
  * @struct
- * @param {HTMLElement} selectionCanvas
+ * @param {HTMLCanvasElement} selectionCanvas
  * @param {ZoomManager} zoomManager
  */
 function SelectionCanvasManager(selectionCanvas, zoomManager) {}
@@ -21,20 +21,20 @@ function SelectionCanvasManager(selectionCanvas, zoomManager) {}
    * redrawn onto selection canvas when displayed.
    * @constructor
    * @struct
-   * @param {HTMLElement} selectionCanvas
+   * @param {HTMLCanvasElement} selectionCanvas
    * @param {ZoomManager} zoomManager
    */
   function SelectionCanvasManager(selectionCanvas, zoomManager) {
     /**
      * Selection relative to source co-ordinates.
-     * @type {Element}
+     * @type {HTMLCanvasElement}
      */
-    this.selectionSourceCanvas = document.createElement('canvas');
+    this.selectionSourceCanvas = CreateCanvasElement();
 
     /**
      * Selection displayed on this canvas.
      * Inline styling needed here for manipulation in methods.
-     * @type {HTMLElement}
+     * @type {HTMLCanvasElement}
      */
     this.selectionCanvas = selectionCanvas;
     this.selectionCanvas.style.display = 'none';
@@ -127,7 +127,7 @@ function SelectionCanvasManager(selectionCanvas, zoomManager) {}
 
   /**
    * Returns selection source canvas.
-   * @return {Element}
+   * @return {HTMLCanvasElement}
    */
   SelectionCanvasManager.prototype.getCanvas = function() {
     return this.selectionSourceCanvas;
@@ -135,6 +135,7 @@ function SelectionCanvasManager(selectionCanvas, zoomManager) {}
 
   /**
    * Returns X co-ordinate of top left corner of selection source canvas.
+   * @return {number}
    */
   SelectionCanvasManager.prototype.getX = function() {
     return this.canvasX;
@@ -142,6 +143,7 @@ function SelectionCanvasManager(selectionCanvas, zoomManager) {}
 
   /**
    * Returns Y co-ordinate of top left corner of selection source canvas.
+   * @return {number}
    */
   SelectionCanvasManager.prototype.getY = function() {
     return this.canvasY;
@@ -149,6 +151,7 @@ function SelectionCanvasManager(selectionCanvas, zoomManager) {}
 
   /**
    * Returns whether selection canvas is being dragged or not.
+   * @return {boolean}
    */
   SelectionCanvasManager.prototype.isDragging = function() {
     return this.dragging;
@@ -157,6 +160,7 @@ function SelectionCanvasManager(selectionCanvas, zoomManager) {}
   /**
    * Hit test.
    * @param {MouseCoordinates} mouseCoordinates
+   * @return {boolean}
    */
   SelectionCanvasManager.prototype.isInHitArea = function(mouseCoordinates) {
     if (!this.isVisible)
@@ -187,7 +191,7 @@ function SelectionCanvasManager(selectionCanvas, zoomManager) {}
     this.selectionCanvas.height =
         this.selectionSourceCanvas.height * zoomFactor;
     // Drawing.
-    var selectionCanvasContext = this.selectionCanvas.getContext('2d');
+    var selectionCanvasContext = Canvas2DContext(this.selectionCanvas);
     selectionCanvasContext.imageSmoothingEnabled = false;
     selectionCanvasContext.drawImage(this.selectionSourceCanvas, 0, 0,
         this.selectionCanvas.width, this.selectionCanvas.height);
@@ -256,7 +260,7 @@ function SelectionCanvasManager(selectionCanvas, zoomManager) {}
    * Clear selection.
    */
   SelectionCanvasManager.prototype.resetSelection = function() {
-    this.selectionSourceCanvas.getContext('2d').clearRect(0, 0,
+    Canvas2DContext(this.selectionSourceCanvas).clearRect(0, 0,
         this.selectionSourceCanvas.width, this.selectionSourceCanvas.height);
     this.setSize(1, 1);
     this.setPosition(0, 0);

@@ -25,3 +25,39 @@ bitmapper.util.constrain = function(value, minValue, maxValue) {
     throw new Error('minValue is greater than maxValue');
   return Math.min(Math.max(minValue, value), maxValue);
 };
+
+
+/**
+ * Closure helper function to return a new, temporary, typed HTMLCanvasElement.
+ *
+ * @return {HTMLCanvasElement}
+ */
+function CreateCanvasElement() {
+  return /** @type {HTMLCanvasElement} */(document.createElement('canvas'));
+}
+
+
+/**
+ * Closure helper function to retrieve an existing, typed HTMLCanvasElement from
+ * the document by ID.
+ *
+ * @param {string} canvasId The element ID of an existing canvas element.
+ * @return {HTMLCanvasElement}
+ */
+function GetCanvasElement(canvasId) {
+  return /** @type {HTMLCanvasElement} */(document.getElementById(canvasId));
+}
+
+
+/**
+ * Closure helper function to return a typed, 2D drawing context from |canvas|.
+ * Since HTMLCanvasElement::getContext() returns a different type based on
+ * whether its (string) argument is '2d' or '3d', this helper function allows
+ * Closure to perform more rigorous type checks on the return value.
+ *
+ * @param {HTMLCanvasElement} canvas The canvas element to call getContext() on.
+ * @return {CanvasRenderingContext2D}
+ */
+function Canvas2DContext(canvas) {
+  return /** @type {CanvasRenderingContext2D} */(canvas.getContext('2d'));
+}

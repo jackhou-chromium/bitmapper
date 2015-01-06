@@ -9,8 +9,8 @@
 /**
  * @constructor
  * @struct
- * @param {Element} sourceCanvas
- * @param {HTMLElement} displayCanvas
+ * @param {HTMLCanvasElement} sourceCanvas
+ * @param {HTMLCanvasElement} displayCanvas
  * @param {HTMLElement} canvasPlaceholder
  * @param {HTMLElement} canvasViewport
  */
@@ -26,8 +26,8 @@ function ZoomManager(sourceCanvas,
    * Encapsulates data related to the zoom manager.
    * @constructor
    * @struct
-   * @param {Element} sourceCanvas
-   * @param {HTMLElement} displayCanvas
+   * @param {HTMLCanvasElement} sourceCanvas
+   * @param {HTMLCanvasElement} displayCanvas
    * @param {HTMLElement} canvasPlaceholder
    * @param {HTMLElement} canvasViewport
    */
@@ -41,12 +41,12 @@ function ZoomManager(sourceCanvas,
     this.zoomFactor = 1;
 
     /**
-     * @type {Element}
+     * @type {HTMLCanvasElement}
      */
     this.sourceCanvas = sourceCanvas;
 
     /**
-     * @type {HTMLElement}
+     * @type {HTMLCanvasElement}
      */
     this.displayCanvas = displayCanvas;
 
@@ -63,9 +63,11 @@ function ZoomManager(sourceCanvas,
      * displayed image.
      */
     this.canvasViewport = canvasViewport;
+
+    var outer = this;
     canvasViewport.addEventListener(
         'scroll',
-        function() { this.drawDisplayCanvas(); }.bind(this),
+        function() { outer.drawDisplayCanvas(); },
         true);
 
     this.drawDisplayCanvas();
@@ -150,7 +152,7 @@ function ZoomManager(sourceCanvas,
     this.displayCanvas.height = this.canvasViewport.clientHeight;
     this.displayCanvas.width = this.canvasViewport.clientWidth;
 
-    var displayContext = this.displayCanvas.getContext('2d');
+    var displayContext = Canvas2DContext(this.displayCanvas);
     // Displays crisp pixels when scaled.
     displayContext.imageSmoothingEnabled = false;
     displayContext.clearRect(

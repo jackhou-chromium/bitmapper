@@ -56,6 +56,7 @@ include requirements.mk
 CLOSURE_ARGS := --warning_level VERBOSE \
   --language_in ECMASCRIPT5_STRICT \
   --summary_detail_level 3 \
+  --jscomp_error=reportUnknownTypes \
   --externs $(EXTERNS) --externs $(CHROME_EXTERNS) --externs $(QUNIT_EXTERNS)
 
 # Closure compiled output js for Debug. WHITESPACE_ONLY for ease of debugging.

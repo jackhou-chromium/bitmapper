@@ -23,14 +23,14 @@
    */
   function PipetteTool(toolContext, callback) {
     /**
-     * @type {HTMLElement}
+     * @type {HTMLCanvasElement}
      */
     this.sourceCanvas = toolContext.sourceCanvas;
 
     /**
      * @type {CanvasRenderingContext2D}
      */
-    this.sourceContext = toolContext.sourceCanvas.getContext('2d');
+    this.sourceContext = Canvas2DContext(toolContext.sourceCanvas);
 
     /**
      * Called when color is selected.
@@ -109,7 +109,7 @@
         mouseCoordinates.sourceX, mouseCoordinates.sourceY,
         1, 1);
     // Checks if pixel is valid, else set it to an array of zeros.
-    var pixel = imageData.data || [0, 0, 0, 0];
+    var pixel = /** @type {Array.<number>}*/(imageData.data || [0, 0, 0, 0]);
     var pixelColor = 'rgb(' +
         pixel[0] + ', ' +
         pixel[1] + ', ' +

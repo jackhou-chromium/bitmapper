@@ -11,7 +11,7 @@
  * @struct
  * @implements {Tool}
  * @param {ToolContext} toolContext
- * @param {Object} optionProviders
+ * @param {OptionProviders} optionProviders
  * @param {PencilTool.ToolType} type
  */
 function PencilTool(toolContext, optionProviders, type) {}
@@ -26,14 +26,14 @@ function PencilTool(toolContext, optionProviders, type) {}
    * @struct
    * @implements {Tool}
    * @param {ToolContext} toolContext
-   * @param {Object} optionProviders
+   * @param {OptionProviders} optionProviders
    * @param {PencilTool.ToolType} type
    */
   function PencilTool(toolContext, optionProviders, type) {
     /**
      * @type {CanvasRenderingContext2D}
      */
-    this.sourceContext = toolContext.sourceCanvas.getContext('2d');
+    this.sourceContext = Canvas2DContext(toolContext.sourceCanvas);
 
     /**
      * @type {ColorPalette}
@@ -41,7 +41,7 @@ function PencilTool(toolContext, optionProviders, type) {}
     this.colorPalette = optionProviders.colorPalette;
 
     /**
-     * @type {HTMLElement}
+     * @type {HTMLInputElement}
      */
     this.sizeSelector = optionProviders.sizeSelector;
 
@@ -167,8 +167,9 @@ function PencilTool(toolContext, optionProviders, type) {}
     var sy = y0 < y1 ? 1 : -1;
     var err = dx - dy;
     while (run) {
-      ctx.clearRect(x0, y0, this.sizeSelector.value, this.sizeSelector.value);
-      ctx.fillRect(x0, y0, this.sizeSelector.value, this.sizeSelector.value);
+      var size = parseInt(this.sizeSelector.value, 10);
+      ctx.clearRect(x0, y0, size, size);
+      ctx.fillRect(x0, y0, size, size);
       if (x0 === x1 && y0 === y1) {
         run = false;
       }
@@ -178,8 +179,8 @@ function PencilTool(toolContext, optionProviders, type) {}
         x0 += sx;
       }
       if (x0 === x1 && y0 === y1) {
-        ctx.clearRect(x0, y0, this.sizeSelector.value, this.sizeSelector.value);
-        ctx.fillRect(x0, y0, this.sizeSelector.value, this.sizeSelector.value);
+        ctx.clearRect(x0, y0, size, size);
+        ctx.fillRect(x0, y0, size, size);
         run = false;
       }
       if (e2 < dx) {
@@ -200,7 +201,7 @@ function PencilTool(toolContext, optionProviders, type) {}
     ctx.beginPath();
     ctx.globalCompositeOperation = 'source-over';
     ctx.moveTo(this.lastX, this.lastY);
-    ctx.lineWidth = this.sizeSelector.value;
+    ctx.lineWidth = parseInt(this.sizeSelector.value, 10);
     ctx.lineTo(Math.floor(mouseCoordinates.sourceX),
         Math.floor(mouseCoordinates.sourceY));
     ctx.strokeStyle = this.colorPalette.getSelectedColorWithOpacity();

@@ -11,7 +11,7 @@
  * @struct
  * @implements {Tool}
  * @param {ToolContext} toolContext
- * @param {Object} optionProviders
+ * @param {OptionProviders} optionProviders
  *
  */
 function BucketTool(toolContext, optionProviders) {}
@@ -31,18 +31,18 @@ function BucketTool(toolContext, optionProviders) {}
    * @struct
    * @implements {Tool}
    * @param {ToolContext} toolContext
-   * @param {Object} optionProviders
+   * @param {OptionProviders} optionProviders
    */
   function BucketTool(toolContext, optionProviders) {
     /**
-     * @type {HTMLElement}
+     * @type {HTMLCanvasElement}
      */
     this.sourceCanvas = toolContext.sourceCanvas;
 
     /**
      * @type {CanvasRenderingContext2D}
      */
-    this.sourceContext = toolContext.sourceCanvas.getContext('2d');
+    this.sourceContext = Canvas2DContext(this.sourceCanvas);
 
     /**
      * @type {ColorPalette}

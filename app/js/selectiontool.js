@@ -25,14 +25,14 @@ function SelectionTool(toolContext) {}
    */
   function SelectionTool(toolContext) {
     /**
-     * @type {HTMLElement}
+     * @type {HTMLCanvasElement}
      */
     this.sourceCanvas = toolContext.sourceCanvas;
 
     /**
      * @type {CanvasRenderingContext2D}
      */
-    this.sourceContext = toolContext.sourceCanvas.getContext('2d');
+    this.sourceContext = Canvas2DContext(toolContext.sourceCanvas);
 
     /**
      * @type {SelectionCanvasManager}
@@ -126,12 +126,12 @@ function SelectionTool(toolContext) {}
     var width = selectionSourceCanvas.width;
     var height = selectionSourceCanvas.height;
 
-    selectionSourceCanvas.getContext('2d').drawImage(
+    Canvas2DContext(selectionSourceCanvas).drawImage(
         this.sourceCanvas, x, y, width, height, 0, 0, width, height);
     this.selectionCanvasManager.drawSelectionCanvas();
 
     // Clear source image behind selection.
-    this.sourceCanvas.getContext('2d').clearRect(x, y, width, height);
+    Canvas2DContext(this.sourceCanvas).clearRect(x, y, width, height);
     this.drawDisplayCanvas();
   };
 
@@ -151,7 +151,7 @@ function SelectionTool(toolContext) {}
     var selectionSourceCanvas = this.selectionCanvasManager.getCanvas();
     var left = this.selectionCanvasManager.canvasX;
     var top = this.selectionCanvasManager.canvasY;
-    this.sourceCanvas.getContext('2d').drawImage(
+    Canvas2DContext(this.sourceCanvas).drawImage(
         selectionSourceCanvas, left, top);
     this.drawDisplayCanvas();
     this.selectionCanvasManager.setVisible(false);

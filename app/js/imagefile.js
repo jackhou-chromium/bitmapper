@@ -28,7 +28,7 @@ function ImageFile() {}
   function ImageFile() {
     /**
      * Initially set to null and set upon loading a file.
-     * @type {Entry}
+     * @type {FileEntry}
      */
     this.fileEntry = null;
 
@@ -40,7 +40,7 @@ function ImageFile() {}
 
     /**
      * The image DOM element.
-     * @type {HTMLElement}
+     * @type {HTMLImageElement}
      */
     this.image = new Image();
 
@@ -59,7 +59,7 @@ function ImageFile() {}
 
   /**
    * Sets the current file entry to the given file entry.
-   * @param {Entry} fileEntry
+   * @param {FileEntry} fileEntry
    */
   ImageFile.prototype.setFileEntry = function(fileEntry) {
     this.fileEntry = fileEntry;
@@ -67,7 +67,7 @@ function ImageFile() {}
 
   /**
    * Loads the chosen file entry to the canvas.
-   * @param {Entry} fileEntry
+   * @param {FileEntry} fileEntry
    * @param {function()} callback
    */
   ImageFile.prototype.loadFile = function(fileEntry, callback) {
@@ -86,10 +86,10 @@ function ImageFile() {}
         that.loaded = true;
         // Set image source to png dataURL to deal with internally.
         if (getFileType(fileEntry.fullPath) != 'image/png') {
-          var tempCanvas = document.createElement('canvas');
+          var tempCanvas = CreateCanvasElement();
           tempCanvas.width = that.image.width;
           tempCanvas.height = that.image.height;
-          tempCanvas.getContext('2d').drawImage(that.image, 0, 0);
+          Canvas2DContext(tempCanvas).drawImage(that.image, 0, 0);
           that.image.src = tempCanvas.toDataURL();
         }
         if (callback) {
@@ -102,7 +102,7 @@ function ImageFile() {}
 
   /**
    * Converts canvas to binary and writes blob to file entry.
-   * @param {HTMLElement} canvas
+   * @param {HTMLCanvasElement} canvas
    */
   ImageFile.prototype.saveFile = function(canvas) {
     // The image source holds the saved canvas URI.
@@ -119,11 +119,12 @@ function ImageFile() {}
   /**
    * Converts URI (canvas image as base64 data) to binary.
    * @param {string} dataURI
+   * @return {!Blob}
    */
   ImageFile.prototype.dataURItoBlob = function(dataURI) {
     // Convert base64 to binary. The bytes are represented with Unicode code
     // points from 0x00 to 0xFF.
-    var byteString = atob(dataURI.split(',')[1]);
+    var byteString = window.atob(dataURI.split(',')[1]);
     // Separate out the mime component (e.g., image/png).
     var mimeType = dataURI.split(';')[0].split(':')[1];
     var intArray = new Uint8Array(byteString.length);
@@ -138,6 +139,7 @@ function ImageFile() {}
    * Gets the mime type based on the file extension.
    * Returns "image/jpeg" for .jpg/.jpeg, "image/webp" for .webp and
    * "image/png" in any other case.
+   * @param {string} filePath
    * @return {string}
    */
   function getFileType(filePath) {
@@ -167,7 +169,7 @@ function ImageFile() {}
 
   /**
    * Compares image source of file entry with given dataURI.
-   * @param {HTMLElement} canvas
+   * @param {HTMLCanvasElement} canvas
    * @return {boolean}
    */
   ImageFile.prototype.matchesOriginal = function(canvas) {

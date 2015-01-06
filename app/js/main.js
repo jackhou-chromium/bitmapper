@@ -57,6 +57,60 @@ bitmapper.activeResizeOperation = bitmapper.ResizeOperation.NONE;
 
 
 /**
+ * @type {HTMLCanvasElement}
+ */
+bitmapper.sourceCanvas = null;
+
+
+/**
+ * @type {HTMLCanvasElement}
+ */
+bitmapper.displayCanvas = null;
+
+
+/**
+ * @type {ImageFile}
+ */
+bitmapper.imageFile = null;
+
+
+/**
+ * @type {Tool}
+ */
+bitmapper.selectedTool = null;
+
+
+/**
+ * @type {ZoomManager}
+ */
+bitmapper.zoomManager = null;
+
+
+/**
+ * @type {SelectionCanvasManager}
+ */
+bitmapper.selectionCanvasManager = null;
+
+
+/**
+ * @type {OptionProviders}
+ */
+bitmapper.optionProviders = null;
+
+
+/**
+ * @type {CursorGuide}
+ */
+bitmapper.cursorGuide = null;
+
+
+/**
+ * @type {HTMLElement}
+ */
+bitmapper.toolbar = null;
+
+
+/**
  * Draws the image file to the canvas and sets initial properties.
  * Pushes this state as first snapshot.
  */
@@ -99,7 +153,8 @@ bitmapper.openFile = function() {
         // Re-instantiate bitmapper.imageFile.
         bitmapper.imageFile = new bitmapper.ImageFile();
         // TODO(dadisusila): Handle errors while loading.
-        bitmapper.imageFile.loadFile(entry, bitmapper.setCanvasToImage);
+        bitmapper.imageFile.loadFile(/** @type {FileEntry} */(entry),
+                                     bitmapper.setCanvasToImage);
         bitmapper.updateFileNameMessage();
       });
 };
@@ -123,7 +178,8 @@ bitmapper.saveAsFile = function() {
         if (!entry) {
           bitmapper.statusMessage('Nothing selected.');
         } else {
-          bitmapper.imageFile.setFileEntry(entry);
+          bitmapper.imageFile.setFileEntry(
+              /** @type {FileEntry} entry */(entry));
           bitmapper.saveFile();
         }
       });
@@ -160,7 +216,7 @@ bitmapper.statusMessage = function(status) {
  * Clears the canvas.
  */
 bitmapper.clearCanvas = function() {
-  var sourceContext = bitmapper.sourceCanvas.getContext('2d');
+  var sourceContext = Canvas2DContext(bitmapper.sourceCanvas);
   sourceContext.clearRect(0, 0, bitmapper.sourceCanvas.width,
       bitmapper.sourceCanvas.height);
   bitmapper.zoomManager.drawDisplayCanvas();
@@ -173,7 +229,7 @@ bitmapper.clearCanvas = function() {
  * @param {number} zoomValue The zoom scale factor where 1.0 means actual size.
  */
 bitmapper.zoomCanvas = function(zoomValue) {
-  var canvasViewport = document.getElementById('canvasViewport');
+  var canvasViewport = GetCanvasElement('canvasViewport');
   // Use the center of the viewport as the anchor point.
   bitmapper.zoomManager.setZoomFactor(
       zoomValue,
@@ -198,11 +254,13 @@ bitmapper.setSelectedColorBox = function() {
  * Changes background of selected cell in palette to selected color.
  */
 bitmapper.updatePalette = function() {
-  var newColor = document.getElementById('colorSelector')['colorValue'];
+  var newColor = /** @type {string} */
+      (document.getElementById('colorSelector')['colorValue']);
   bitmapper.optionProviders.colorPalette.updateCellColor(newColor);
 
   var storageEntry = {};
-  var colors = document.getElementById('colorPalette').colors;
+  var colors = /** @type {Array.<string>} */
+      (document.getElementById('colorPalette')['colors']);
   storageEntry[bitmapper.COLOR_ARRAY_STORAGE_KEY] = colors;
   chrome.storage.local.set(storageEntry, function() {});
 };
@@ -325,7 +383,8 @@ bitmapper.registerMouseEvents = function() {
 
   // Touch Support.
   canvasWrapper.addEventListener('touchstart',
-      function(touchEvent) {
+      function(theEvent) {
+        var touchEvent = /** @type {TouchEvent} */(theEvent);
         touchEvent.preventDefault();
         // Hit test for selection canvas.
         if (bitmapper.selectionCanvasManager.isInHitArea(
@@ -340,7 +399,8 @@ bitmapper.registerMouseEvents = function() {
             bitmapper.getTouchCoordinates(touchEvent));
       }, false);
   canvasWrapper.addEventListener('touchend',
-      function(touchEvent) {
+      function(theEvent) {
+        var touchEvent = /** @type {TouchEvent} */(theEvent);
         bitmapper.updateFileNameMessage();
         touchEvent.preventDefault();
         bitmapper.selectedTool.mouseUp(
@@ -353,7 +413,8 @@ bitmapper.registerMouseEvents = function() {
         bitmapper.cursorGuide.hide();
       }, false);
   canvasWrapper.addEventListener('touchmove',
-      function(touchEvent) {
+      function(theEvent) {
+        var touchEvent = /** @type {TouchEvent} */(theEvent);
         touchEvent.preventDefault();
         bitmapper.showCoordinates(
             bitmapper.getTouchCoordinates(touchEvent));
@@ -369,7 +430,8 @@ bitmapper.registerMouseEvents = function() {
             bitmapper.getTouchCoordinates(touchEvent));
       }, false);
   canvasWrapper.addEventListener('touchleave',
-      function(touchEvent) {
+      function(theEvent) {
+        var touchEvent = /** @type {TouchEvent} */(theEvent);
         touchEvent.preventDefault();
         bitmapper.selectionCanvasManager.mouseLeave(
             bitmapper.getTouchCoordinates(touchEvent));
@@ -473,12 +535,13 @@ bitmapper.generateMouseCoordinates = function(pageX, pageY) {
 
 /**
  * Bundle touch mouse coordinates to pass to tools.
- * @param {Event} touchEvent
+ * @param {TouchEvent} touchEvent
  * @return {MouseCoordinates}
  */
 bitmapper.getTouchCoordinates = function(touchEvent) {
-  return bitmapper.generateMouseCoordinates(touchEvent.targetTouches[0].pageX,
-                                            touchEvent.targetTouches[0].pageY);
+  return bitmapper.generateMouseCoordinates(
+      touchEvent.targetTouches.item(0).pageX,
+      touchEvent.targetTouches.item(0).pageY);
 };
 
 
@@ -595,32 +658,28 @@ bitmapper.resizeHeight = function(mouseCoordinates) {
 bitmapper.setUpOptionProviders = function(localStorageObject) {
   var colorPalette = new bitmapper.ColorPalette();
 
-  var initialColors = localStorageObject[bitmapper.COLOR_ARRAY_STORAGE_KEY];
+  var initialColors = /** @type {Array.<string>} */
+      (localStorageObject[bitmapper.COLOR_ARRAY_STORAGE_KEY]);
   if (!initialColors) {
     initialColors = ['#000000', '#ffff00', '#0000ff', '#ff00ff',
                      '#cc00ff', '#9900ff', '#ff6600', '#0099ff'];
   }
   var palette = document.getElementById('colorPalette');
-  palette.colors = initialColors;
+  palette['colors'] = initialColors;
   palette.addEventListener('core-select', function(e) {
+    var selectEvent = /** @type {CoreEvent} */(e);
     // We need to ignore deselection.
-    if (!e.detail.isSelected)
+    if (!selectEvent.detail.isSelected)
       return;
-    colorPalette.setSelectedCell(e.detail.item);
+    colorPalette.setSelectedCell(selectEvent.detail.item);
     bitmapper.setSelectedColorBox();
   });
   // Now the event listener is added, set the initial selection.
   palette.$['paletteSelector'].selected = 0;
 
   var sizeSelector = document.getElementById('sliderInputs').$.sizeSelector;
-  // Option providers passed to Tools as an Object so there is no type safety.
-  bitmapper.optionProviders =
-      /** @struct */ {
-        /** @type {ColorPalette} */
-        colorPalette: colorPalette,
-        /** @type {HTMLElement} */
-        sizeSelector: sizeSelector
-      };
+
+  bitmapper.optionProviders = new OptionProviders(colorPalette, sizeSelector);
 };
 
 
@@ -660,7 +719,7 @@ bitmapper.setUpTools = function() {
         toolContext, function(color, opacity, done) {
           bitmapper.optionProviders.colorPalette.updateCellColor(color);
           bitmapper.setSelectedColorBox();
-          document.getElementById('sliderInputs').$.sliderModel.opacity =
+          document.getElementById('sliderInputs').$.sliderModel['opacity'] =
               Math.round(opacity * 100.0);
           if (done)
             bitmapper.setSelectedTool(toolPanel['tools']['pencilTool']);
@@ -671,11 +730,16 @@ bitmapper.setUpTools = function() {
 
   toolPanel['tools'] = bitmapper.tools;
   toolPanel.addEventListener('core-activate', function(e) {
+    var activateEvent = /** @type {CoreEvent} */(e);
     toolPanel['activeTool'] =
-        toolPanel['tools'][e.detail.item.getAttribute('name')];
+        toolPanel['tools'][activateEvent.detail.item.getAttribute('name')];
   });
 
-  // Handler for tool buttons.
+  /**
+   * Handler for tool buttons.
+   * @param {Tool} oldTool
+   * @param {Tool} newTool
+   */
   toolPanel['activeToolChanged'] = function(oldTool, newTool) {
     if (oldTool)
       oldTool.tearDown();
@@ -708,16 +772,10 @@ bitmapper.saveStateToLocalStorage = function() {
 
 /**
  * Resizes the canvas using input dimensions.
- * @param {string} newWidth
- * @param {string} newHeight
+ * @param {number} newWidth
+ * @param {number} newHeight
  */
 bitmapper.resizeCanvas = function(newWidth, newHeight) {
-  // Error handling: dimensions must be positive integer.
-  var numTest = /^[1-9][0-9]*$/;
-  if (!numTest.test(newWidth) || !numTest.test(newHeight)) {
-    bitmapper.statusMessage('Please enter valid dimensions.');
-    return;
-  }
   if (newWidth > bitmapper.MAX_RESIZE_CANVAS_WIDTH ||
       newHeight > bitmapper.MAX_RESIZE_CANVAS_HEIGHT) {
     bitmapper.statusMessage('Maximum is ' + bitmapper.MAX_RESIZE_CANVAS_WIDTH +
@@ -726,10 +784,10 @@ bitmapper.resizeCanvas = function(newWidth, newHeight) {
   }
 
   // Make copy of canvas stored temporarily.
-  var tempCanvas = document.createElement('canvas');
+  var tempCanvas = CreateCanvasElement();
   tempCanvas.width = bitmapper.sourceCanvas.width;
   tempCanvas.height = bitmapper.sourceCanvas.height;
-  tempCanvas.getContext('2d').drawImage(bitmapper.sourceCanvas, 0, 0,
+  Canvas2DContext(tempCanvas).drawImage(bitmapper.sourceCanvas, 0, 0,
       bitmapper.sourceCanvas.width, bitmapper.sourceCanvas.height);
   // Clear source canvas.
   bitmapper.clearCanvas();
@@ -737,7 +795,7 @@ bitmapper.resizeCanvas = function(newWidth, newHeight) {
   bitmapper.sourceCanvas.width = newWidth;
   bitmapper.sourceCanvas.height = newHeight;
   // Draw temp back on source.
-  bitmapper.sourceCanvas.getContext('2d').drawImage(tempCanvas, 0, 0);
+  Canvas2DContext(bitmapper.sourceCanvas).drawImage(tempCanvas, 0, 0);
   // Snapshot pushed for undo/redo functionality.
   bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
   // Draw display canvas.
@@ -757,7 +815,7 @@ bitmapper.drawImageToCanvas = function(imageSrc) {
   image.src = imageSrc;
   bitmapper.sourceCanvas.width = image.width;
   bitmapper.sourceCanvas.height = image.height;
-  bitmapper.sourceCanvas.getContext('2d').drawImage(image, 0, 0);
+  Canvas2DContext(bitmapper.sourceCanvas).drawImage(image, 0, 0);
   bitmapper.zoomManager.drawDisplayCanvas();
 };
 
@@ -795,8 +853,8 @@ bitmapper.redo = function() {
  */
 bitmapper.start = function(localStorageObject) {
   // Initialise canvases.
-  bitmapper.displayCanvas = document.getElementById('imageCanvas');
-  bitmapper.sourceCanvas = document.createElement('canvas');
+  bitmapper.displayCanvas = GetCanvasElement('imageCanvas');
+  bitmapper.sourceCanvas = CreateCanvasElement();
 
   var toolbar = document.getElementById('bitmapperToolbar');
   bitmapper.toolbar = toolbar;
@@ -827,23 +885,25 @@ bitmapper.start = function(localStorageObject) {
       document.getElementById('sliderInputs')['sliderModel'],
       function(changes) {
         var sliderModel = changes.slice(-1)[0].object;
-        if (sliderModel.zoom < -1) {
+        var zoom = /** @type {number} */(sliderModel['zoom']);
+        var opacity = /** @type {number} */(sliderModel['opacity']);
+        if (zoom < -1) {
           // Invert zoom.
-          bitmapper.zoomCanvas(1 / (Math.abs(sliderModel.zoom)));
-        } else if (sliderModel.zoom <= 1) {
+          bitmapper.zoomCanvas(1 / (Math.abs(zoom)));
+        } else if (zoom <= 1) {
           // Set zoom level to initial value.
           bitmapper.zoomCanvas(1);
         } else {
-          bitmapper.zoomCanvas(sliderModel.zoom);
+          bitmapper.zoomCanvas(zoom);
         }
         // setOpacity method takes opacity in the range 0-1
-        bitmapper.optionProviders.colorPalette.setOpacity(
-            sliderModel.opacity / 100.0);
+        bitmapper.optionProviders.colorPalette.setOpacity(opacity / 100.0);
       }
   );
 
   bitmapper.selectionCanvasManager = new bitmapper.SelectionCanvasManager(
-      document.getElementById('selectionCanvas'), bitmapper.zoomManager);
+      GetCanvasElement('selectionCanvas'),
+      bitmapper.zoomManager);
 
   // Initialise cursor guide.
   bitmapper.cursorGuide = new bitmapper.CursorGuide(
@@ -862,10 +922,23 @@ bitmapper.start = function(localStorageObject) {
     bitmapper.updatePalette();
   };
 
-  // Handler for change in dimension.
+  /**
+   * Handler for change in dimension.
+   * @param {Object} oldVal
+   * @param {Object} newVal
+   */
   bitmapper.toolbar.$.resizeInput['dimensionChanged'] = function(
       oldVal, newVal) {
-    bitmapper.resizeCanvas(newVal.width, newVal.height);
+    // Error handling: dimensions must be positive integer.
+    var numTest = /^[1-9][0-9]*$/;
+    var newWidth = /** @type {string} */(newVal['width']);
+    var newHeight = /** @type {string} */(newVal['height']);
+    if (!numTest.test(newWidth) || !numTest.test(newHeight)) {
+      bitmapper.statusMessage('Please enter valid dimensions.');
+      return;
+    }
+    bitmapper.resizeCanvas(parseInt(newWidth, 10),
+                           parseInt(newHeight, 10));
   };
 
   // Load canvas in local storage if there is one.

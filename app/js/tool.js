@@ -32,19 +32,19 @@ function MouseCoordinates() {
  * Contains elements and callbacks Tools need.
  * @constructor
  * @struct
- * @param {HTMLElement} sourceCanvas
- * @param {HTMLElement} displayCanvas
+ * @param {HTMLCanvasElement} sourceCanvas
+ * @param {HTMLCanvasElement} displayCanvas
  * @param {SelectionCanvasManager} selectionCanvasManager
  * @param {function()} drawDisplayCanvas
  */
 function ToolContext(sourceCanvas, displayCanvas, selectionCanvasManager,
     drawDisplayCanvas) {
   /**
-   * @type {HTMLElement}
+   * @type {HTMLCanvasElement}
    */
   this.sourceCanvas = sourceCanvas;
   /**
-   * @type {HTMLElement}
+   * @type {HTMLCanvasElement}
    */
   this.displayCanvas = displayCanvas;
   /**
@@ -55,6 +55,26 @@ function ToolContext(sourceCanvas, displayCanvas, selectionCanvasManager,
    * @type {function()}
    */
   this.drawDisplayCanvas = drawDisplayCanvas;
+}
+
+
+
+/**
+ * Option providers for tools.
+ * @constructor
+ * @param {ColorPalette} colorPalette
+ * @param {HTMLInputElement} sizeSelector
+ * @struct
+ */
+function OptionProviders(colorPalette, sizeSelector) {
+  /**
+   * @type {ColorPalette}
+   */
+  this.colorPalette = colorPalette;
+  /**
+   * @type {HTMLInputElement}
+   */
+  this.sizeSelector = sizeSelector;
 }
 
 
