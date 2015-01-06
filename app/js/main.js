@@ -315,22 +315,30 @@ bitmapper.registerMouseEvents = function() {
         // Change cursor icon to default on mouse up, regardless of
         // finishing position.
         document.getElementById('canvasViewport').style.cursor = 'initial';
+        bitmapper.displayCanvas.style.removeProperty('-webkit-clip-path');
       }, false);
   canvasViewport.addEventListener('mousemove',
       function(mouseEvent) {
         var canvasPlaceholder = document.getElementById('canvasPlaceholder');
         var coords = bitmapper.getMouseCoordinates(mouseEvent);
-
+        var newWidth = bitmapper.displayCanvas.width;
+        var newHeight = bitmapper.displayCanvas.height;
+        var currentZoom = bitmapper.zoomManager.getZoomFactor();
         // Update mouse icon.
         bitmapper.resizeCursorIcon(coords);
         if (bitmapper.activeResizeOperation &
             bitmapper.ResizeOperation.HEIGHT) {
-          canvasPlaceholder.style.height = coords.sourceY + 'px';
+          newHeight = coords.sourceY * currentZoom;
+          canvasPlaceholder.style.height = newHeight + 'px';
         }
         if (bitmapper.activeResizeOperation &
             bitmapper.ResizeOperation.WIDTH) {
-          canvasPlaceholder.style.width = coords.sourceX + 'px';
+          newWidth = coords.sourceX * currentZoom;
+          canvasPlaceholder.style.width = newWidth + 'px';
         }
+        var polygon = 'polygon(0px 0px, ' + newWidth + 'px 0px, ' +
+            newWidth + 'px ' + newHeight + 'px, 0px ' + newHeight + 'px)';
+        bitmapper.displayCanvas.style.webkitClipPath = polygon;
       }, false);
 
   // Mouse support.
