@@ -893,7 +893,9 @@ bitmapper.start = function(localStorageObject) {
       document.getElementById('sliderInputs')['sliderModel'],
       function(changes) {
         var sliderModel = changes.slice(-1)[0].object;
-        bitmapper.zoomCanvas(sliderModel.zoom);
+        var zoom = /** @type {number} */(sliderModel['zoom']);
+        var opacity = /** @type {number} */(sliderModel['opacity']);
+        bitmapper.zoomCanvas(zoom);
         // setOpacity method takes opacity in the range 0-1
         bitmapper.optionProviders.colorPalette.setOpacity(opacity / 100.0);
       }
