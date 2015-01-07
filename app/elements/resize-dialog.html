@@ -57,17 +57,25 @@ Polymer doesn't handle forms.
 
   <script>
     Polymer ('resize-dialog', {
-      dimensionChanged: function(newVal, oldVal) {},
       commit: function() {
+        // Error handling: dimensions must be positive integer.
+        var numTest = /^[1-9][0-9]*$/;
+        if (!numTest.test(this.$.widthInput.value) ||
+            !numTest.test(this.$.heightInput.value)) {
+          this.fire('dimension-error');
+          return;
+        }
         this.dimension = {
           'width': this.$.widthInput.value,
           'height': this.$.heightInput.value
         };
-        this.$.widthInput.value = '';
-        this.$.heightInput.value = '';
+        this.fire('dimension-changed');
+        this.cancel();
       },
       cancel: function() {
         this.$.dialog.opened = false;
+        this.$.widthInput.value = '';
+        this.$.heightInput.value = '';
       },
     });
   </script>

@@ -925,24 +925,23 @@ bitmapper.start = function(localStorageObject) {
   };
 
   /**
-   * Handler for change in dimension.
+   * Handlers for change in dimension.
    * @param {Object} oldVal
    * @param {Object} newVal
    */
-  document.getElementById('resizeDialog')['dimensionChanged'] = function(
-      oldVal, newVal) {
-    // Error handling: dimensions must be positive integer.
-    var numTest = /^[1-9][0-9]*$/;
-    var newWidth = /** @type {string} */(newVal['width']);
-    var newHeight = /** @type {string} */(newVal['height']);
-    if (!numTest.test(newWidth) || !numTest.test(newHeight)) {
-      bitmapper.statusMessage('Please enter valid dimensions.');
-      return;
-    }
-    bitmapper.resizeCanvas(parseInt(newWidth, 10),
-                           parseInt(newHeight, 10));
-    document.getElementById('resizeDialog').$['dialog']['opened'] = false;
-  };
+  document.getElementById('resizeDialog').addEventListener('dimension-changed',
+                                                           function(e) {
+        var newWidth = /** @type {number} */
+            (document.getElementById('resizeDialog')['dimension']['width']);
+        var newHeight = /** @type {number} */
+            (document.getElementById('resizeDialog')['dimension']['height']);
+        bitmapper.resizeCanvas(newWidth, newHeight);
+      });
+
+  document.getElementById('resizeDialog').addEventListener('dimension-error',
+                                                           function(e) {
+        bitmapper.statusMessage('Please enter valid dimensions.');
+      });
 
   // Load canvas in local storage if there is one.
   if (localStorageObject[bitmapper.SAVED_CANVAS_STORAGE_KEY]) {
