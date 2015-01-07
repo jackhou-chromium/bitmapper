@@ -873,7 +873,9 @@ bitmapper.start = function(localStorageObject) {
   bitmapper.toolbar.openHandler = bitmapper.openFile;
   bitmapper.toolbar.saveHandler = bitmapper.saveFile;
   bitmapper.toolbar.saveAsHandler = bitmapper.saveAsFile;
-
+  bitmapper.toolbar.resizeDialogHandler = function() {
+    document.getElementById('resizeDialog').$['dialog']['opened'] = true;
+  };
   // Initialise zoom functionality.
   bitmapper.zoomManager = new bitmapper.ZoomManager(
       bitmapper.sourceCanvas, bitmapper.displayCanvas,
@@ -927,7 +929,7 @@ bitmapper.start = function(localStorageObject) {
    * @param {Object} oldVal
    * @param {Object} newVal
    */
-  bitmapper.toolbar.$.resizeInput['dimensionChanged'] = function(
+  document.getElementById('resizeDialog')['dimensionChanged'] = function(
       oldVal, newVal) {
     // Error handling: dimensions must be positive integer.
     var numTest = /^[1-9][0-9]*$/;
@@ -939,6 +941,7 @@ bitmapper.start = function(localStorageObject) {
     }
     bitmapper.resizeCanvas(parseInt(newWidth, 10),
                            parseInt(newHeight, 10));
+    document.getElementById('resizeDialog').$['dialog']['opened'] = false;
   };
 
   // Load canvas in local storage if there is one.

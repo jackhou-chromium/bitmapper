@@ -1,0 +1,74 @@
+<!-- Copyright 2015 Google Inc. All Rights Reserved. -->
+
+<!--
+The resize-dialog Polymer element is a pop up dialog allowing the user to input
+precise new dimensions for the canvas to be resized to.
+
+`dimensions` is a `{ width: "value", height: "value"}` object updated when the
+Resize button is clicked. Unfortunately no input validation is performed, as
+Polymer doesn't handle forms.
+
+@element resize-dialog
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+
+<polymer-element name="resize-dialog" attributes="dimension">
+  <template>
+    <style>
+      .submit {
+        float: right;
+        margin-top: 15px;
+      }
+    </style>
+    <paper-dialog backdrop layout vertical
+      id="dialog"
+      heading="Resize canvas?"
+      layered="false"
+      role="dialog"
+      transition="core-transition-center">
+      Enter dimensions to resize the canvas.
+      <paper-input layout vertical
+        id="widthInput"
+        label="W:"
+        floatinglabel>
+      </paper-input>
+      <paper-input layout vertical
+        id="heightInput"
+        label="H:"
+        floatinglabel>
+      </paper-input>
+      <div class="submit">
+        <paper-button on-click="{{ cancel }}">
+          <core-icon icon="close"></core-icon>
+          Cancel
+        </paper-button>
+        <paper-button on-click="{{ commit }}">
+          <core-icon icon="check"></core-icon>
+          Resize
+        </paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer ('resize-dialog', {
+      dimensionChanged: function(newVal, oldVal) {},
+      commit: function() {
+        this.dimension = {
+          'width': this.$.widthInput.value,
+          'height': this.$.heightInput.value
+        };
+        this.$.widthInput.value = '';
+        this.$.heightInput.value = '';
+      },
+      cancel: function() {
+        this.$.dialog.opened = false;
+      },
+    });
+  </script>
+</polymer-element>
