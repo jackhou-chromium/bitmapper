@@ -101,7 +101,7 @@ bitmapper-toolbar {
   background-image: url('images/rect_40.png');
 }
 
-#coordinates {
+.infoLabel {
   color: white;
   position: absolute;
   left: 10px;
@@ -122,4 +122,8 @@ bitmapper-toolbar {
   cursor: move;
   position: absolute;
   pointer-events: none;
+}
+
+#canvasDimensions {
+  visibility: hidden;
 }

@@ -302,12 +302,12 @@ bitmapper.registerMouseEvents = function() {
           return;
 
         var coords = bitmapper.getMouseCoordinates(mouseEvent);
-        var newWidth = (bitmapper.activeResizeOperation &
+        var newWidth = Math.round((bitmapper.activeResizeOperation &
             bitmapper.ResizeOperation.WIDTH) ? coords.sourceX :
-            bitmapper.sourceCanvas.width;
-        var newHeight = (bitmapper.activeResizeOperation &
+            bitmapper.sourceCanvas.width);
+        var newHeight = Math.round((bitmapper.activeResizeOperation &
             bitmapper.ResizeOperation.HEIGHT) ? coords.sourceY :
-            bitmapper.sourceCanvas.height;
+            bitmapper.sourceCanvas.height);
         bitmapper.resizeCanvas(newWidth, newHeight);
 
         bitmapper.activeResizeOperation = bitmapper.ResizeOperation.NONE;
@@ -316,6 +316,8 @@ bitmapper.registerMouseEvents = function() {
         // finishing position.
         document.getElementById('canvasViewport').style.cursor = 'initial';
         bitmapper.displayCanvas.style.removeProperty('-webkit-clip-path');
+
+        bitmapper.hideCanvasSize();
       }, false);
   canvasViewport.addEventListener('mousemove',
       function(mouseEvent) {
@@ -330,11 +332,13 @@ bitmapper.registerMouseEvents = function() {
             bitmapper.ResizeOperation.HEIGHT) {
           newHeight = coords.sourceY * currentZoom;
           canvasPlaceholder.style.height = newHeight + 'px';
+          bitmapper.showCanvasSize(newWidth, newHeight);
         }
         if (bitmapper.activeResizeOperation &
             bitmapper.ResizeOperation.WIDTH) {
           newWidth = coords.sourceX * currentZoom;
           canvasPlaceholder.style.width = newWidth + 'px';
+          bitmapper.showCanvasSize(newWidth, newHeight);
         }
         var polygon = 'polygon(0px 0px, ' + newWidth + 'px 0px, ' +
             newWidth + 'px ' + newHeight + 'px, 0px ' + newHeight + 'px)';
@@ -578,6 +582,27 @@ bitmapper.showCoordinates = function(mouseCoordinates) {
     return;
   }
   document.getElementById('coordinates').style.visibility = 'hidden';
+};
+
+
+/**
+ * Display canvas size while resize operation is taking place.
+ * @param {number} width
+ * @param {number} height
+ */
+bitmapper.showCanvasSize = function(width, height) {
+  document.getElementById('canvasDimensions').style.visibility = 'visible';
+  document.getElementById('canvasWidth').textContent = width;
+  document.getElementById('canvasHeight').textContent = height;
+  return;
+};
+
+
+/**
+ * Hide canvas size.
+ */
+bitmapper.hideCanvasSize = function() {
+  document.getElementById('canvasDimensions').style.visibility = 'hidden';
 };
 
 
