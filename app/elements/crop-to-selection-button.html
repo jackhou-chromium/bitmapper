@@ -1,0 +1,59 @@
+<!-- Copyright 2015 Google Inc. All Rights Reserved. -->
+
+<!--
+A button for the crop-to-selection tool,
+disbaled by default, selecting the tool will stop it
+from being disabled
+
+@element crop-to-selection-button
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-icons/image-icons.html">
+<link rel="import"
+  href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+<polymer-element name="crop-to-selection-button" attributes="disabled">
+  <template>
+  <style>
+    #crop-to-selection-paper-button {
+      margin-left: 14px;
+      background: #363636;
+      text-transform: none;
+      border-radius: 40px;
+      border: 2px #26A69A solid;
+      margin: 3px;
+    }
+    #crop-to-selection-paper-button[disabled] {
+      margin: 5px;
+      border: none;
+    }
+  </style>
+    <paper-icon-button
+      id="crop-to-selection-paper-button"
+      role="button"
+      on-click="{{ cropHandler }}"
+      disabled="{{ disabled }}"
+      icon="image:crop"
+      title="Crop to selection">
+    </paper-icon-button>
+  </template>
+  <script type="text/javascript">
+    Polymer('crop-to-selection-button', {
+      created: function() {
+        // Determine whether or not button should be rendered.
+        // Do not render by default.
+        this.render = false;
+      },
+      renderChanged: function(oldVal, newVal) {
+        if (newVal == true) {
+          this.style.visibility = "visible";
+          this.style.display = "block";
+        } else {
+          this.style.visibility = "hidden";
+          this.style.display = "none";
+        }
+      }
+    });
+  </script>
+</polymer-element>

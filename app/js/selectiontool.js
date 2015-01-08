@@ -106,6 +106,16 @@ function SelectionTool(toolContext) {}
     var height = Math.abs(sourceY - this.firstSourceY);
     this.selectionCanvasManager.setSize(width, height);
     this.selectionCanvasManager.drawSelectionCanvas();
+
+    var cropToSelectionButton =
+        document.getElementById('cropToSelectionButton');
+    // Use selection size to determine whether or not crop to selection button
+    // should be disabled.
+    if (width > 0 && height > 0) {
+      cropToSelectionButton['disabled'] = false;
+    } else {
+      cropToSelectionButton['disabled'] = true;
+    }
   };
 
   /**
@@ -166,6 +176,10 @@ function SelectionTool(toolContext) {}
     this.selectionCanvasManager.resetSelection();
     this.isSelected = false;
     this.dragging = false;
+    // Disbale crop to selection button.
+    var cropToSelectionButton =
+        document.getElementById('cropToSelectionButton');
+    cropToSelectionButton['disabled'] = true;
   };
 
   /**

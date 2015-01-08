@@ -127,3 +127,10 @@ bitmapper-toolbar {
 #canvasDimensions {
   visibility: hidden;
 }
+
+#cropToSelectionButton {
+  visibility: hidden;
+  color: white;
+  display: none;
+  margin-left: 12px;
+}

@@ -766,6 +766,19 @@ bitmapper.setUpTools = function() {
     var activateEvent = /** @type {CoreEvent} */(e);
     toolPanel['activeTool'] =
         toolPanel['tools'][activateEvent.detail.item.getAttribute('name')];
+
+    var cropToSelectionButton =
+        document.getElementById('cropToSelectionButton');
+    if (activateEvent.detail.item.getAttribute('name') ==
+        'selectionTool') {
+      // Show crop to selection button on selection of selectionTool.
+      cropToSelectionButton['render'] = true;
+      // Disable crop to selection button by default.
+      cropToSelectionButton['disabled'] = true;
+    } else {
+      // Hide crop to selection button on selection of another tool.
+      cropToSelectionButton['render'] = false;
+    }
   });
 
   /**
@@ -779,6 +792,39 @@ bitmapper.setUpTools = function() {
     bitmapper.selectedTool = newTool;
     bitmapper.cursorGuide.setTool(newTool);
   };
+  var cropToSelectionButton = document.getElementById('cropToSelectionButton');
+  cropToSelectionButton.cropHandler = bitmapper.cropToSelection;
+};
+
+
+/**
+ * Crop canvas to selected area.
+ */
+bitmapper.cropToSelection = function() {
+  // Get selection canvas, and dimensions of selected area.
+  var selectionCanvas = GetCanvasElement('selectionCanvas');
+  var currentZoom = bitmapper.zoomManager.getZoomFactor();
+  var selectionWidth = selectionCanvas.width * (1 / currentZoom);
+  var selectionHeight = selectionCanvas.height * (1 / currentZoom);
+  // Clear current canvas.
+  bitmapper.clearCanvas();
+  // Set height and width of canvas to selection height and width.
+  bitmapper.sourceCanvas.width = selectionWidth;
+  bitmapper.sourceCanvas.height = selectionHeight;
+  // Draw selected content.
+  Canvas2DContext(bitmapper.sourceCanvas).drawImage(
+      bitmapper.selectionCanvasManager.getCanvas(), 0, 0,
+      selectionWidth, selectionHeight);
+  // Snapshot pushed for undo/redo functionality.
+  bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
+  // Draw display canvas.
+  bitmapper.zoomManager.drawDisplayCanvas();
+  // tearDown function will disable crop to selection button.
+  bitmapper.selectedTool.tearDown();
+
+  // Show canvas crop toast.
+  bitmapper.statusMessage('Cropped to ' + selectionWidth +
+                          'x' + selectionHeight + 'px.');
 };
 
 
