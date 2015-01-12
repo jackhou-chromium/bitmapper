@@ -217,8 +217,8 @@ function PencilTool(toolContext, optionProviders, type) {}
       ctx.fillStyle = brushColor;
       ctx.fill();
     } else {
-      ctx.moveTo(this.lastX, this.lastY);
-      ctx.lineWidth = parseInt(this.sizeSelector.value, 10);
+      ctx.moveTo(startX, startY);
+      ctx.lineWidth = parseInt(brushSize, 10);
       ctx.lineTo(endX, endY);
       ctx.strokeStyle = brushColor;
       ctx.lineCap = 'round';
