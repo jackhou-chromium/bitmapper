@@ -96,8 +96,11 @@ function PencilTool(toolContext, optionProviders, type) {}
     this.dragging = true;
     this.lastX = mouseCoordinates.sourceX;
     this.lastY = mouseCoordinates.sourceY;
-    this.drawLine(this.lastX, this.lastY, mouseCoordinates.sourceX,
-        mouseCoordinates.sourceY);
+    if (this.type == PencilTool.ToolType.BRUSH)
+      this.drawBrush(mouseCoordinates);
+    else
+      this.drawLine(this.lastX, this.lastY, mouseCoordinates.sourceX,
+          mouseCoordinates.sourceY);
   };
 
   /**
@@ -200,13 +203,27 @@ function PencilTool(toolContext, optionProviders, type) {}
     var ctx = this.sourceContext;
     ctx.beginPath();
     ctx.globalCompositeOperation = 'source-over';
-    ctx.moveTo(this.lastX, this.lastY);
-    ctx.lineWidth = parseInt(this.sizeSelector.value, 10);
-    ctx.lineTo(Math.floor(mouseCoordinates.sourceX),
-        Math.floor(mouseCoordinates.sourceY));
-    ctx.strokeStyle = this.colorPalette.getSelectedColorWithOpacity();
-    ctx.lineCap = 'round';
-    ctx.stroke();
+    var startX = this.lastX;
+    var endX = mouseCoordinates.sourceX;
+    var startY = this.lastY;
+    var endY = mouseCoordinates.sourceY;
+    var brushSize = parseInt(this.sizeSelector.value, 10);
+    var brushColor = this.colorPalette.getSelectedColorWithOpacity();
+    if (startX == endX &&
+        startY == endY) {
+      // Mouse coordinates have not changed. lineTo will not draw a line,
+      // so instead draw circle with current co-ordinates.
+      ctx.arc(startX, startY, brushSize / 2, 0, 2 * Math.PI, false);
+      ctx.fillStyle = brushColor;
+      ctx.fill();
+    } else {
+      ctx.moveTo(this.lastX, this.lastY);
+      ctx.lineWidth = parseInt(this.sizeSelector.value, 10);
+      ctx.lineTo(endX, endY);
+      ctx.strokeStyle = brushColor;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    }
     // Redraw display canvas.
     this.drawDisplayCanvas();
   };
