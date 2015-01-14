@@ -34,11 +34,12 @@ function MouseCoordinates() {
  * @struct
  * @param {HTMLCanvasElement} sourceCanvas
  * @param {HTMLCanvasElement} displayCanvas
+ * @param {HTMLCanvasElement} brushCanvas
  * @param {SelectionCanvasManager} selectionCanvasManager
  * @param {function()} drawDisplayCanvas
  */
-function ToolContext(sourceCanvas, displayCanvas, selectionCanvasManager,
-    drawDisplayCanvas) {
+function ToolContext(sourceCanvas, displayCanvas, brushCanvas,
+    selectionCanvasManager, drawDisplayCanvas) {
   /**
    * @type {HTMLCanvasElement}
    */
@@ -47,6 +48,10 @@ function ToolContext(sourceCanvas, displayCanvas, selectionCanvasManager,
    * @type {HTMLCanvasElement}
    */
   this.displayCanvas = displayCanvas;
+  /**
+   * @type {HTMLCanvasElement}
+   */
+  this.brushCanvas = brushCanvas;
   /**
    * @type {SelectionCanvasManager}
    */

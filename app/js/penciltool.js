@@ -36,6 +36,23 @@ function PencilTool(toolContext, optionProviders, type) {}
     this.sourceContext = Canvas2DContext(toolContext.sourceCanvas);
 
     /**
+     * @type {HTMLCanvasElement}
+     */
+    this.sourceCanvas = toolContext.sourceCanvas;
+
+    /**
+     * @type {CanvasRenderingContext2D}
+     */
+    this.brushContext = Canvas2DContext(toolContext.brushCanvas);
+
+    /**
+     * Auxiliary canvas to allow for implementation of alpha blending when
+     * using drawing tools.
+     * @type {HTMLCanvasElement}
+     */
+    this.brushCanvas = toolContext.brushCanvas;
+
+    /**
      * @type {ColorPalette}
      */
     this.colorPalette = optionProviders.colorPalette;
@@ -127,6 +144,31 @@ function PencilTool(toolContext, optionProviders, type) {}
    */
   PencilTool.prototype.mouseUp = function(mouseCoordinates) {
     this.dragging = false;
+    if (this.type != PencilTool.ToolType.BRUSH)
+      return;
+
+    // Draw image onto canvas.
+    this.drawDisplayCanvas();
+
+    var tempAlpha = this.sourceContext.globalAlpha;
+    this.sourceContext.globalAlpha = this.colorPalette.getOpacity();
+
+    // Draw brushCanvas onto sourceCanvas.
+    this.sourceContext.drawImage(
+        this.brushCanvas,
+        0,
+        0,
+        this.sourceCanvas.width,
+        this.sourceCanvas.height,
+        0,
+        0,
+        this.brushCanvas.width,
+        this.brushCanvas.height);
+    this.sourceContext.globalAlpha = tempAlpha;
+
+    // Clear brush canvas.
+    this.brushContext.clearRect(0, 0,
+        this.brushCanvas.width, this.brushCanvas.height);
   };
 
   /**
@@ -196,11 +238,11 @@ function PencilTool(toolContext, optionProviders, type) {}
   };
 
   /**
-   * Draw using brush tool.
+   * Draw using brush tool onto brushCanvas.
    * @param {MouseCoordinates} mouseCoordinates
    */
   PencilTool.prototype.drawBrush = function(mouseCoordinates) {
-    var ctx = this.sourceContext;
+    var ctx = this.brushContext;
     ctx.beginPath();
     ctx.globalCompositeOperation = 'source-over';
     var startX = this.lastX;
@@ -208,7 +250,11 @@ function PencilTool(toolContext, optionProviders, type) {}
     var startY = this.lastY;
     var endY = mouseCoordinates.sourceY;
     var brushSize = parseInt(this.sizeSelector.value, 10);
-    var brushColor = this.colorPalette.getSelectedColorWithOpacity();
+
+    // Draw with 100% opacity (regardless of the current brush opacity).
+    // When the draw operation is completed, the brush canvas will be applied
+    // to the source canvas at the correct opacity.
+    var brushColor = this.colorPalette.getSelectedColor();
     if (startX == endX &&
         startY == endY) {
       // Mouse coordinates have not changed. lineTo will not draw a line,
@@ -230,6 +276,18 @@ function PencilTool(toolContext, optionProviders, type) {}
 
   PencilTool.prototype.tearDown = function() {
   };
+
+
+  /**
+   * Set up canvas for use with drawing brush.
+   * Ensures that brush canvas has same dimensions and zoom
+   * as source canvas.
+   */
+  PencilTool.prototype.setupBrushCanvas = function() {
+    this.brushCanvas.height = this.sourceCanvas.height;
+    this.brushCanvas.width = this.sourceCanvas.width;
+  };
+
 
   /**
    * Set cursor guide image.

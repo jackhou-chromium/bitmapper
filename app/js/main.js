@@ -69,6 +69,12 @@ bitmapper.displayCanvas = null;
 
 
 /**
+ * @type {HTMLCanvasElement}
+ */
+bitmapper.brushCanvas = null;
+
+
+/**
  * @type {ImageFile}
  */
 bitmapper.imageFile = null;
@@ -728,6 +734,7 @@ bitmapper.setUpTools = function() {
   var toolContext = new ToolContext(
       bitmapper.sourceCanvas,
       bitmapper.displayCanvas,
+      bitmapper.brushCanvas,
       bitmapper.selectionCanvasManager,
       function() {
         bitmapper.zoomManager.drawDisplayCanvas();
@@ -878,6 +885,9 @@ bitmapper.resizeCanvas = function(newWidth, newHeight) {
   // Resize source.
   bitmapper.sourceCanvas.width = newWidth;
   bitmapper.sourceCanvas.height = newHeight;
+  // Resize brushCanvas.
+  bitmapper.brushCanvas.width = newWidth;
+  bitmapper.brushCanvas.height = newHeight;
   // Draw temp back on source.
   Canvas2DContext(bitmapper.sourceCanvas).drawImage(tempCanvas, 0, 0);
   // Snapshot pushed for undo/redo functionality.
@@ -939,6 +949,7 @@ bitmapper.start = function(localStorageObject) {
   // Initialise canvases.
   bitmapper.displayCanvas = GetCanvasElement('imageCanvas');
   bitmapper.sourceCanvas = CreateCanvasElement();
+  bitmapper.brushCanvas = CreateCanvasElement();
 
   var toolbar = document.getElementById('bitmapperToolbar');
   bitmapper.toolbar = toolbar;
@@ -955,7 +966,7 @@ bitmapper.start = function(localStorageObject) {
   // Initialise zoom functionality.
   bitmapper.zoomManager = new bitmapper.ZoomManager(
       bitmapper.sourceCanvas, bitmapper.displayCanvas,
-      document.getElementById('canvasPlaceholder'),
+      bitmapper.brushCanvas, document.getElementById('canvasPlaceholder'),
       document.getElementById('canvasViewport'));
 
   // Redraw display canvas on window resize.
@@ -989,6 +1000,7 @@ bitmapper.start = function(localStorageObject) {
 
   // Set up option providers and tools.
   bitmapper.setUpOptionProviders(localStorageObject);
+  bitmapper.zoomManager.setOptionProviders(bitmapper.optionProviders);
   bitmapper.setUpTools();
 
   // Set up mouse event listeners.

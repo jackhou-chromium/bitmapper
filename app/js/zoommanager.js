@@ -11,11 +11,13 @@
  * @struct
  * @param {HTMLCanvasElement} sourceCanvas
  * @param {HTMLCanvasElement} displayCanvas
+ * @param {HTMLCanvasElement} brushCanvas
  * @param {HTMLElement} canvasPlaceholder
  * @param {HTMLElement} canvasViewport
  */
 function ZoomManager(sourceCanvas,
                      displayCanvas,
+                     brushCanvas,
                      canvasPlaceholder,
                      canvasViewport) {
 }
@@ -28,11 +30,13 @@ function ZoomManager(sourceCanvas,
    * @struct
    * @param {HTMLCanvasElement} sourceCanvas
    * @param {HTMLCanvasElement} displayCanvas
+   * @param {HTMLCanvasElement} brushCanvas
    * @param {HTMLElement} canvasPlaceholder
    * @param {HTMLElement} canvasViewport
    */
   function ZoomManager(sourceCanvas,
                        displayCanvas,
+                       brushCanvas,
                        canvasPlaceholder,
                        canvasViewport) {
     /**
@@ -51,11 +55,23 @@ function ZoomManager(sourceCanvas,
     this.displayCanvas = displayCanvas;
 
     /**
+     * @type {HTMLCanvasElement}
+     */
+    this.brushCanvas = brushCanvas;
+
+    /**
      * @type {HTMLElement}
      * A placeholder for the displayCanvas which sizes to the logical pixel size
      * of the zoomed image.
      */
     this.canvasPlaceholder = canvasPlaceholder;
+
+    /**
+     * optionProviders is initialized after zoomManager has been initialized.
+     * initialization done in this.setOptionProvders().
+     * @type {OptionProviders}
+     */
+    this.optionProviders = null;
 
     /**
      * @type {HTMLElement}
@@ -72,6 +88,12 @@ function ZoomManager(sourceCanvas,
 
     this.drawDisplayCanvas();
   };
+
+  /**
+   * Constant for default opacity value.
+   * @const {number}
+   */
+  ZoomManager.DEFAULT_OPACITY = 1;
 
   /**
    * Sets zoom factor, repositioning the viewport to respect |anchorX| and
@@ -168,7 +190,52 @@ function ZoomManager(sourceCanvas,
         0,
         this.displayCanvas.width,
         this.displayCanvas.height);
+
+    // brushCanvas represents pixels drawn by the current drawing operation
+    // and is yet to be drawn to the displayCanvas.
+    // draw brushCanvas onto displayCanvas with opacity value from current
+    // slider input value.
+    var opacityValue = this.getOpacity();
+    var tempAlpha = displayContext.globalAlpha;
+    displayContext.globalAlpha = opacityValue;
+
+    // Draw the visible region of the brushCanvas to the display canvas.
+    displayContext.drawImage(
+        this.brushCanvas,
+        left / zoom, top / zoom,
+        this.displayCanvas.width / zoom,
+        this.displayCanvas.height / zoom,
+        0,
+        0,
+        this.displayCanvas.width,
+        this.displayCanvas.height);
+    // Restore initial alpha value.
+    displayContext.globalAlpha = tempAlpha;
   };
+
+
+  /**
+   * Initialise optionProviders property for zoomManager.
+   * optionProviders is created after zoomManager has been created.
+   * @param {OptionProviders} optionProviders
+   */
+  ZoomManager.prototype.setOptionProviders = function(optionProviders) {
+    this.optionProviders = optionProviders;
+  };
+
+
+  /**
+   * Returns opacity value, from colorSelector in optionProviders
+   * @return {number}
+   */
+  ZoomManager.prototype.getOpacity = function() {
+    if (this.optionProviders == null)
+      // Use default opacity value.
+      return ZoomManager.DEFAULT_OPACITY;
+
+    return this.optionProviders.colorPalette.getOpacity();
+  };
+
 
   /**
    * Returns current zoom factor.
