@@ -350,6 +350,8 @@ bitmapper.registerMouseEvents = function() {
       function(mouseEvent) {
         if (mouseEvent.button != 0)
           return;
+        // Stop event bubbling into canvasViewport's mouseDown event listener.
+        mouseEvent.stopPropagation();
 
         // Hit test for selection canvas.
         if (bitmapper.selectionCanvasManager.isInHitArea(
@@ -628,6 +630,9 @@ bitmapper.resizeCursorIcon = function(mouseCoordinates) {
       // Restore initial cursor icon.
       document.getElementById('canvasViewport').style.cursor = 'initial';
     }
+  } else {
+    // Restore initial cursor icon.
+    document.getElementById('canvasViewport').style.cursor = 'initial';
   }
 };
 
