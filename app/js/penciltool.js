@@ -144,7 +144,7 @@ function PencilTool(toolContext, optionProviders, type) {}
    */
   PencilTool.prototype.mouseUp = function(mouseCoordinates) {
     this.dragging = false;
-    if (this.type != PencilTool.ToolType.BRUSH)
+    if (this.type == PencilTool.ToolType.ERASER)
       return;
 
     // Draw image onto canvas.
@@ -191,7 +191,7 @@ function PencilTool(toolContext, optionProviders, type) {}
     // Bresenham's line algorithm
     // Based on the Wikipedia article about Bresenham's line
     // function.
-    var ctx = this.sourceContext;
+    var ctx = this.brushContext;
     var shift = this.sizeSelector.value / 2;
     x0 = Math.floor(x0 - shift);
     y0 = Math.floor(y0 - shift);
@@ -203,10 +203,13 @@ function PencilTool(toolContext, optionProviders, type) {}
 
 
     if (this.type == PencilTool.ToolType.ERASER) {
+      // TODO(sarakato): Use brushContext with eraser. The brushCanvas will be
+      // composited with destination-out when used with eraser tool.
+      ctx = this.sourceContext;
       // Only set opacity.
       ctx.fillStyle = 'rgba(0,0,0,0)';
     } else {
-      ctx.fillStyle = this.colorPalette.getSelectedColorWithOpacity();
+      ctx.fillStyle = this.colorPalette.getSelectedColor();
     }
     var sx = x0 < x1 ? 1 : -1;
     var sy = y0 < y1 ? 1 : -1;
@@ -275,17 +278,6 @@ function PencilTool(toolContext, optionProviders, type) {}
   };
 
   PencilTool.prototype.tearDown = function() {
-  };
-
-
-  /**
-   * Set up canvas for use with drawing brush.
-   * Ensures that brush canvas has same dimensions and zoom
-   * as source canvas.
-   */
-  PencilTool.prototype.setupBrushCanvas = function() {
-    this.brushCanvas.height = this.sourceCanvas.height;
-    this.brushCanvas.width = this.sourceCanvas.width;
   };
 
 
