@@ -144,11 +144,13 @@ function PencilTool(toolContext, optionProviders, type) {}
    */
   PencilTool.prototype.mouseUp = function(mouseCoordinates) {
     this.dragging = false;
-    if (this.type == PencilTool.ToolType.ERASER)
-      return;
 
     // Draw image onto canvas.
     this.drawDisplayCanvas();
+
+    // Set globalCompositeOperation based on whether eraser tool is selected.
+    this.sourceContext.globalCompositeOperation = this.type ==
+        PencilTool.ToolType.ERASER ? 'destination-out' : 'source-over';
 
     var tempAlpha = this.sourceContext.globalAlpha;
     this.sourceContext.globalAlpha = this.colorPalette.getOpacity();
@@ -165,7 +167,8 @@ function PencilTool(toolContext, optionProviders, type) {}
         this.brushCanvas.width,
         this.brushCanvas.height);
     this.sourceContext.globalAlpha = tempAlpha;
-
+    // Set globalCompositeOperation to the default value.
+    this.sourceContext.globalCompositeOperation = 'source-over';
     // Clear brush canvas.
     this.brushContext.clearRect(0, 0,
         this.brushCanvas.width, this.brushCanvas.height);
@@ -203,11 +206,11 @@ function PencilTool(toolContext, optionProviders, type) {}
 
 
     if (this.type == PencilTool.ToolType.ERASER) {
-      // TODO(sarakato): Use brushContext with eraser. The brushCanvas will be
-      // composited with destination-out when used with eraser tool.
-      ctx = this.sourceContext;
-      // Only set opacity.
-      ctx.fillStyle = 'rgba(0,0,0,0)';
+      // Set eraser color to black, and it will be drawn onto sourceCanvas
+      // with globalCompositeOperation = 'destination-out'. This will allow
+      // to 'erase' over anything exisiting on the canvas previously. Opacity
+      // will be taken into account when compositing takes place in mouseUp().
+      ctx.fillStyle = 'rgb(0,0,0)';
     } else {
       ctx.fillStyle = this.colorPalette.getSelectedColor();
     }

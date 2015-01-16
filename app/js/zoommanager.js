@@ -96,6 +96,12 @@ function ZoomManager(sourceCanvas,
   ZoomManager.DEFAULT_OPACITY = 1;
 
   /**
+   * Constant for eraser tool provided in penciltool.js
+   * @const {number}
+   */
+  ZoomManager.ERASER = 1;
+
+  /**
    * Sets zoom factor, repositioning the viewport to respect |anchorX| and
    * |anchorY|.
    * @param {number} zoomFactor
@@ -199,6 +205,10 @@ function ZoomManager(sourceCanvas,
     var tempAlpha = displayContext.globalAlpha;
     displayContext.globalAlpha = opacityValue;
 
+    // Set globalCompositeOperation based on whether eraser tool is selected.
+    displayContext.globalCompositeOperation = this.eraserToolSelected() ==
+        ZoomManager.ERASER ? 'destination-out' : 'source-over';
+
     // Draw the visible region of the brushCanvas to the display canvas.
     displayContext.drawImage(
         this.brushCanvas,
@@ -211,6 +221,8 @@ function ZoomManager(sourceCanvas,
         this.displayCanvas.height);
     // Restore initial alpha value.
     displayContext.globalAlpha = tempAlpha;
+    // Restore default value for globalCompositeOperation.
+    displayContext.globalCompositeOperation = 'source-over';
   };
 
 
@@ -221,6 +233,19 @@ function ZoomManager(sourceCanvas,
    */
   ZoomManager.prototype.setOptionProviders = function(optionProviders) {
     this.optionProviders = optionProviders;
+  };
+
+
+  /**
+   * Returns whether the eraserTool is currently selected.
+   * @return {boolean}
+   */
+  ZoomManager.prototype.eraserToolSelected = function() {
+    if (bitmapper.selectedTool == null ||
+        bitmapper.selectedTool.constructor.name != 'PencilTool')
+      return false;
+    else
+      return bitmapper.selectedTool['type'] == ZoomManager.ERASER;
   };
 
 
