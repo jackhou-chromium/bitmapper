@@ -91,6 +91,10 @@ $(OUTDIR)/$(DEBUGDIR)/icons/%.png : icons/badge/%.png
 $(OUTDIR)/$(RELEASEDIR)/icons/%.png : icons/%.png
 	cp $< $@
 
+# Icons for test build come from icons/badge.
+$(OUTDIR)/$(TESTDIR)/icons/%.png : icons/badge/%.png
+	cp $< $@
+
 # Compile a debug build. This depends on the release build so the debug build
 # gets type checking.
 debug : $(SETUP) \
