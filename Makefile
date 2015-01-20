@@ -36,6 +36,8 @@ DEBUG_ICONS := $(patsubst \
     %,$(OUTDIR)/$(DEBUGDIR)/icons/bitmapper_icon_%.png,$(ICON_SIZES))
 RELEASE_ICONS := $(patsubst \
     %,$(OUTDIR)/$(RELEASEDIR)/icons/bitmapper_icon_%.png,$(ICON_SIZES))
+TEST_ICONS := $(patsubst \
+    %,$(OUTDIR)/$(TESTDIR)/icons/bitmapper_icon_%.png,$(ICON_SIZES))
 
 # TODO(tapted): Ideally this would filter out source files that get bundled up
 # in the closure-compiled .js, as well as un-vulcanized html. But having those
@@ -173,6 +175,7 @@ copy_test_files : $(TEST_FILES)
 
 # Compile the test app.
 test : $(SETUP) copy_test_files \
+       $(TEST_ICONS) \
        $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js \
        $(OUTDIR)/$(TESTDIR)/build.html \
        $(OUTDIR)/$(TESTDIR)/test_build.html
