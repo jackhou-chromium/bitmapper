@@ -27,6 +27,10 @@ ALL_SRCS := $(APP_SRCS) $(TEST_SRCS)
 
 APP_HTML_FILES := $(shell find $(APPDIR) -type f -name '*.html')
 
+TEST_FILE_LIST := manifest.json background.js \
+    test-image.png test-image-zoom.png test-jpg-image.jpg
+TEST_FILES := $(patsubst %,$(TESTDIR)/%,$(TEST_FILE_LIST))
+
 ICON_SIZES := 16x16 32x32 48x48 64x64 96x96 128x128
 DEBUG_ICONS := $(patsubst \
     %,$(OUTDIR)/$(DEBUGDIR)/icons/bitmapper_icon_%.png,$(ICON_SIZES))
@@ -145,10 +149,14 @@ $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js : $(APP_SRCS) $(TEST_SRCS) $(EXTERNS)
 	echo "//@ sourceMappingURL=$(PROJECT)_test.js.map" >> \
 		$(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js
 
-copy_test_files :
-	# Copy the $(TESTDIR) into $(OUTDIR)/$(TESTDIR).
+copy_test_files : $(TEST_FILES)
 	mkdir -p $(OUTDIR)/$(TESTDIR)
-	cp -r $(TESTDIR)/* $(OUTDIR)/$(TESTDIR)
+	cp $(TEST_FILES) $(OUTDIR)/$(TESTDIR)
+	cp -r $(TESTDIR)/js $(OUTDIR)/$(TESTDIR)
+	cp -r $(TESTDIR)/deps $(OUTDIR)/$(TESTDIR)
+	# Add a symlink so that app/elements/../bower_components points to
+	# out/test/bower_components. TODO(tapted): Find a better way to do this.
+	(cd $(OUTDIR)/$(TESTDIR) && ln -snf . app)
 	# Add in all the original source files to be tested.
 	cp $(APP_SRCS) $(OUTDIR)/$(TESTDIR)/$(SRCDIR)/
 	# Copy apps deps.
@@ -160,10 +168,14 @@ copy_test_files :
 %/build.html : $(APP_HTML_FILES) %/.prepared
 	$(VULCANIZE) $(VULCANIZE_FLAGS) -o $@ $(APPDIR)/main.html
 
+%/test_build.html : test/test.html
+	$(VULCANIZE) --csp -p test -o $@ $<
+
 # Compile the test app.
 test : $(SETUP) copy_test_files \
        $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js \
-       $(OUTDIR)/$(TESTDIR)/build.html
+       $(OUTDIR)/$(TESTDIR)/build.html \
+       $(OUTDIR)/$(TESTDIR)/test_build.html
 
 # Lints all .js files.
 lint :
