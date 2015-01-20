@@ -93,8 +93,9 @@ function Tool() {}
 
 /**
  * @param {MouseCoordinates} mouseCoordinates
+ * @param {boolean=} opt_doLine
  */
-Tool.prototype.mouseDown = function(mouseCoordinates) {};
+Tool.prototype.mouseDown = function(mouseCoordinates, opt_doLine) {};
 
 
 /**

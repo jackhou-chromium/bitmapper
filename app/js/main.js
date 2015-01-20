@@ -366,7 +366,8 @@ bitmapper.registerMouseEvents = function() {
               bitmapper.getMouseCoordinates(mouseEvent));
         } else {
           bitmapper.selectedTool.mouseDown(
-              bitmapper.getMouseCoordinates(mouseEvent));
+              bitmapper.getMouseCoordinates(mouseEvent),
+              mouseEvent.shiftKey);
         }
       }, false);
   window.addEventListener('mouseup',
@@ -921,6 +922,8 @@ bitmapper.undo = function() {
   if (bitmapper.selectedTool == bitmapper.tools.selectionTool)
     return;
 
+  bitmapper.tools.pencilTool.undo();
+
   var poppedSnapshot = bitmapper.imageFile.popSnapshot();
   if (poppedSnapshot) {
     bitmapper.drawImageToCanvas(poppedSnapshot);
@@ -933,6 +936,8 @@ bitmapper.undo = function() {
  * Redo and draw snapshot to canvas.
  */
 bitmapper.redo = function() {
+  bitmapper.tools.pencilTool.redo();
+
   var unpoppedSnapshot = bitmapper.imageFile.unpopSnapshot();
   if (unpoppedSnapshot) {
     bitmapper.drawImageToCanvas(unpoppedSnapshot);

@@ -75,17 +75,16 @@ function PencilTool(toolContext, optionProviders, type) {}
     this.dragging = false;
 
     /**
-     * The last x coordinate.
-     * @type {number}
+     * Contains the last MAX_SNAPSHOTS {x,y} coordinate pairs.
+     * @type {Stack}
      */
-
-    this.lastX = 0;
+    this.lastPositions = new bitmapper.Stack(bitmapper.ImageFile.MAX_SNAPSHOTS);
 
     /**
-     * The last y coordinate.
-     * @type {number}
+     * The last {x,y} coordinates.
+     * @type {MouseCoordinates}
      */
-    this.lastY = 0;
+    this.lastCoordinate = null;
 
     /**
      * Type of pencil tool.
@@ -106,18 +105,49 @@ function PencilTool(toolContext, optionProviders, type) {}
   };
 
   /**
-   * Start draw.
+   * Updates the last {x,y} coordinate position.
    * @param {MouseCoordinates} mouseCoordinates
    */
-  PencilTool.prototype.mouseDown = function(mouseCoordinates) {
+  PencilTool.prototype.updateLastPosition = function(mouseCoordinates) {
+    this.lastCoordinate = mouseCoordinates;
+    this.lastPositions.push(mouseCoordinates);
+  };
+
+  /**
+   * Undoes the previous line action, updating the stack and lastCoordinate
+   * accordingly.
+   */
+  PencilTool.prototype.undo = function() {
+    var returnVal = /** @type {MouseCoordinates} */(this.lastPositions.pop());
+    if (returnVal)
+      this.lastCoordinate = returnVal;
+  };
+
+  /**
+   * Redoes the previous line action, updating the stack and lastCoordinate
+   * accordingly.
+   */
+  PencilTool.prototype.redo = function() {
+    var returnVal = /** @type {MouseCoordinates} */(this.lastPositions.unpop());
+    if (returnVal) {
+      this.lastCoordinate = returnVal;
+    }
+  };
+
+  /**
+   * Start draw.
+   * @param {MouseCoordinates} mouseCoordinates
+   * @param {boolean=} opt_shiftDown
+   */
+  PencilTool.prototype.mouseDown = function(mouseCoordinates, opt_shiftDown) {
     this.dragging = true;
-    this.lastX = mouseCoordinates.sourceX;
-    this.lastY = mouseCoordinates.sourceY;
-    if (this.type == PencilTool.ToolType.BRUSH)
-      this.drawBrush(mouseCoordinates);
-    else
-      this.drawLine(this.lastX, this.lastY, mouseCoordinates.sourceX,
-          mouseCoordinates.sourceY);
+    // We also want to draw freehand if shift is held for the first stroke.
+    if (!opt_shiftDown || this.lastCoordinate === null) {
+      this.lastCoordinate = mouseCoordinates;
+    }
+    this.drawLine(this.lastCoordinate.sourceX, this.lastCoordinate.sourceY,
+                  mouseCoordinates.sourceX, mouseCoordinates.sourceY);
+    this.updateLastPosition(mouseCoordinates);
   };
 
   /**
@@ -131,11 +161,10 @@ function PencilTool(toolContext, optionProviders, type) {}
     if (this.type == PencilTool.ToolType.BRUSH) {
       this.drawBrush(mouseCoordinates);
     } else {
-      this.drawLine(this.lastX, this.lastY, mouseCoordinates.sourceX,
-          mouseCoordinates.sourceY);
+      this.drawLine(this.lastCoordinate.sourceX, this.lastCoordinate.sourceY,
+                    mouseCoordinates.sourceX, mouseCoordinates.sourceY);
     }
-    this.lastX = mouseCoordinates.sourceX;
-    this.lastY = mouseCoordinates.sourceY;
+    this.lastCoordinate = mouseCoordinates;
   };
 
   /**
@@ -144,6 +173,12 @@ function PencilTool(toolContext, optionProviders, type) {}
    */
   PencilTool.prototype.mouseUp = function(mouseCoordinates) {
     this.dragging = false;
+
+    // For n lines we have n+1 endpoints. This makes sure that both endpoints of
+    // the first line drawn are included in the stack.
+    var top = this.lastPositions.top();
+    if (top !== this.lastCoordinate)
+      this.updateLastPosition(mouseCoordinates);
 
     // Draw image onto canvas.
     this.drawDisplayCanvas();
@@ -251,9 +286,9 @@ function PencilTool(toolContext, optionProviders, type) {}
     var ctx = this.brushContext;
     ctx.beginPath();
     ctx.globalCompositeOperation = 'source-over';
-    var startX = this.lastX;
+    var startX = this.lastCoordinate.sourceX;
     var endX = mouseCoordinates.sourceX;
-    var startY = this.lastY;
+    var startY = this.lastCoordinate.sourceY;
     var endY = mouseCoordinates.sourceY;
     var brushSize = parseInt(this.sizeSelector.value, 10);
 
@@ -281,6 +316,8 @@ function PencilTool(toolContext, optionProviders, type) {}
   };
 
   PencilTool.prototype.tearDown = function() {
+    this.lastPositions = new bitmapper.Stack(bitmapper.ImageFile.MAX_SNAPSHOTS);
+    this.lastCoordinate = null;
   };
 
 

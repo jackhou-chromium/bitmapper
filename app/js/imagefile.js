@@ -18,7 +18,7 @@ function ImageFile() {}
    * Max number of snapshots held in snapshot stack.
    * @const
    */
-  var MAX_SNAPSHOTS = 10;
+  ImageFile.MAX_SNAPSHOTS = 10;
 
   /**
    * Encapsulates data related to one image file.
@@ -220,7 +220,7 @@ function ImageFile() {}
     this.snapshotStack.push(dataURI);
 
     // Cut off beginning of the stack to limit to max stack size.
-    if (this.snapshotStack.length == MAX_SNAPSHOTS + 1) {
+    if (this.snapshotStack.length == ImageFile.MAX_SNAPSHOTS + 1) {
       this.snapshotStack.shift();
     } else {
       this.snapshotIndex++;
