@@ -175,6 +175,7 @@ copy_test_files : $(TEST_FILES)
 
 # Compile the test app.
 test : $(SETUP) copy_test_files \
+       $(OUTDIR)/$(TESTDIR)/.prepared \
        $(TEST_ICONS) \
        $(OUTDIR)/$(TESTDIR)/$(PROJECT)_test.js \
        $(OUTDIR)/$(TESTDIR)/build.html \
