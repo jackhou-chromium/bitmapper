@@ -42,19 +42,13 @@ image, and Undo/Redo buttons.
       core-toolbar {
         align-items: center;
         background: #26a69a;
-        color: white;
+        color: #e0e0e0;
         height: 100%;
         width: 100%;
       }
-      /* This offsets the 4px shadow from the core toolbar. !important overrides
-       * the shadow DOM rule which didn't allow any margin-bottom to be greater
-       * than 0px. */
-      core-toolbar > * {
-        margin: 0 8px 4px 8px !important;
-      }
-      paper-icon-button {
-        background: #00897b;
-        border-radius: 40px;
+      paper-button {
+        color: white;
+        padding-bottom: 2px;
       }
       paper-item {
         color: black;
@@ -62,12 +56,17 @@ image, and Undo/Redo buttons.
       paper-item:hover {
         background-color: #e0f2f1;
       }
+      paper-icon-button:hover {
+        color: white;
+      }
       /* overflow, text-overflow and white-space styling are rules for
        * displaying the filename. */
       span {
+        color: white;
         display: inline-block;
         line-height: 40px;
         overflow: hidden;
+        padding-bottom: 3px;
         text-overflow: ellipsis;
         text-transform: uppercase;
         vertical-align: middle;
