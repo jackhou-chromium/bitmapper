@@ -81,16 +81,6 @@ function Stack(maxSize) {}
   };
 
   /**
-   * Checks whether the stack is empty.
-   * @return {boolean}
-   */
-  Stack.prototype.isEmpty = function() {
-    if (this.stack.length == 0)
-      return true;
-    return false;
-  };
-
-  /**
    * Returns the top element of the stack.
    * @return {Object}
    */
