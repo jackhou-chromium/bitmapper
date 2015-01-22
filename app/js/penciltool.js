@@ -119,9 +119,8 @@ function PencilTool(toolContext, optionProviders, type) {}
    */
   PencilTool.prototype.undo = function() {
     this.lastPositions.pop();
-    var returnVal = /** @type {MouseCoordinates} */(this.lastPositions.top());
-    if (returnVal)
-      this.lastCoordinate = returnVal;
+    this.lastCoordinate =
+        /** @type {MouseCoordinates} */(this.lastPositions.top());
   };
 
   /**
@@ -129,10 +128,8 @@ function PencilTool(toolContext, optionProviders, type) {}
    * accordingly.
    */
   PencilTool.prototype.redo = function() {
-    var returnVal = /** @type {MouseCoordinates} */(this.lastPositions.unpop());
-    if (returnVal) {
-      this.lastCoordinate = returnVal;
-    }
+    this.lastCoordinate =
+        /** @type {MouseCoordinates} */(this.lastPositions.unpop());
   };
 
   /**
@@ -148,7 +145,6 @@ function PencilTool(toolContext, optionProviders, type) {}
     }
     this.drawLine(this.lastCoordinate.sourceX, this.lastCoordinate.sourceY,
                   mouseCoordinates.sourceX, mouseCoordinates.sourceY);
-    this.updateLastPosition(mouseCoordinates);
   };
 
   /**
@@ -175,11 +171,9 @@ function PencilTool(toolContext, optionProviders, type) {}
   PencilTool.prototype.mouseUp = function(mouseCoordinates) {
     this.dragging = false;
 
-    // For n lines we have n+1 endpoints. This makes sure that both endpoints of
-    // the first line drawn are included in the stack.
-    var top = this.lastPositions.top();
-    if (top !== this.lastCoordinate)
-      this.updateLastPosition(mouseCoordinates);
+    // Record the endpoint of every line in the stack. The most recently
+    // recorded coordinate will be used as a starting point for straight lines.
+    this.updateLastPosition(mouseCoordinates);
 
     // Draw image onto canvas.
     this.drawDisplayCanvas();
