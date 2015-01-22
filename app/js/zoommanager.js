@@ -177,8 +177,12 @@ function ZoomManager(sourceCanvas,
     var top = this.canvasViewport.scrollTop;
     this.displayCanvas.style.left = left + 'px';
     this.displayCanvas.style.top = top + 'px';
-    this.displayCanvas.height = this.canvasViewport.clientHeight;
-    this.displayCanvas.width = this.canvasViewport.clientWidth;
+
+    // clientHeight/Width is not defined in tests.
+    if (this.canvasViewport.clientHeight)
+      this.displayCanvas.height = this.canvasViewport.clientHeight;
+    if (this.canvasViewport.clientWidth)
+      this.displayCanvas.width = this.canvasViewport.clientWidth;
 
     var displayContext = Canvas2DContext(this.displayCanvas);
     // Displays crisp pixels when scaled.
