@@ -29,10 +29,10 @@ function Stack(maxSize) {}
     this.stack = [];
 
     /**
-     * Holds current position in the undo stack.
+     * Holds the index of one past the current position in the stack.
      * @type {number}
      */
-    this.position = -1;
+    this.position = 0;
 
     /**
      * The size of the size of the stack.
@@ -46,7 +46,7 @@ function Stack(maxSize) {}
    * @param {Object} item
    */
   Stack.prototype.push = function(item) {
-    this.stack.splice(this.position + 1, this.stack.length, item);
+    this.stack.splice(this.position, this.stack.length, item);
 
     // Cut off beginning of the stack to limit to max stack size.
     if (this.stack.length == this.maxSize + 1)
@@ -61,7 +61,7 @@ function Stack(maxSize) {}
    * @return {Object}
    */
   Stack.prototype.pop = function() {
-    if (this.position <= 0)
+    if (this.position == 0)
       return null;
     this.position--;
     return this.stack[this.position];
@@ -73,11 +73,11 @@ function Stack(maxSize) {}
    */
   Stack.prototype.unpop = function() {
     // No entries after current entry.
-    if (this.position == this.stack.length - 1)
+    if (this.position == this.stack.length)
       return null;
 
     this.position++;
-    return this.stack[this.position];
+    return this.stack[this.position - 1];
   };
 
   /**
@@ -91,11 +91,13 @@ function Stack(maxSize) {}
   };
 
   /**
-   * Returns the top element on the stack.
+   * Returns the top element of the stack.
    * @return {Object}
    */
   Stack.prototype.top = function() {
-    return this.stack[this.position];
+    if (this.position == 0)
+      return null;
+    return this.stack[this.position - 1];
   };
 
   bitmapper.Stack = Stack;

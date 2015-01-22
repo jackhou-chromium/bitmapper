@@ -118,7 +118,8 @@ function PencilTool(toolContext, optionProviders, type) {}
    * accordingly.
    */
   PencilTool.prototype.undo = function() {
-    var returnVal = /** @type {MouseCoordinates} */(this.lastPositions.pop());
+    this.lastPositions.pop();
+    var returnVal = /** @type {MouseCoordinates} */(this.lastPositions.top());
     if (returnVal)
       this.lastCoordinate = returnVal;
   };
