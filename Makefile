@@ -182,8 +182,11 @@ test : $(SETUP) copy_test_files \
        $(OUTDIR)/$(TESTDIR)/test_build.html
 
 # Lints all .js files.
+# TODO(hbeder): stack.js fails the linter due to this linter bug:
+# https://code.google.com/p/closure-linter/issues/detail?id=88
+# Remove this exclusion once that bug is fixed.
 lint :
-	gjslint --jslint_error=all $(ALL_SRCS)
+	gjslint --jslint_error=all --exclude_files=stack.js $(ALL_SRCS)
 
 
 # Clean up output files.

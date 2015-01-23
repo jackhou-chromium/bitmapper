@@ -76,7 +76,7 @@ function PencilTool(toolContext, optionProviders, type) {}
 
     /**
      * Contains the last MAX_SNAPSHOTS {x,y} coordinate pairs.
-     * @type {Stack}
+     * @type {!Stack.<MouseCoordinates>}
      */
     this.lastPositions = new bitmapper.Stack(bitmapper.ImageFile.MAX_SNAPSHOTS);
 
@@ -119,8 +119,7 @@ function PencilTool(toolContext, optionProviders, type) {}
    */
   PencilTool.prototype.undo = function() {
     this.lastPositions.pop();
-    this.lastCoordinate =
-        /** @type {MouseCoordinates} */(this.lastPositions.top());
+    this.lastCoordinate = this.lastPositions.top();
   };
 
   /**
@@ -128,8 +127,7 @@ function PencilTool(toolContext, optionProviders, type) {}
    * accordingly.
    */
   PencilTool.prototype.redo = function() {
-    this.lastCoordinate =
-        /** @type {MouseCoordinates} */(this.lastPositions.unpop());
+    this.lastCoordinate = this.lastPositions.unpop();
   };
 
   /**
