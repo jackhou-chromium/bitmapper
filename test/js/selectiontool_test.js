@@ -31,7 +31,7 @@
         new bitmapper.SelectionCanvasManager(testCanvas, mockZoomManager);
 
     var toolContext = new ToolContext(
-        sourceCanvas, null, selectionCanvasManager, function() {});
+        sourceCanvas, null, null, selectionCanvasManager, function() {});
     var selectionTool = new bitmapper.SelectionTool(toolContext);
 
     // Mouse Coordinates.
@@ -174,7 +174,7 @@
         new bitmapper.SelectionCanvasManager(testCanvas, mockZoomManager);
 
     var toolContext = new ToolContext(
-        sourceCanvas, null, selectionCanvasManager, function() {});
+        sourceCanvas, null, null, selectionCanvasManager, function() {});
     var selectionTool = new bitmapper.SelectionTool(toolContext);
 
     // Mouse Coordinates.
