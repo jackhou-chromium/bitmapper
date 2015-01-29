@@ -1017,11 +1017,6 @@ bitmapper.start = function(localStorageObject) {
     bitmapper.updatePalette();
   };
 
-  /**
-   * Handlers for change in dimension.
-   * @param {Object} oldVal
-   * @param {Object} newVal
-   */
   document.getElementById('resizeDialog').addEventListener('dimension-changed',
                                                            function(e) {
         var newWidth = /** @type {number} */
