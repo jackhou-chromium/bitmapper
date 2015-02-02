@@ -31,7 +31,7 @@ QUnit.testStart = function(test) {
 
 
 /**
- * Creates canvas for testing and appends to current test div.
+ * Creates sourceCanvas for testing and appends to current test div.
  * @return {HTMLElement} testCanvas
  */
 bitmapper_test.createCanvas = function() {
@@ -44,24 +44,70 @@ bitmapper_test.createCanvas = function() {
 
 
 /**
- * Initialises color palette and appends to selected test debug div.
+ * Initializes bitmapper color palette.
  * @param {function()} callback
  * @return {Object}
  */
-bitmapper_test.initialiseTestPalette = function(callback) {
+bitmapper_test.initializeColorPalette = function(callback) {
   // Create color palette element in debug section.
   var currentTestDiv = document.getElementById(
       bitmapper_test.currentTestName);
-  var colorPalette = new bitmapper.ColorPalette(currentTestDiv, callback);
-  var initialColors = ['#ff0000', '#ffff00', '#0000ff', '#ff00ff',
-    '#cc00ff', '#9900ff', '#ff6600', '#0099ff'];
-  colorPalette.generatePalette(initialColors);
-  // Allow palette to be seen for visual debugging.
-  for (var i = 0; i < initialColors.length; i++) {
-    colorPalette.colorDivs[i].style.height = '30px';
-    colorPalette.colorDivs[i].style.width = '30px';
-  }
+  var colorPalette = new bitmapper.ColorPalette();
+  var palette = document.createElement('color-palette');
+  currentTestDiv.appendChild(palette);
+  var initialColors = [
+    '#ff0000',
+    '#ffff00',
+    '#0000ff',
+    '#ff00ff',
+    '#cc00ff',
+    '#9900ff',
+    '#ff6600',
+    '#0099ff'
+  ];
+  palette['colors'] = initialColors;
+  // Check the background color of each of these and
+  // ensure that they have the background color.
+  colorPalette.setSelectedCell(currentTestDiv);
   return colorPalette;
+};
+
+
+/**
+ * Initialize palette and add core-select event listener to palette.
+ * @param {Object} colorPalette
+ * @return {HTMLElement}
+ */
+bitmapper_test.initializePalette = function(colorPalette) {
+  var palette = document.createElement('color-palette');
+  document.getElementById(
+      bitmapper_test.currentTestName).appendChild(palette);
+  var initialColors = [
+    '#ff0000',
+    '#ffff00',
+    '#0000ff',
+    '#ff00ff',
+    '#cc00ff',
+    '#9900ff',
+    '#ff6600',
+    '#0099ff'
+  ];
+  palette['colors'] = initialColors;
+
+  // Same event listener attached to palette in main.js (line 714)
+  // Except omitting bitmapper.setSelectedColorBox() as colorSelector
+  // will not be initialized when this functional is called in testing.
+  palette.addEventListener('core-select', function(e) {
+    var selectEvent = /** @type {CoreEvent} */(e);
+    // We need to ignore deselection.
+    if (!selectEvent.detail.isSelected)
+      return;
+    ok(true, 'Change selected cell color on core-select event');
+    colorPalette.setSelectedCell(selectEvent.detail.item);
+  });
+  // Now the event listener is added, set the initial selection.
+  palette.$['paletteSelector'].selected = 0;
+  return palette;
 };
 
 

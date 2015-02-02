@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html style="overflow:scroll">
   <head>
+    <script src="bower_components/webcomponentsjs/webcomponents.min.js">
+    </script>
     <link rel="stylesheet" href="deps/qunit/qunit-1.12.0.css">
-
-    <link rel="import" href="app/elements/crop-to-selection-button.html">
-
     <script type="text/javascript" src="deps/qunit/qunit-1.12.0.js"></script>
     <script type="text/javascript" src="deps/canvasfloodfill.js"></script>
     <script type="text/javascript" src="bitmapper_test.js"></script>
+    <link rel="import"
+      href="bower_components/polymer/polymer.html">
+    <link rel="import"
+      href="elements/color-palette.html">
   </head>
   <body>
     <div id="qunit"></div>
     <div id="qunit-fixture"></div>
     <div id="debug" style="display: none;"></div>
-
-    <!-- Polymer elements necessary for testing. -->
-    <crop-to-selection-button id="cropToSelectionButton">
-    </crop-to-selection-button>
   </body>
 </html>
