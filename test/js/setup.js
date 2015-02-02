@@ -31,15 +31,60 @@ QUnit.testStart = function(test) {
 
 
 /**
- * Creates sourceCanvas for testing and appends to current test div.
+ * Creates canvas for testing and appends to current test div.
+ * @param {number} width
+ * @param {number} height
  * @return {HTMLElement} testCanvas
  */
-bitmapper_test.createCanvas = function() {
+bitmapper_test.createCanvas = function(width, height) {
   var testCanvas = document.createElement('canvas');
   document.getElementById(bitmapper_test.currentTestName).
       appendChild(testCanvas);
+  testCanvas.width = width;
+  testCanvas.height = height;
   testCanvas.style.border = 'black solid 1px';
   return testCanvas;
+};
+
+
+/**
+ * Initialises bitmapper tool context, using properties from zoomManager.
+ * @param {Object} zoomManager
+ * @param {HTMLElement} selectionCanvasManager
+ * @return {Object}
+ */
+bitmapper_test.initializeToolContext = function(
+    zoomManager, selectionCanvasManager) {
+  var sourceCanvas = zoomManager.getSourceCanvas();
+  var displayCanvas = zoomManager.getDisplayCanvas();
+  var brushCanvas = zoomManager.getBrushCanvas();
+  return new ToolContext(
+      sourceCanvas,
+      displayCanvas,
+      brushCanvas,
+      selectionCanvasManager,
+      function() { zoomManager.getDrawDisplayCanvas() });
+};
+
+
+/**
+ * Initializes bitmapper zoomManager object by creating appropriate canvases.
+ * @param {number} width
+ * @param {number} height
+ * @return {object}
+ */
+bitmapper_test.initializeZoomManager = function(width, height) {
+  var sourceCanvas = bitmapper_test.createCanvas(width, height);
+  var displayCanvas = bitmapper_test.createCanvas(width, height);
+  var brushCanvas = bitmapper_test.createCanvas(width, height);
+  var canvasViewport = bitmapper_test.createCanvas(width, height);
+  var canvasPlaceholder = bitmapper_test.createCanvas(width, height);
+  return new bitmapper.ZoomManager(
+      sourceCanvas,
+      displayCanvas,
+      brushCanvas,
+      canvasPlaceholder,
+      canvasViewport);
 };
 
 

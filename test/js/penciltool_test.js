@@ -13,14 +13,24 @@
   module('PencilTool');
 
   test('pixelTransparency', function() {
-    var canvas = bitmapper_test.createCanvas();
-    canvas.width = 100;
-    canvas.height = 50;
-
-    var toolContext = new ToolContext(canvas, null, null, function() {});
-    var colorPalette = bitmapper_test.initialiseTestPalette(function() {});
-    colorPalette.setSelectedIndex(0);
-    colorPalette.setOpacity(0.5);
+    var width = 100;
+    var height = 50;
+    var zoomManager = bitmapper_test.initializeZoomManager(width, height);
+    var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
+    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+    var initialOpacity = 0.5;
+    var colors = [
+      '#ff0000',
+      '#ffff00',
+      '#0000ff',
+      '#ff00ff',
+      '#cc00ff',
+      '#9900ff',
+      '#ff6600',
+      '#0099ff'
+    ];
+    colorPalette.updateCellColor(colors[0]);
+    colorPalette.setOpacity(initialOpacity);
 
     var sizeSelector = {
       value: 1
@@ -33,18 +43,23 @@
           /** @type {HTMLElement} */
           sizeSelector: sizeSelector
         };
-
-    var pencil = new bitmapper.PencilTool(toolContext, optionProviders);
-
+    zoomManager.setOptionProviders(optionProviders);
+    var pencil = new bitmapper.PencilTool(toolContext, optionProviders,
+        bitmapper.PencilTool.ToolType.PENCIL);
     var coordinates = new MouseCoordinates();
     coordinates.sourceX = 1;
     coordinates.sourceY = 1;
 
-    var expectedData = new Uint8ClampedArray([255, 0, 0, 127]);
+    // Canvas background is fully transparent (#00000000).
+    // Drawing red at opacity 0.5 (#ff000080).
+    // Expect red at opacity 0.5 (#ff000080).
+    var expectedOpacity = 128;
+    var expectedData = new Uint8ClampedArray([255, 0, 0, expectedOpacity]);
 
     // Drawing a single point on the canvas.
     pencil.mouseDown(coordinates);
-    var ctx = canvas.getContext('2d');
+    var displayCanvas = zoomManager.getDisplayCanvas();
+    var ctx = displayCanvas.getContext('2d');
     var imageData = ctx.getImageData(0, 0, 1, 1).data;
     deepEqual(imageData, expectedData, 'Pixel drawn');
 
@@ -53,8 +68,12 @@
     deepEqual(imageData, expectedData, 'Pixel drawn');
 
     // Draw on the same point on the canvas.
-    // Check that the transparency is overwritten.
+    // Check that the transparency is changed.
     pencil.mouseDown(coordinates);
+    // Canvas background is red at opacity 0.5 (#ff000080).
+    // Drawing red at opacity 0.5 (#ff000080).
+    // Expect red at opacity 0.75 (#ff0000c0).
+    expectedData = new Uint8ClampedArray([255, 0, 0, 192]);
     imageData = ctx.getImageData(0, 0, 1, 1).data;
     deepEqual(imageData, expectedData, 'Transparency retained');
 
@@ -64,13 +83,22 @@
   });
 
   test('diagonalLine', function() {
-    var canvas = bitmapper_test.createCanvas();
-    canvas.width = 100;
-    canvas.height = 50;
-
-    var toolContext = new ToolContext(canvas, null, null, function() {});
-    var colorPalette = bitmapper_test.initialiseTestPalette(function() {});
-
+    var width = 100;
+    var height = 50;
+    var zoomManager = bitmapper_test.initializeZoomManager(width, height);
+    var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
+    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+    var colors = [
+      '#ff0000',
+      '#ffff00',
+      '#0000ff',
+      '#ff00ff',
+      '#cc00ff',
+      '#9900ff',
+      '#ff6600',
+      '#0099ff'
+    ];
+    colorPalette.updateCellColor(colors[0]);
     var sizeSelector = {
       value: 1
     };
@@ -82,8 +110,13 @@
           /** @type {HTMLElement} */
           sizeSelector: sizeSelector
         };
+    zoomManager.setOptionProviders(optionProviders);
 
-    var pencil = new bitmapper.PencilTool(toolContext, optionProviders);
+    var pencil =
+        new bitmapper.PencilTool(
+        toolContext,
+        optionProviders,
+        bitmapper.PencilTool.ToolType.PENCIL);
 
     var coordinates = new MouseCoordinates();
     coordinates.sourceX = 10;
@@ -95,8 +128,8 @@
     coordinates.sourceY = 20;
     pencil.mouseMove(coordinates);
     pencil.mouseUp(coordinates);
-
-    var ctx = canvas.getContext('2d');
+    var sourceCanvas = zoomManager.getSourceCanvas();
+    var ctx = sourceCanvas.getContext('2d');
     var imageData;
     var expectedData = new Uint8ClampedArray([255, 0, 0, 255]);
     var transparentPixel = new Uint8ClampedArray([0, 0, 0, 0]);
@@ -113,13 +146,22 @@
   });
 
   test('size', function() {
-    var canvas = bitmapper_test.createCanvas();
-    canvas.width = 100;
-    canvas.height = 50;
-
-    var toolContext = new ToolContext(canvas, null, null, function() {});
-    var colorPalette = bitmapper_test.initialiseTestPalette(function() {});
-
+    var width = 100;
+    var height = 50;
+    var zoomManager = bitmapper_test.initializeZoomManager(width, height);
+    var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
+    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+    var colors = [
+      '#ff0000',
+      '#ffff00',
+      '#0000ff',
+      '#ff00ff',
+      '#cc00ff',
+      '#9900ff',
+      '#ff6600',
+      '#0099ff'
+    ];
+    colorPalette.updateCellColor(colors[0]);
     var sizeSelector = {
       value: 5
     };
@@ -131,8 +173,10 @@
           /** @type {HTMLElement} */
           sizeSelector: sizeSelector
         };
+    zoomManager.setOptionProviders(optionProviders);
 
-    var pencil = new bitmapper.PencilTool(toolContext, optionProviders);
+    var pencil = new bitmapper.PencilTool(toolContext, optionProviders,
+        bitmapper.PencilTool.ToolType.PENCIL);
 
     var coordinates = new MouseCoordinates();
     coordinates.sourceX = 10;
@@ -142,7 +186,8 @@
     pencil.mouseDown(coordinates);
     pencil.mouseUp(coordinates);
 
-    var ctx = canvas.getContext('2d');
+    var sourceCanvas = zoomManager.getSourceCanvas();
+    var ctx = sourceCanvas.getContext('2d');
     var imageData;
     var expectedData = new Uint8ClampedArray([255, 0, 0, 255]);
     var transparentPixel = new Uint8ClampedArray([0, 0, 0, 0]);

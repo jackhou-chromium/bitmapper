@@ -283,5 +283,41 @@ function ZoomManager(sourceCanvas,
     return displayCoordinate / this.zoomFactor;
   };
 
+
+  /**
+   * Returns sourceCanvas to be used in testing.
+   * @return {HTMLElement}
+   */
+  ZoomManager.prototype.getSourceCanvas = function() {
+    return this.sourceCanvas;
+  };
+
+
+  /**
+   * Returns displayCanvas to be used in testing.
+   * @return {HTMLElement}
+   */
+  ZoomManager.prototype.getDisplayCanvas = function() {
+    return this.displayCanvas;
+  };
+
+
+  /**
+   * Returns brushCanvas to be used in testing.
+   * @return {HTMLElement}
+   */
+  ZoomManager.prototype.getBrushCanvas = function() {
+    return this.brushCanvas;
+  };
+
+
+  /**
+   * Returns function drawDisplayCanvas to be used in testing.
+   * @return {function()} drawDisplayCanvas
+   */
+  ZoomManager.prototype.getDrawDisplayCanvas = function() {
+    return this.drawDisplayCanvas();
+  };
+
   bitmapper.ZoomManager = ZoomManager;
 })();

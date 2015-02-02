@@ -139,7 +139,11 @@ function PencilTool(toolContext, optionProviders, type) {}
     this.dragging = true;
     // We also want to draw freehand if shift is held for the first stroke.
     if (!opt_shiftDown || this.lastCoordinate === null) {
-      this.lastCoordinate = mouseCoordinates;
+      // Create a copy of mouseCoordinates to ensure that lastCoordinate isn't
+      // accidentally called by the caller.
+      this.lastCoordinate = new MouseCoordinates();
+      this.lastCoordinate.sourceX = mouseCoordinates.sourceX;
+      this.lastCoordinate.sourceY = mouseCoordinates.sourceY;
     }
     this.drawLine(this.lastCoordinate.sourceX, this.lastCoordinate.sourceY,
                   mouseCoordinates.sourceX, mouseCoordinates.sourceY);
