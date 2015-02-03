@@ -805,8 +805,13 @@ bitmapper.setUpTools = function() {
     bitmapper.selectedTool = newTool;
     bitmapper.cursorGuide.setTool(newTool);
   };
+
+  // Bind click event listener to cropToSelectionButton, to perform crop
+  // operation once it has been clicked.
   var cropToSelectionButton = document.getElementById('cropToSelectionButton');
-  cropToSelectionButton.cropHandler = bitmapper.cropToSelection;
+  cropToSelectionButton.addEventListener('click', function(e) {
+    bitmapper.cropToSelection();
+  });
 };
 
 
