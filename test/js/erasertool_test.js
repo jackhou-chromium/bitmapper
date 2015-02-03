@@ -14,9 +14,9 @@
 
   // Test default settings of eraser, opacity at 100%, size is 1.
   test('defaultEraser', function() {
-    var zoomManager = bitmapper_test.zoomManager(300, 150);
+    var zoomManager = bitmapper_test.initializeZoomManager(300, 150);
     var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
-    var colorPalette = bitmapper_test.initializeTestPalette(function() {});
+    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
 
     // Set initial color as black (#000000).
     colorPalette.updateCellColor('#000000');
@@ -107,9 +107,9 @@
 
   // Use eraser with opacity, test alpha-blending functionality of eraser.
   test('eraseWithOpacity', function() {
-    var zoomManager = bitmapper_test.zoomManager(300, 150);
+    var zoomManager = bitmapper_test.initializeZoomManager(300, 150);
     var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
-    var colorPalette = bitmapper_test.initializeTestPalette(function() {});
+    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
 
     // Set initial color as black (#000000).
     colorPalette.updateCellColor('#000000');
@@ -216,9 +216,9 @@
   // Use eraser on a point other than the edges of the canvas.
   // ie. near the center of the canvas.
   test('eraseCenter', function() {
-    var zoomManager = bitmapper_test.zoomManager(300, 150);
+    var zoomManager = bitmapper_test.initializeZoomManager(300, 150);
     var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
-    var colorPalette = bitmapper_test.initializeTestPalette(function() {});
+    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
 
     // Set initial color as red (#ff0000).
     colorPalette.updateCellColor('#ff0000');
@@ -294,9 +294,9 @@
 
   // Testing eraser on a filled canvas.
   test('eraseFilledRectangle', function() {
-    var zoomManager = bitmapper_test.zoomManager(300, 150);
+    var zoomManager = bitmapper_test.initializeZoomManager(300, 150);
     var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
-    var colorPalette = bitmapper_test.initializeTestPalette(function() {});
+    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
 
     // Set initial color as red (#ff0000).
     colorPalette.updateCellColor('#ff0000');
