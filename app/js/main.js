@@ -765,8 +765,8 @@ bitmapper.setUpTools = function() {
         toolContext, function(color, opacity, done) {
           bitmapper.optionProviders.colorPalette.updateCellColor(color);
           bitmapper.setSelectedColorBox();
-          document.getElementById('sliderInputs').$.sliderModel['opacity'] =
-              Math.round(opacity * 100.0);
+          document.getElementById('sliderInputs').
+              $['opacitySelector']['value'] = Math.round(opacity * 100.0);
           if (done)
             bitmapper.setSelectedTool(toolPanel['tools']['pencilTool']);
         }),
