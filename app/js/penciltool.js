@@ -352,5 +352,14 @@ function PencilTool(toolContext, optionProviders, type) {}
     return true;
   };
 
+
+  /**
+   * Set size of pencilTool, used in testing.
+   * @param {number} size
+   */
+  PencilTool.prototype.setSize = function(size) {
+    this.sizeSelector.value = size;
+  };
+
   bitmapper.PencilTool = PencilTool;
 })();
