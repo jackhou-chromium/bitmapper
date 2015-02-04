@@ -926,8 +926,8 @@ bitmapper.drawImageToCanvas = function(imageSrc) {
 bitmapper.undo = function() {
   if (bitmapper.selectedTool == bitmapper.tools.selectionTool)
     return;
-
-  bitmapper.tools.pencilTool.undo();
+  var pencilTool = /** @type {PencilTool}*/(bitmapper.tools['pencilTool']);
+  pencilTool.undo();
 
   var poppedSnapshot = bitmapper.imageFile.popSnapshot();
   if (poppedSnapshot) {
@@ -941,7 +941,8 @@ bitmapper.undo = function() {
  * Redo and draw snapshot to canvas.
  */
 bitmapper.redo = function() {
-  bitmapper.tools.pencilTool.redo();
+  var pencilTool = /** @type {PencilTool}*/(bitmapper.tools['pencilTool']);
+  pencilTool.redo();
 
   var unpoppedSnapshot = bitmapper.imageFile.unpopSnapshot();
   if (unpoppedSnapshot) {
@@ -952,11 +953,37 @@ bitmapper.redo = function() {
 
 
 /**
+ * Attach event listeners to polymer elements.
+ */
+bitmapper.addEventListeners = function() {
+  var toolbar = document.getElementById('bitmapperToolbar');
+  var newFileButton = toolbar.shadowRoot.getElementById('newFileButton');
+  var openFileButton = toolbar.shadowRoot.getElementById('openFileButton');
+  var saveButton = toolbar.shadowRoot.getElementById('saveButton');
+  var saveAsButton = toolbar.shadowRoot.getElementById('saveAsButton');
+  var resizeDialogButton =
+      toolbar.shadowRoot.getElementById('resizeDialogButton');
+  var undoButton = toolbar.shadowRoot.getElementById('undoButton');
+  var redoButton = toolbar.shadowRoot.getElementById('redoButton');
+
+  newFileButton.addEventListener('click', bitmapper.newFile);
+  openFileButton.addEventListener('click', bitmapper.openFile);
+  saveButton.addEventListener('click', bitmapper.saveFile);
+  saveAsButton.addEventListener('click', bitmapper.saveAsFile);
+  resizeDialogButton.addEventListener('click', function(e) {
+    document.getElementById('resizeDialog').$['dialog']['opened'] = true;
+  });
+  undoButton.addEventListener('click', bitmapper.undo);
+  redoButton.addEventListener('click', bitmapper.redo);
+};
+
+
+/**
  * Entry point.
  * @param {Object} localStorageObject
  */
 bitmapper.start = function(localStorageObject) {
-  // Initialise canvases.
+  // Initialize canvases.
   bitmapper.displayCanvas = GetCanvasElement('imageCanvas');
   bitmapper.sourceCanvas = CreateCanvasElement();
   bitmapper.brushCanvas = CreateCanvasElement();
@@ -964,16 +991,8 @@ bitmapper.start = function(localStorageObject) {
   var toolbar = document.getElementById('bitmapperToolbar');
   bitmapper.toolbar = toolbar;
   bitmapper.updateFileNameMessage();
-
-  // Initialise handlers for filesystem buttons.
-  bitmapper.toolbar.newHandler = bitmapper.newFile;
-  bitmapper.toolbar.openHandler = bitmapper.openFile;
-  bitmapper.toolbar.saveHandler = bitmapper.saveFile;
-  bitmapper.toolbar.saveAsHandler = bitmapper.saveAsFile;
-  bitmapper.toolbar.resizeDialogHandler = function() {
-    document.getElementById('resizeDialog').$['dialog']['opened'] = true;
-  };
-  // Initialise zoom functionality.
+  bitmapper.addEventListeners();
+  // Initialize zoom functionality.
   bitmapper.zoomManager = new bitmapper.ZoomManager(
       bitmapper.sourceCanvas, bitmapper.displayCanvas,
       bitmapper.brushCanvas, document.getElementById('canvasPlaceholder'),
@@ -1004,7 +1023,7 @@ bitmapper.start = function(localStorageObject) {
       GetCanvasElement('selectionCanvas'),
       bitmapper.zoomManager);
 
-  // Initialise cursor guide.
+  // Initialize cursor guide.
   bitmapper.cursorGuide = new bitmapper.CursorGuide(
       document.getElementById('canvasWrapper'), bitmapper.zoomManager);
 
@@ -1049,8 +1068,6 @@ bitmapper.start = function(localStorageObject) {
   bitmapper.imageFile = new bitmapper.ImageFile();
   // Push first snapshot.
   bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
-  bitmapper.toolbar.undoHandler = bitmapper.undo;
-  bitmapper.toolbar.redoHandler = bitmapper.redo;
 };
 
 

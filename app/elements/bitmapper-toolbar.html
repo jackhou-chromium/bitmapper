@@ -29,8 +29,7 @@ image, and Undo/Redo buttons.
 <link rel="import"
   href="../bower_components/paper-menu-button/paper-menu-button.html">
 
-<polymer-element name="bitmapper-toolbar"
-  attributes="newHandler openHandler saveHandler saveAsHandler undoHandler redoHandler resizeDialogHandler fileName">
+<polymer-element name="bitmapper-toolbar">
   <template>
     <style>
       core-header-panel {
@@ -81,16 +80,16 @@ image, and Undo/Redo buttons.
           <!-- Adding the transition attribute so that the menu doesn't
           transition. -->
           <paper-dropdown class="dropdown" transition>
-            <paper-item on-click="{{ newHandler }}">
+            <paper-item id="newFileButton">
               New
             </paper-item>
-            <paper-item on-click="{{ openHandler }}">
+            <paper-item id="openFileButton">
               Open
             </paper-item>
-            <paper-item on-click="{{ saveHandler }}">
+            <paper-item id="saveButton">
               Save
             </paper-item>
-            <paper-item on-click="{{ saveAsHandler }}">
+            <paper-item id="saveAsButton">
               Save As
             </paper-item>
           </paper-dropdown>
@@ -98,15 +97,15 @@ image, and Undo/Redo buttons.
 
         <span flex>Bitmapper - {{ fileName }}</span>
 
-        <paper-button on-click="{{ resizeDialogHandler }}">
+        <paper-button id="resizeDialogButton">
           Resize
         </paper-button>
 
         <paper-icon-button
-          icon="undo" title="Undo" on-click="{{ undoHandler }}">
+          icon="undo" title="Undo" id="undoButton">
         </paper-icon-button>
         <paper-icon-button
-          icon="redo" title="Redo" on-click="{{ redoHandler }}">
+          icon="redo" title="Redo" id="redoButton">
         </paper-icon-button>
       </core-toolbar>
     </core-header-panel>
