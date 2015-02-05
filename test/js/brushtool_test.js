@@ -12,121 +12,102 @@
 
   module('BrushTool');
 
-  test('drawOnCanvas', function() {
-    // Draw using brush tool.
-    var canvas = bitmapper_test.createCanvas();
-    canvas.width = 100;
-    canvas.height = 50;
+  test('drawLinesOnCanvas', function() {
+    var testContext = bitmapper_test.createCanvasTestContext();
 
-    var toolContext = new ToolContext(canvas, null, null, function() {});
-    var colorPalette = bitmapper_test.initialiseTestPalette(function() {});
-    colorPalette.setSelectedIndex(0);
+    var brush = new bitmapper.PencilTool(testContext.toolContext,
+        testContext.zoomManager.optionProviders,
+        bitmapper.PencilTool.ToolType.BRUSH);
 
-    var sizeSelector = {
-      value: 1
-    };
+    // Set initial color to red (#ff0000).
+    testContext.colorPalette.updateCellColor('#ff0000');
 
-    var optionProviders =
-        /** @struct */ {
-          /** @type {ColorPalette} */
-          colorPalette: colorPalette,
-          /** @type {HTMLElement} */
-          sizeSelector: sizeSelector
-        };
-
-    var brush = new bitmapper.BrushTool(toolContext, optionProviders);
-
-    var coordinates = new MouseCoordinates();
-    coordinates.sourceX = 0;
-    coordinates.sourceY = 0;
-    brush.mouseDown(coordinates);
-
-    coordinates.sourceX = 20;
-    coordinates.sourceY = 25;
-    brush.mouseMove(coordinates);
-
-    coordinates.sourceX = 10;
-    coordinates.sourceY = 15;
-    brush.mouseMove(coordinates);
-    brush.mouseUp(coordinates);
-
-    // Mousedown and then mouseup on the same point.
-    coordinates.sourceX = 30;
-    coordinates.sourceY = 30;
-    brush.mouseDown(coordinates);
-    brush.mouseUp(coordinates);
-
-    // Mousemove without mousedown.
-    // Nothing should be drawn.
-    coordinates.sourceX = 30;
-    coordinates.sourceY = 30;
-    brush.mouseDown(coordinates);
-
-    // Mousedown then mousemove twice without mouseup.
-    // Something should be drawn.
-    coordinates.sourceX = 50;
-    coordinates.sourceY = 50;
-    brush.mouseDown(coordinates);
-
-    coordinates.sourceX = 60;
-    coordinates.sourceY = 55;
-    brush.mouseMove(coordinates);
-
-    coordinates.sourceX = 65;
-    coordinates.sourceY = 55;
-    brush.mouseMove(coordinates);
-
-    // Draw on expected canvas.
-    var expectedCanvas = bitmapper_test.createCanvas();
-    expectedCanvas.width = 100;
-    expectedCanvas.height = 50;
-
-    var ctx = expectedCanvas.getContext('2d');
-    ctx.strokeStyle = 'red';
+    var ctx = Canvas2DContext(testContext.expectedCanvas);
+    ctx.strokeStyle = '#ff0000';
     ctx.lineWidth = 1;
-    ctx.lineCap = 'round';
 
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, 0);
-    ctx.stroke();
+    var startPoint = bitmapper_test.createMouseCoordinates(0, 0);
+    var midPoint = bitmapper_test.createMouseCoordinates(20, 25);
+    var endPoint = bitmapper_test.createMouseCoordinates(10, 15);
+
+    // Draw first line on canvases.
+    brush.mouseDown(startPoint);
+    brush.mouseMove(midPoint);
+    brush.mouseUp(midPoint);
 
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(20, 25);
     ctx.stroke();
 
+    testContext.checkEqualCanvas('One line');
+
+    // Draw second line on canvases.
+    brush.mouseDown(midPoint);
+    brush.mouseMove(endPoint);
+    brush.mouseUp(endPoint);
+
     ctx.beginPath();
     ctx.moveTo(20, 25);
     ctx.lineTo(10, 15);
     ctx.stroke();
 
-    // Drawing single point.
-    ctx.beginPath();
-    ctx.moveTo(30, 30);
-    ctx.lineTo(30, 30);
-    ctx.stroke();
+    testContext.checkEqualCanvas('Two lines');
 
-    // Drawing mousemoves without mouseup.
+  });
+
+  test('noClick', function() {
+    var testContext = bitmapper_test.createCanvasTestContext();
+
+    var brush = new bitmapper.PencilTool(testContext.toolContext,
+        testContext.zoomManager.optionProviders,
+        bitmapper.PencilTool.ToolType.BRUSH);
+
+    // Move without clicking.
+    brush.mouseMove(bitmapper_test.createMouseCoordinates(30, 30));
+
+    testContext.checkEqualCanvas('Mouse move');
+  });
+
+  test('drawLineTwice', function() {
+    var testContext = bitmapper_test.createCanvasTestContext();
+
+    var brush = new bitmapper.PencilTool(testContext.toolContext,
+        testContext.zoomManager.optionProviders,
+        bitmapper.PencilTool.ToolType.BRUSH);
+
+    // Set initial color to blue (#0000ff).
+    testContext.colorPalette.updateCellColor('#0000ff');
+
+    var ctx = Canvas2DContext(testContext.expectedCanvas);
+    ctx.strokeStyle = '#0000ff';
+    ctx.lineWidth = 1;
+
+    var startPoint = bitmapper_test.createMouseCoordinates(0, 50);
+    var endPoint = bitmapper_test.createMouseCoordinates(50, 50);
+
+    // Draw line from startPoint to endPoint twice.
+    brush.mouseDown(startPoint);
+    brush.mouseMove(endPoint);
+    brush.mouseUp(endPoint);
+
+    brush.mouseDown(startPoint);
+    brush.mouseMove(endPoint);
+    brush.mouseUp(endPoint);
+
+    // Draw two lines from (0, 50) to (50, 50).
+    // Expect one line from (0, 50) to (50, 50).
     ctx.beginPath();
-    ctx.moveTo(50, 50);
+    ctx.moveTo(0, 50);
     ctx.lineTo(50, 50);
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.moveTo(50, 50);
-    ctx.lineTo(60, 55);
+    ctx.moveTo(0, 50);
+    ctx.lineTo(50, 50);
     ctx.stroke();
 
-    ctx.beginPath();
-    ctx.moveTo(60, 55);
-    ctx.lineTo(65, 55);
-    ctx.stroke();
-
-    var dataUrl = canvas.toDataURL();
-    var expectedDataURL = expectedCanvas.toDataURL();
-
-    equal(dataUrl, expectedDataURL, 'Comparing canvases');
+    testContext.checkEqualCanvas('Same line twice');
   });
 
 })();

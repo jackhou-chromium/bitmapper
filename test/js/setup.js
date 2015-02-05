@@ -31,6 +31,52 @@ QUnit.testStart = function(test) {
 
 
 /**
+ * Set up canvases and tools for testing.
+ * @return {Object} testContext
+ */
+bitmapper_test.createCanvasTestContext = function() {
+  var width = 100;
+  var height = 50;
+  var zoomManager = bitmapper_test.initializeZoomManager(width, height);
+  var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
+  var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+
+  var sizeSelector = {
+    value: 1
+  };
+
+  var optionProviders =
+      /** @struct */ {
+        /** @type {ColorPalette} */
+        colorPalette: colorPalette,
+        /** @type {HTMLElement} */
+        sizeSelector: sizeSelector
+      };
+
+  zoomManager.setOptionProviders(optionProviders);
+
+  var expectedCanvas = bitmapper_test.createCanvas(width, height);
+
+  var testContext = {
+    zoomManager: zoomManager,
+    toolContext: toolContext,
+    colorPalette: zoomManager.optionProviders.colorPalette,
+    expectedCanvas: expectedCanvas,
+    checkEqualCanvas: function(reason) {
+      var dataURL = toolContext.displayCanvas.toDataURL();
+      var expectedDataURL = expectedCanvas.toDataURL();
+
+      equal(dataURL, expectedDataURL, 'Comparing canvases: ' + reason);
+    }
+  };
+
+
+
+  return testContext;
+};
+
+
+/**
  * Creates canvas for testing and appends to current test div.
  * @param {number} width
  * @param {number} height
@@ -44,6 +90,20 @@ bitmapper_test.createCanvas = function(width, height) {
   testCanvas.height = height;
   testCanvas.style.border = 'black solid 1px';
   return testCanvas;
+};
+
+
+/**
+ * Creates MouseCoordinates object with initial x and y coordinates.
+ * @param {number} x
+ * @param {number} y
+ * @return {MouseCoordinates} mouseCoordinates
+ */
+bitmapper_test.createMouseCoordinates = function(x, y) {
+  var mouseCoordinates = new MouseCoordinates();
+  mouseCoordinates.sourceX = x;
+  mouseCoordinates.sourceY = y;
+  return mouseCoordinates;
 };
 
 
