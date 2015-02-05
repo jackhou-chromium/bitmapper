@@ -681,7 +681,10 @@ bitmapper.checkCursorResize = function() {
  */
 bitmapper.resizeWidth = function(mouseCoordinates) {
   var delta = mouseCoordinates.sourceX - bitmapper.sourceCanvas.width;
-  return delta >= 0 && delta <= bitmapper.RESIZE_BORDER_WIDTH;
+  var heightBorder = bitmapper.sourceCanvas.height +
+      bitmapper.RESIZE_BORDER_WIDTH;
+  return delta >= 0 && delta <= bitmapper.RESIZE_BORDER_WIDTH &&
+      mouseCoordinates.sourceY <= heightBorder;
 };
 
 
@@ -692,7 +695,10 @@ bitmapper.resizeWidth = function(mouseCoordinates) {
  */
 bitmapper.resizeHeight = function(mouseCoordinates) {
   var delta = mouseCoordinates.sourceY - bitmapper.sourceCanvas.height;
-  return delta >= 0 && delta <= bitmapper.RESIZE_BORDER_WIDTH;
+  var widthBorder = bitmapper.sourceCanvas.width +
+      bitmapper.RESIZE_BORDER_WIDTH;
+  return delta >= 0 && delta <= bitmapper.RESIZE_BORDER_WIDTH &&
+      mouseCoordinates.sourceX <= widthBorder;
 };
 
 
