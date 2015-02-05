@@ -762,13 +762,11 @@ bitmapper.setUpTools = function() {
     'bucketTool' : new bitmapper.BucketTool(
         toolContext, bitmapper.optionProviders),
     'pipetteTool' : new bitmapper.PipetteTool(
-        toolContext, function(color, opacity, done) {
+        toolContext, function(color, opacity) {
           bitmapper.optionProviders.colorPalette.updateCellColor(color);
           bitmapper.setSelectedColorBox();
           document.getElementById('sliderInputs').
               $['opacitySelector']['value'] = Math.round(opacity * 100.0);
-          if (done)
-            bitmapper.setSelectedTool(toolPanel['tools']['pencilTool']);
         }),
     'selectionTool' : new bitmapper.SelectionTool(toolContext),
     'eraserTool' : eraserTool

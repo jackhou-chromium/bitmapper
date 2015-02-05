@@ -86,7 +86,7 @@
    */
   PipetteTool.prototype.mouseUp = function(mouseCoordinates) {
     this.dragging = false;
-    this.callback(this.pipetteColor, this.opacity, true);
+    this.callback(this.pipetteColor, this.opacity);
   };
 
   /**
@@ -119,7 +119,7 @@
     // The opacity, given as a value from 0 to 255,
     // is converted into a value from 0 to 1.
     this.opacity = pixel[3] / 255;
-    this.callback(this.pipetteColor, this.opacity, false);
+    this.callback(this.pipetteColor, this.opacity);
   };
 
   PipetteTool.prototype.tearDown = function() {
