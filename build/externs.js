@@ -81,3 +81,8 @@ Object.observe = function(object, callback) {};
  * @type {boolean}
  */
 CanvasRenderingContext2D.prototype.imageSmoothingEnabled;
+
+/**
+ * @type {string}
+ */
+CSSStyleDeclaration.prototype.webkitClipPath;
