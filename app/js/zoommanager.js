@@ -312,11 +312,38 @@ function ZoomManager(sourceCanvas,
 
 
   /**
+   * Returns canvasPlaceholder to be used in testing.
+   * @return {HTMLElement}
+   */
+  ZoomManager.prototype.getCanvasPlaceholder = function() {
+    return this.canvasPlaceholder;
+  };
+
+
+  /**
    * Returns function drawDisplayCanvas to be used in testing.
    * @return {function()} drawDisplayCanvas
    */
   ZoomManager.prototype.getDrawDisplayCanvas = function() {
     return this.drawDisplayCanvas();
+  };
+
+
+  /**
+   * Set canvasViewport to be used in testing.
+   * @param {HTMLElement} canvasViewport
+   */
+  ZoomManager.prototype.setCanvasViewport = function(canvasViewport) {
+    this.canvasViewport = canvasViewport;
+  };
+
+
+  /**
+   * Returns canvasViewport to be used in testing.
+   * @return {HTMLElement}
+   */
+  ZoomManager.prototype.getCanvasViewport = function() {
+    return this.canvasViewport;
   };
 
   bitmapper.ZoomManager = ZoomManager;
