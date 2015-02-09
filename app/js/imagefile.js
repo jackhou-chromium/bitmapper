@@ -91,6 +91,9 @@ function ImageFile() {}
           tempCanvas.height = that.image.height;
           Canvas2DContext(tempCanvas).drawImage(that.image, 0, 0);
           that.image.src = tempCanvas.toDataURL();
+          // Set size of brushCanvas to be same size as opened image.
+          bitmapper.brushCanvas.width = tempCanvas.width;
+          bitmapper.brushCanvas.height = tempCanvas.height;
         }
         if (callback) {
           callback();
