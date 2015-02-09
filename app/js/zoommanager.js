@@ -245,11 +245,9 @@ function ZoomManager(sourceCanvas,
    * @return {boolean}
    */
   ZoomManager.prototype.eraserToolSelected = function() {
-    if (bitmapper.selectedTool == null ||
-        bitmapper.selectedTool.constructor.name != 'PencilTool')
-      return false;
-    else
-      return bitmapper.selectedTool['type'] == ZoomManager.ERASER;
+    var toolPanel = document.getElementById('toolButtonPanel');
+    return toolPanel['activeTool'] != null &&
+        toolPanel['activeTool']['type'] == ZoomManager.ERASER;
   };
 
 
