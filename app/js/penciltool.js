@@ -145,8 +145,13 @@ function PencilTool(toolContext, optionProviders, type) {}
       this.lastCoordinate.sourceX = mouseCoordinates.sourceX;
       this.lastCoordinate.sourceY = mouseCoordinates.sourceY;
     }
-    this.drawLine(this.lastCoordinate.sourceX, this.lastCoordinate.sourceY,
-                  mouseCoordinates.sourceX, mouseCoordinates.sourceY);
+    if (this.type == PencilTool.ToolType.BRUSH) {
+      this.drawBrush(this.lastCoordinate.sourceX, this.lastCoordinate.sourceY,
+                     mouseCoordinates.sourceX, mouseCoordinates.sourceY);
+    } else {
+      this.drawLine(this.lastCoordinate.sourceX, this.lastCoordinate.sourceY,
+                    mouseCoordinates.sourceX, mouseCoordinates.sourceY);
+    }
   };
 
   /**
@@ -158,7 +163,8 @@ function PencilTool(toolContext, optionProviders, type) {}
       return;
 
     if (this.type == PencilTool.ToolType.BRUSH) {
-      this.drawBrush(mouseCoordinates);
+      this.drawBrush(this.lastCoordinate.sourceX, this.lastCoordinate.sourceY,
+                     mouseCoordinates.sourceX, mouseCoordinates.sourceY);
     } else {
       this.drawLine(this.lastCoordinate.sourceX, this.lastCoordinate.sourceY,
                     mouseCoordinates.sourceX, mouseCoordinates.sourceY);
@@ -277,33 +283,32 @@ function PencilTool(toolContext, optionProviders, type) {}
 
   /**
    * Draw using brush tool onto brushCanvas.
-   * @param {MouseCoordinates} mouseCoordinates
+   * @param {number} x0
+   * @param {number} y0
+   * @param {number} x1
+   * @param {number} y1
    */
-  PencilTool.prototype.drawBrush = function(mouseCoordinates) {
+  PencilTool.prototype.drawBrush = function(x0, y0, x1, y1) {
     var ctx = this.brushContext;
     ctx.beginPath();
     ctx.globalCompositeOperation = 'source-over';
-    var startX = this.lastCoordinate.sourceX;
-    var endX = mouseCoordinates.sourceX;
-    var startY = this.lastCoordinate.sourceY;
-    var endY = mouseCoordinates.sourceY;
     var brushSize = parseInt(this.sizeSelector.value, 10);
 
     // Draw with 100% opacity (regardless of the current brush opacity).
     // When the draw operation is completed, the brush canvas will be applied
     // to the source canvas at the correct opacity.
     var brushColor = this.colorPalette.getSelectedColor();
-    if (startX == endX &&
-        startY == endY) {
+    if (x0 == x1 &&
+        y0 == y1) {
       // Mouse coordinates have not changed. lineTo will not draw a line,
       // so instead draw circle with current co-ordinates.
-      ctx.arc(startX, startY, brushSize / 2, 0, 2 * Math.PI, false);
+      ctx.arc(x0, y0, brushSize / 2, 0, 2 * Math.PI, false);
       ctx.fillStyle = brushColor;
       ctx.fill();
     } else {
-      ctx.moveTo(startX, startY);
+      ctx.moveTo(x0, y0);
       ctx.lineWidth = parseInt(brushSize, 10);
-      ctx.lineTo(endX, endY);
+      ctx.lineTo(x1, y1);
       ctx.strokeStyle = brushColor;
       ctx.lineCap = 'round';
       ctx.stroke();
