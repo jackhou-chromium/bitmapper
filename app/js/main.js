@@ -307,14 +307,9 @@ bitmapper.registerMouseEvents = function() {
         if (bitmapper.activeResizeOperation == bitmapper.ResizeOperation.NONE)
           return;
 
-        var coords = bitmapper.getMouseCoordinates(mouseEvent);
-        var newWidth = Math.round((bitmapper.activeResizeOperation &
-            bitmapper.ResizeOperation.WIDTH) ? coords.sourceX :
-            bitmapper.sourceCanvas.width);
-        var newHeight = Math.round((bitmapper.activeResizeOperation &
-            bitmapper.ResizeOperation.HEIGHT) ? coords.sourceY :
-            bitmapper.sourceCanvas.height);
-        bitmapper.resizeCanvas(newWidth, newHeight);
+        var newSize = bitmapper.canvasSizeForResize(
+            bitmapper.getMouseCoordinates(mouseEvent));
+        bitmapper.resizeCanvas(newSize.width, newSize.height);
 
         bitmapper.activeResizeOperation = bitmapper.ResizeOperation.NONE;
 
@@ -327,27 +322,22 @@ bitmapper.registerMouseEvents = function() {
       }, false);
   canvasViewport.addEventListener('mousemove',
       function(mouseEvent) {
+        if (bitmapper.activeResizeOperation == bitmapper.ResizeOperation.NONE)
+          return;
         var canvasPlaceholder = document.getElementById('canvasPlaceholder');
         var coords = bitmapper.getMouseCoordinates(mouseEvent);
-        var newWidth = bitmapper.displayCanvas.width;
-        var newHeight = bitmapper.displayCanvas.height;
+        var targetSize = bitmapper.canvasSizeForResize(coords);
         var currentZoom = bitmapper.zoomManager.getZoomFactor();
         // Update mouse icon.
         bitmapper.resizeCursorIcon(coords);
-        if (bitmapper.activeResizeOperation &
-            bitmapper.ResizeOperation.HEIGHT) {
-          newHeight = coords.sourceY * currentZoom;
-          canvasPlaceholder.style.height = newHeight + 'px';
-          bitmapper.showCanvasSize(newWidth, newHeight);
-        }
-        if (bitmapper.activeResizeOperation &
-            bitmapper.ResizeOperation.WIDTH) {
-          newWidth = coords.sourceX * currentZoom;
-          canvasPlaceholder.style.width = newWidth + 'px';
-          bitmapper.showCanvasSize(newWidth, newHeight);
-        }
+        var newHeight = targetSize.height * currentZoom;
+        var newWidth = targetSize.width * currentZoom;
+        canvasPlaceholder.style.height = newHeight + 'px';
+        canvasPlaceholder.style.width = newWidth + 'px';
+
         var polygon = 'polygon(0px 0px, ' + newWidth + 'px 0px, ' +
             newWidth + 'px ' + newHeight + 'px, 0px ' + newHeight + 'px)';
+        bitmapper.showCanvasSize(targetSize.width, targetSize.height);
         bitmapper.displayCanvas.style.webkitClipPath = polygon;
       }, false);
 
@@ -461,6 +451,23 @@ bitmapper.registerMouseEvents = function() {
         bitmapper.saveStateToLocalStorage();
         bitmapper.cursorGuide.hide();
       }, false);
+};
+
+
+/**
+ * Obtain current canvas size when resizing.
+ * @param {MouseCoordinates} coords
+ * @return {{width: number, height: number}}
+ */
+bitmapper.canvasSizeForResize = function(coords) {
+  return {
+    width: Math.round((bitmapper.activeResizeOperation &
+            bitmapper.ResizeOperation.WIDTH) ? coords.sourceX :
+            bitmapper.sourceCanvas.width),
+    height: Math.round((bitmapper.activeResizeOperation &
+            bitmapper.ResizeOperation.HEIGHT) ? coords.sourceY :
+            bitmapper.sourceCanvas.height)
+  };
 };
 
 
