@@ -19,7 +19,7 @@
    * @struct
    * @implements {Tool}
    * @param {ToolContext} toolContext
-   * @param {function(string, number, boolean)} callback
+   * @param {function(string, number)} callback
    */
   function PipetteTool(toolContext, callback) {
     /**
@@ -37,7 +37,7 @@
      * The parameters are the color, the opacity value of the color
      * and whether the mouse has finished moving.
      * Opacity is a value in [0,1].
-     * @type {function(string, number, boolean)}
+     * @type {function(string, number)}
      */
     this.callback = callback;
 

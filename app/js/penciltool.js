@@ -358,7 +358,7 @@ function PencilTool(toolContext, optionProviders, type) {}
    * @param {number} size
    */
   PencilTool.prototype.setSize = function(size) {
-    this.sizeSelector.value = size;
+    this.sizeSelector.value = size.toString();
   };
 
   bitmapper.PencilTool = PencilTool;

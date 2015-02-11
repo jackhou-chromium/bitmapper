@@ -123,7 +123,7 @@ bitmapper_test.initializeToolContext = function(
       displayCanvas,
       brushCanvas,
       selectionCanvasManager,
-      function() { zoomManager.getDrawDisplayCanvas() });
+      function() { zoomManager.drawDisplayCanvas() });
 };
 
 

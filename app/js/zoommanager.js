@@ -319,15 +319,6 @@ function ZoomManager(sourceCanvas,
 
 
   /**
-   * Returns function drawDisplayCanvas to be used in testing.
-   * @return {function()} drawDisplayCanvas
-   */
-  ZoomManager.prototype.getDrawDisplayCanvas = function() {
-    return this.drawDisplayCanvas();
-  };
-
-
-  /**
    * Set canvasViewport to be used in testing.
    * @param {HTMLElement} canvasViewport
    */
