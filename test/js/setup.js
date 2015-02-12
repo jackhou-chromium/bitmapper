@@ -63,7 +63,7 @@ bitmapper_test.createCanvasTestContext = function() {
     colorPalette: zoomManager.optionProviders.colorPalette,
     expectedCanvas: expectedCanvas,
     checkEqualCanvas: function(reason) {
-      var dataURL = toolContext.displayCanvas.toDataURL();
+      var dataURL = toolContext.sourceCanvas.toDataURL();
       var expectedDataURL = expectedCanvas.toDataURL();
 
       equal(dataURL, expectedDataURL, 'Comparing canvases: ' + reason);

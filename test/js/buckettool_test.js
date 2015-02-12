@@ -13,46 +13,50 @@
   module('BucketTool');
 
   test('bucketFill', function() {
-    var canvas = bitmapper_test.createCanvas();
+    var testContext = bitmapper_test.createCanvasTestContext();
 
-    // Draw a complex shape.
-    var context = canvas.getContext('2d');
-    context.fillStyle = 'black';
-    context.fillRect(2, 2, 20, 20);
-    context.fillRect(22, 10, 50, 5);
-    context.fillRect(40, 15, 5, 50);
+    testContext.colorPalette.updateCellColor('#ff0000');
+    testContext.colorPalette.setOpacity(0.5);
 
-    var toolContext = new ToolContext(canvas, null, null, function() {});
-    var colorPalette = bitmapper_test.initialiseTestPalette(function() {});
-    colorPalette.setSelectedIndex(0);
-    colorPalette.setOpacity(0.5);
+    var bucket = new bitmapper.BucketTool(testContext.toolContext,
+        testContext.zoomManager.optionProviders);
 
-    var optionProviders =
-        /** @struct */ {
-          /** @type {ColorPalette} */
-          colorPalette: colorPalette
-        };
-
-    var bucket = new bitmapper.BucketTool(toolContext, optionProviders);
-
-    var coordinates = new MouseCoordinates();
-    coordinates.sourceX = 5;
-    coordinates.sourceY = 5;
+    var coordinates = bitmapper_test.createMouseCoordinates(2, 2);
 
     // Fill the rectangle.
     bucket.mouseDown(coordinates);
 
-    // Filling the same color.
-    bucket.mouseDown(coordinates);
+    var ctx = Canvas2DContext(testContext.expectedCanvas);
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+    ctx.fillRect(0, 0, 100, 50);
 
-    var expectedCanvas = bitmapper_test.createCanvas();
-    var expectedContext = expectedCanvas.getContext('2d');
-    expectedContext.fillStyle = 'rgba(255, 0, 0, 0.5)';
-    expectedContext.fillRect(2, 2, 20, 20);
-    expectedContext.fillRect(22, 10, 50, 5);
-    expectedContext.fillRect(40, 15, 5, 50);
+    testContext.checkEqualCanvas('Bucket fill');
+  });
 
-    deepEqual(canvas.toDataURL(), expectedCanvas.toDataURL(), 'Bucket fill');
+  test('shapeFill', function() {
+    var testContext = bitmapper_test.createCanvasTestContext();
+
+    testContext.colorPalette.updateCellColor('#ff0000');
+
+    var bucket = new bitmapper.BucketTool(testContext.toolContext,
+        testContext.zoomManager.optionProviders);
+
+    var sourceCtx = Canvas2DContext(testContext.zoomManager.sourceCanvas);
+    sourceCtx.fillStyle = 'black';
+    sourceCtx.fillRect(2, 2, 20, 20);
+    sourceCtx.fillRect(22, 10, 50, 5);
+    sourceCtx.fillRect(40, 15, 5, 50);
+
+    // Fill the rectangle.
+    bucket.mouseDown(bitmapper_test.createMouseCoordinates(5, 5));
+
+    var ctx = Canvas2DContext(testContext.expectedCanvas);
+    ctx.fillStyle = '#ff0000';
+    ctx.fillRect(2, 2, 20, 20);
+    ctx.fillRect(22, 10, 50, 5);
+    ctx.fillRect(40, 15, 5, 50);
+
+    testContext.checkEqualCanvas('Bucket fill');
   });
 
 })();
