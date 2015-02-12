@@ -13,7 +13,7 @@
   module('ImageFile');
 
   asyncTest('openFile', function() {
-    expect(6);
+    expect(7);
     bitmapper_test.getLocalFileEntry('test-image.png', function(entry) {
       ok(true, 'Got test-image.png FileEntry');
       var imageFile = new bitmapper.ImageFile();
@@ -98,8 +98,9 @@
       var imageFile = new bitmapper.ImageFile();
 
       imageFile.loadFile(entry, function() {
-        var sourceCanvas = bitmapper_test.createCanvas();
         var image = imageFile.image;
+        var sourceCanvas =
+            bitmapper_test.createCanvas(image.width, image.height);
         sourceCanvas.width = image.width;
         sourceCanvas.height = image.height;
         var sourceContext = sourceCanvas.getContext('2d');
