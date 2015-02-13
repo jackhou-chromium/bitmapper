@@ -273,17 +273,6 @@ bitmapper.updatePalette = function() {
 
 
 /**
- * Set selected tool.
- * @param {Tool} tool
- */
-bitmapper.setSelectedTool = function(tool) {
-  bitmapper.selectedTool.tearDown();
-  bitmapper.selectedTool = tool;
-  bitmapper.cursorGuide.setTool(tool);
-};
-
-
-/**
  * Add event listeners for mouse events hooked to canvas wrapper.
  */
 bitmapper.registerMouseEvents = function() {
