@@ -961,6 +961,7 @@ bitmapper.addEventListeners = function() {
   var openFileButton = toolbar.shadowRoot.getElementById('openFileButton');
   var saveButton = toolbar.shadowRoot.getElementById('saveButton');
   var saveAsButton = toolbar.shadowRoot.getElementById('saveAsButton');
+  var authorsButton = toolbar.shadowRoot.getElementById('creditsButton');
   var resizeDialogButton =
       toolbar.shadowRoot.getElementById('resizeDialogButton');
   var undoButton = toolbar.shadowRoot.getElementById('undoButton');
@@ -970,6 +971,9 @@ bitmapper.addEventListeners = function() {
   openFileButton.addEventListener('click', bitmapper.openFile);
   saveButton.addEventListener('click', bitmapper.saveFile);
   saveAsButton.addEventListener('click', bitmapper.saveAsFile);
+  authorsButton.addEventListener('click', function(e) {
+    document.getElementById('authorsDialog').$['dialog']['opened'] = true;
+  });
   resizeDialogButton.addEventListener('click', function(e) {
     document.getElementById('resizeDialog').$['dialog']['opened'] = true;
   });

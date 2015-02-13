@@ -1,0 +1,63 @@
+<!-- Copyright 2015 Google Inc. All Rights Reserved. -->
+
+<!--
+The authors-dialog Polymer element is a pop up dialog which displays the
+authors of and contributors to the Bitmapper app.
+
+@element authors-dialog
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+
+<polymer-element name="authors-dialog" attributes="dimension">
+  <template>
+    <style>
+      .close {
+        float: right;
+        margin-top: 15px;
+      }
+    </style>
+    <paper-dialog backdrop layout vertical
+      id="dialog"
+      heading="Credits"
+      layered="false"
+      role="dialog"
+      transition="core-transition-center">
+
+      <div>
+        <h3>Authors</h3>
+        Davina Adisusila (dadisusila@google.com)<br>
+        Hannah Beder (hbeder@google.com)<br>
+        Sara Kato (sarakato@google.com)<br>
+        Marie-Jo Ta (mjt@google.com)
+      </div>
+      <div>
+        <h3>Contributors</h3>
+        Trent Apted (tapted@chromium.org)<br>
+        Matt Giuca (mgiuca@chromium.org)<br>
+        Jack Hou (jackhou@chromium.org)<br>
+        Mitchell Jones (mitchelljones@chromium.org)<br>
+        Christopher Lam (calamity@chromium.org)
+      </div>
+      <div class="close">
+        <paper-button on-click="{{ close }}">
+          <core-icon icon="close"></core-icon>
+          Close
+        </paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer ('authors-dialog', {
+      close: function() {
+        this.$.dialog.opened = false;
+        this.$.widthInput.value = '';
+        this.$.heightInput.value = '';
+      },
+    });
+  </script>
+</polymer-element>
