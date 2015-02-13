@@ -51,7 +51,7 @@
      * The opacity value of the selected color.
      * @type {number}
      */
-    this.opacity = 0;
+    this.opacity = 100;
 
     /**
      * Whether the mouse is being held down for a drag.
