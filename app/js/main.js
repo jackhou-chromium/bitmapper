@@ -337,28 +337,25 @@ bitmapper.registerMouseEvents = function() {
           return;
         // Stop event bubbling into canvasViewport's mouseDown event listener.
         mouseEvent.stopPropagation();
+        var coordinates = bitmapper.getMouseCoordinates(mouseEvent);
 
         // Hit test for selection canvas.
-        if (bitmapper.selectionCanvasManager.isInHitArea(
-            bitmapper.getMouseCoordinates(mouseEvent))) {
-          bitmapper.selectionCanvasManager.mouseDown(
-              bitmapper.getMouseCoordinates(mouseEvent));
+        if (bitmapper.selectionCanvasManager.isInHitArea(coordinates)) {
+          bitmapper.selectionCanvasManager.mouseDown(coordinates);
         } else {
-          bitmapper.selectedTool.mouseDown(
-              bitmapper.getMouseCoordinates(mouseEvent),
-              mouseEvent.shiftKey);
+          bitmapper.selectedTool.mouseDown(coordinates, mouseEvent.shiftKey);
         }
       }, false);
-  window.addEventListener('mouseup',
+  canvasWrapper.addEventListener('mouseup',
       function(mouseEvent) {
         if (mouseEvent.button != 0)
           return;
 
+        var coordinates = bitmapper.getMouseCoordinates(mouseEvent);
+
         bitmapper.updateFileNameMessage();
-        bitmapper.selectedTool.mouseUp(
-            bitmapper.getMouseCoordinates(mouseEvent));
-        bitmapper.selectionCanvasManager.mouseUp(
-            bitmapper.getMouseCoordinates(mouseEvent));
+        bitmapper.selectedTool.mouseUp(coordinates);
+        bitmapper.selectionCanvasManager.mouseUp(coordinates);
         bitmapper.saveStateToLocalStorage();
         // Snapshot pushed for undo/redo functionality.
         bitmapper.imageFile.pushSnapshot(bitmapper.sourceCanvas.toDataURL());
