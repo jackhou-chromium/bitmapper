@@ -39,7 +39,7 @@ bitmapper_test.createCanvasTestContext = function() {
   var height = 50;
   var zoomManager = bitmapper_test.initializeZoomManager(width, height);
   var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
-  var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+  var colorPalette = bitmapper_test.initializeColorPalette();
 
   var sizeSelector = {
     value: 1
@@ -150,10 +150,9 @@ bitmapper_test.initializeZoomManager = function(width, height) {
 
 /**
  * Initializes bitmapper color palette.
- * @param {function()} callback
  * @return {Object}
  */
-bitmapper_test.initializeColorPalette = function(callback) {
+bitmapper_test.initializeColorPalette = function() {
   // Create color palette element in debug section.
   var currentTestDiv = document.getElementById(
       bitmapper_test.currentTestName);

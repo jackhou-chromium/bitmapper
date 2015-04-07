@@ -47,7 +47,7 @@
     // 1. Triggering of core-select event.
     // 2. Color set correctly on color-palette.
     expect(2);
-    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+    var colorPalette = bitmapper_test.initializeColorPalette();
     var palette = bitmapper_test.createPalette();
 
     // Attach the event listener.
@@ -98,7 +98,7 @@
    * Update selected cell color with selected color.
    */
   test('updateColorPalette', function() {
-    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+    var colorPalette = bitmapper_test.initializeColorPalette();
     colorPalette.updateCellColor('rgb(64, 224, 208)');
     // Check background of selected palette cell changes.
     var backgroundColor = colorPalette.getSelectedColor();
@@ -110,7 +110,7 @@
    * Testing adding opacity to color (rgb to rgba).
    */
   test('rgbaFormat', function() {
-    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+    var colorPalette = bitmapper_test.initializeColorPalette();
     // Change color, alter opacity and check resulting rgba.
     colorPalette.updateCellColor('#ff0000');
     colorPalette.setOpacity(1);

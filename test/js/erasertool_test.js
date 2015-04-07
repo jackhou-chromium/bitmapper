@@ -16,7 +16,7 @@
   test('defaultEraser', function() {
     var zoomManager = bitmapper_test.initializeZoomManager(300, 150);
     var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
-    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+    var colorPalette = bitmapper_test.initializeColorPalette();
 
     // Set initial color as black (#000000).
     colorPalette.updateCellColor('#000000');
@@ -109,7 +109,7 @@
   test('eraseWithOpacity', function() {
     var zoomManager = bitmapper_test.initializeZoomManager(300, 150);
     var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
-    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+    var colorPalette = bitmapper_test.initializeColorPalette();
 
     // Set initial color as black (#000000).
     colorPalette.updateCellColor('#000000');
@@ -218,7 +218,7 @@
   test('eraseCenter', function() {
     var zoomManager = bitmapper_test.initializeZoomManager(300, 150);
     var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
-    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+    var colorPalette = bitmapper_test.initializeColorPalette();
 
     // Set initial color as red (#ff0000).
     colorPalette.updateCellColor('#ff0000');
@@ -296,7 +296,7 @@
   test('eraseFilledRectangle', function() {
     var zoomManager = bitmapper_test.initializeZoomManager(300, 150);
     var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
-    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+    var colorPalette = bitmapper_test.initializeColorPalette();
 
     // Set initial color as red (#ff0000).
     colorPalette.updateCellColor('#ff0000');

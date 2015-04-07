@@ -17,7 +17,7 @@
     var height = 50;
     var zoomManager = bitmapper_test.initializeZoomManager(width, height);
     var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
-    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+    var colorPalette = bitmapper_test.initializeColorPalette();
     var initialOpacity = 0.5;
     var colors = [
       '#ff0000',
@@ -87,7 +87,7 @@
     var height = 50;
     var zoomManager = bitmapper_test.initializeZoomManager(width, height);
     var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
-    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+    var colorPalette = bitmapper_test.initializeColorPalette();
     var colors = [
       '#ff0000',
       '#ffff00',
@@ -150,7 +150,7 @@
     var height = 50;
     var zoomManager = bitmapper_test.initializeZoomManager(width, height);
     var toolContext = bitmapper_test.initializeToolContext(zoomManager, null);
-    var colorPalette = bitmapper_test.initializeColorPalette(function() {});
+    var colorPalette = bitmapper_test.initializeColorPalette();
     var colors = [
       '#ff0000',
       '#ffff00',
