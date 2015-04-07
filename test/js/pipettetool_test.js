@@ -13,7 +13,7 @@
   module('Pipette');
 
   test('getColor', function() {
-    expect(15);
+    expect(10);
     var canvas = bitmapper_test.createCanvas();
     canvas.width = 100;
     canvas.height = 50;
@@ -35,7 +35,6 @@
         function(color, opacity, done) {
           equal(color, expectedResult[0], 'Checking color');
           equal(opacity, expectedResult[1], 'Checking opacity');
-          equal(done, expectedResult[2], 'Checking done');
         });
 
     var coordinates = new MouseCoordinates();

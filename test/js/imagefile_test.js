@@ -13,7 +13,7 @@
   module('ImageFile');
 
   asyncTest('openFile', function() {
-    expect(7);
+    expect(6);
     bitmapper_test.getLocalFileEntry('test-image.png', function(entry) {
       ok(true, 'Got test-image.png FileEntry');
       var imageFile = new bitmapper.ImageFile();
