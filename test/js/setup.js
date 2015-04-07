@@ -180,10 +180,9 @@ bitmapper_test.initializeColorPalette = function(callback) {
 
 /**
  * Initialize palette and add core-select event listener to palette.
- * @param {Object} colorPalette
  * @return {HTMLElement}
  */
-bitmapper_test.initializePalette = function(colorPalette) {
+bitmapper_test.createPalette = function() {
   var palette = document.createElement('color-palette');
   document.getElementById(
       bitmapper_test.currentTestName).appendChild(palette);
@@ -198,20 +197,6 @@ bitmapper_test.initializePalette = function(colorPalette) {
     '#0099ff'
   ];
   palette['colors'] = initialColors;
-
-  // Same event listener attached to palette in main.js (line 714)
-  // Except omitting bitmapper.setSelectedColorBox() as colorSelector
-  // will not be initialized when this functional is called in testing.
-  palette.addEventListener('core-select', function(e) {
-    var selectEvent = /** @type {CoreEvent} */(e);
-    // We need to ignore deselection.
-    if (!selectEvent.detail.isSelected)
-      return;
-    ok(true, 'Change selected cell color on core-select event');
-    colorPalette.setSelectedCell(selectEvent.detail.item);
-  });
-  // Now the event listener is added, set the initial selection.
-  palette.$['paletteSelector'].selected = 0;
   return palette;
 };
 

@@ -710,15 +710,8 @@ bitmapper.setUpOptionProviders = function(localStorageObject) {
   }
   var palette = document.getElementById('colorPalette');
   palette['colors'] = initialColors;
-  palette.addEventListener('core-select', function(e) {
-    var selectEvent = /** @type {CoreEvent} */(e);
-    // We need to ignore deselection.
-    if (!selectEvent.detail.isSelected)
-      return;
-    colorPalette.setSelectedCell(selectEvent.detail.item);
-    bitmapper.setSelectedColorBox();
-  });
-  // Now the event listener is added, set the initial selection.
+  // Let ColorPalette add an event listener, then set the initial selection.
+  colorPalette.initializePalette(palette, bitmapper.setSelectedColorBox);
   palette.$['paletteSelector'].selected = 0;
 
   var sizeSelector = document.getElementById('sliderInputs').$.sizeSelector;

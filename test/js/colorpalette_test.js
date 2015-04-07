@@ -42,13 +42,18 @@
   /**
    * Check selected color.
    */
-  test('useColorPalette', function(palette, colorPalette) {
+  test('selectionEvent', function(palette, colorPalette) {
     // Expect 2 assertions:
     // 1. Triggering of core-select event.
     // 2. Color set correctly on color-palette.
     expect(2);
     var colorPalette = bitmapper_test.initializeColorPalette(function() {});
-    var palette = bitmapper_test.initializePalette(colorPalette);
+    var palette = bitmapper_test.createPalette();
+
+    // Attach the event listener.
+    colorPalette.initializePalette(palette, function() {
+      ok(true, 'Change selected cell color on core-select event');
+    });
 
     // Create a clickable paper-button element, with black background to model
     // a user selection on the button.

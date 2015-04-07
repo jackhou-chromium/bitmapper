@@ -38,6 +38,24 @@ function ColorPalette() {}
   };
 
   /**
+   * Sets an event listener on the polymer palette which will update this
+   * ColorPalette when the selection changes.
+   * @param {HTMLElement} palette
+   * @param {function()} callback Called only on selection (not deselection).
+   */
+  ColorPalette.prototype.initializePalette = function(palette, callback) {
+    var self = this;
+    palette.addEventListener('core-select', function(e) {
+      var selectEvent = /** @type {CoreEvent} */(e);
+      // We need to ignore deselection.
+      if (!selectEvent.detail.isSelected)
+        return;
+      self.setSelectedCell(selectEvent.detail.item);
+      callback();
+    });
+  };
+
+  /**
    * Sets selected div.
    * @param {Element} selected
    */
