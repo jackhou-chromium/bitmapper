@@ -69,6 +69,7 @@ bitmapper-toolbar {
 }
 
 #imageCanvas {
+  image-rendering: pixelated;
   pointer-events: none;
   position: absolute;
   left: 0;

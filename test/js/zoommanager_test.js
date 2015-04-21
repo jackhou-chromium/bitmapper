@@ -65,12 +65,13 @@
         'Display canvas has correct height');
 
     // Compare expected canvas with display canvas.
-    expectedCanvas = bitmapper_test.createCanvas(300, 200);
+    // After zoom increase; the canvas must have a smaller pixel size to fit in
+    // the viewport. The red (#ff0000) rectangle should be drawn the same size
+    // since we use CSS to scale the displayCanvas.
+    expectedCanvas = bitmapper_test.createCanvas(150, 100);
     expectedContext = Canvas2DContext(expectedCanvas);
-    // After zoom increase; Expect red (#ff0000) rectangle of size 20px by 20px
-    // from coords (2,2).
     expectedContext.fillStyle = 'red';
-    expectedContext.fillRect(2, 2, 20, 20);
+    expectedContext.fillRect(1, 1, 10, 10);
     equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
         'Zoomed successfully');
   });
@@ -101,45 +102,6 @@
   });
 
 
-  test('transparentRectangles', function() {
-    // Initialise zoomManager with canvases of intial width 100, height 100.
-    var zoomManager = bitmapper_test.initializeZoomManager(100, 100);
-    // Set canvasViewport for testing zoom functionality.
-    zoomManager.setCanvasViewport(new FakeCanvasViewport(200, 200));
-
-    var displayCanvas = zoomManager.getDisplayCanvas();
-    var sourceContext = Canvas2DContext(zoomManager.getSourceCanvas());
-    // Draw #028482 rectangle of size 50px by 50px, from coords (10, 10).
-    sourceContext.fillStyle = 'rgb(2,132,130)';
-    sourceContext.fillRect(10, 10, 50, 50);
-    // Draw #000000c8 rectangle of size 50px by 50px, from coords (30, 30).
-    sourceContext.fillStyle = 'rgba(0, 0, 200, 0.5)';
-    sourceContext.fillRect(30, 30, 50, 50);
-    // Draw #ff000066 rectangle of size 50px by 50px, from coords (40, 40).
-    sourceContext.fillStyle = 'rgba(255, 0, 0, 0.4)';
-    sourceContext.fillRect(40, 40, 50, 50);
-    // Zoom in.
-    zoomManager.setZoomFactor(2, 0, 0);
-    zoomManager.drawDisplayCanvas();
-
-    // Compare expected canvas with display canvas.
-    var expectedCanvas = bitmapper_test.createCanvas(200, 200);
-    var expectedContext = Canvas2DContext(expectedCanvas);
-    // Expect #028482 rectangle of size 100px by 100, from coords (20, 20).
-    expectedContext.fillStyle = 'rgb(2,132,130)';
-    expectedContext.fillRect(20, 20, 100, 100);
-    // Expect #000000c8 rectangle of size 60px by 60px, from coords (60, 60).
-    expectedContext.fillStyle = 'rgba(0, 0, 200, 0.5)';
-    expectedContext.fillRect(60, 60, 100, 100);
-    // Expect #ff000066 rectangle of size 80px by 80px, from coords (80, 80).
-    expectedContext.fillStyle = 'rgba(255, 0, 0, 0.4)';
-    expectedContext.fillRect(80, 80, 100, 100);
-
-    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
-        'Zoomed transparency successfully');
-  });
-
-
   test('clippedDrawing', function() {
     // Initialise zoomManager with canvases of intial width 100, height 100.
     var zoomManager = bitmapper_test.initializeZoomManager(100, 100);
@@ -165,20 +127,21 @@
     zoomManager.setZoomFactor(2, 0, 0);
     zoomManager.drawDisplayCanvas();
 
-    expectedCanvas = bitmapper_test.createCanvas(100, 100);
+    // The canvas must be smaller at this zoom to fit in the viewport.
+    expectedCanvas = bitmapper_test.createCanvas(50, 50);
     expectedContext = Canvas2DContext(expectedCanvas);
-    // Expect #000000 rectangle of size 20px by 20px, from coords (80, 80).
-    expectedContext.fillRect(80, 80, 20, 20);
+    // Expect #000000 rectangle of size 20px by 20px, from coords (40, 40).
+    expectedContext.fillRect(40, 40, 20, 20);
 
     equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
           'Square in bottom right');
 
     // Scroll to right.
-    expectedCanvas = bitmapper_test.createCanvas(100, 100);
+    expectedCanvas = bitmapper_test.createCanvas(50, 50);
     canvasViewport.scrollLeft = 100;
     expectedContext = Canvas2DContext(expectedCanvas);
-    // Expect #000000 rectangle of size 20px by 20px, from coords (0, 80).
-    expectedContext.fillRect(0, 80, 20, 20);
+    // Expect #000000 rectangle of size 10px by 20px, from coords (0, 40).
+    expectedContext.fillRect(0, 40, 10, 20);
     zoomManager.drawDisplayCanvas();
 
     equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
@@ -187,10 +150,10 @@
     // Scroll to bottom right.
     canvasViewport.scrollLeft = 100;
     canvasViewport.scrollTop = 100;
-    expectedCanvas = bitmapper_test.createCanvas(100, 100);
+    expectedCanvas = bitmapper_test.createCanvas(50, 50);
     expectedContext = Canvas2DContext(expectedCanvas);
-    // Draw #000000 rectangle of size 20px by 20px, from coords (0, 0).
-    expectedContext.fillRect(0, 0, 20, 20);
+    // Draw #000000 rectangle of size 10px by 10px, from coords (0, 0).
+    expectedContext.fillRect(0, 0, 10, 10);
     zoomManager.drawDisplayCanvas();
 
     equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
@@ -205,7 +168,6 @@
     // Set canvasViewport for testing zoom functionality.
     zoomManager.setCanvasViewport(new FakeCanvasViewport(200, 200));
     var expectedCanvas = bitmapper_test.createCanvas(0, 0);
-    var canvasViewport = zoomManager.getCanvasViewport();
     var sourceCanvas = zoomManager.getSourceCanvas();
     var displayCanvas = zoomManager.getDisplayCanvas();
     zoomManager.setZoomFactor(2, 0, 0);
@@ -220,28 +182,17 @@
         sourceCanvas.height = image.height;
         sourceContext.drawImage(image, 0, 0);
 
-        // Load expected image onto expected canvas to compare.
-        bitmapper_test.getLocalFileEntry(
-            'test-image-zoom.png',
-            function(expectedEntry) {
-              var expectedImageFile = new bitmapper.ImageFile();
-              var expectedCallback = function() {
-                var expectedImage = expectedImageFile.image;
-                var expectedContext = Canvas2DContext(expectedCanvas);
-                expectedCanvas.width = expectedImage.width;
-                expectedCanvas.height = expectedImage.height;
-                expectedContext.drawImage(expectedImage, 0, 0);
+        // Since it's zoomed in, only the top left quarter of the image is
+        // visible.
+        var expectedContext = Canvas2DContext(expectedCanvas);
+        expectedCanvas.width = image.width / 2;
+        expectedCanvas.height = image.height / 2;
+        expectedContext.drawImage(image, 0, 0);
 
-                canvasViewport.clientWidth = expectedImage.width;
-                canvasViewport.clientHeight = expectedImage.height;
-
-                zoomManager.drawDisplayCanvas();
-                equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
-                    'Zoomed image successfully');
-                start();
-              };
-              expectedImageFile.loadFile(expectedEntry, expectedCallback);
-            });
+        zoomManager.drawDisplayCanvas();
+        equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+            'Zoomed image successfully');
+        start();
       };
       imageFile.loadFile(entry, callback);
     });
@@ -301,10 +252,11 @@
     zoomManager.setZoomFactor(2, 50, 50);
     zoomManager.drawDisplayCanvas();
 
-    var expectedCanvas = bitmapper_test.createCanvas(100, 100);
+    // The canvas must be smaller at this zoom to fit in the viewport.
+    var expectedCanvas = bitmapper_test.createCanvas(50, 50);
     var expectedContext = Canvas2DContext(expectedCanvas);
-    // Expect #000000 rectangle of size 40px by 40px, from coords (30, 30).
-    expectedContext.fillRect(30, 30, 40, 40);
+    // Expect #000000 rectangle of size 20px by 20px, from coords (15, 15).
+    expectedContext.fillRect(15, 15, 20, 20);
 
     equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL());
 
@@ -312,10 +264,10 @@
     zoomManager.setZoomFactor(4, 150, 50);
     zoomManager.drawDisplayCanvas();
 
-    expectedCanvas = bitmapper_test.createCanvas(100, 100);
+    expectedCanvas = bitmapper_test.createCanvas(25, 25);
     expectedContext = Canvas2DContext(expectedCanvas);
-    // Expect #000000 rectangle of size 40px by 40px, from coords (0, 60).
-    expectedContext.fillRect(0, 60, 40, 40);
+    // Expect #000000 rectangle of size 10px by 10px, from coords (0, 15).
+    expectedContext.fillRect(0, 15, 10, 10);
 
     equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL());
 
@@ -323,10 +275,10 @@
     zoomManager.setZoomFactor(2, 300, 100);
     zoomManager.drawDisplayCanvas();
 
-    expectedCanvas = bitmapper_test.createCanvas(100, 100);
+    expectedCanvas = bitmapper_test.createCanvas(50, 50);
     expectedContext = Canvas2DContext(expectedCanvas);
-    // Expect #000000 rectangle of size 40px by 40px, from coords (30, 30).
-    expectedContext.fillRect(30, 30, 40, 40);
+    // Expect #000000 rectangle of size 20px by 20px, from coords (15, 15).
+    expectedContext.fillRect(15, 15, 20, 20);
 
     equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL());
   });

@@ -28,7 +28,7 @@ ALL_SRCS := $(APP_SRCS) $(TEST_SRCS)
 APP_HTML_FILES := $(shell find $(APPDIR) -type f -name '*.html')
 
 TEST_FILE_LIST := manifest.json background.js \
-    test-image.png test-image-zoom.png test-jpg-image.jpg
+    test-image.png test-jpg-image.jpg
 TEST_FILES := $(patsubst %,$(TESTDIR)/%,$(TEST_FILE_LIST))
 
 ICON_SIZES := 16x16 32x32 48x48 64x64 96x96 128x128

@@ -178,11 +178,17 @@ function ZoomManager(sourceCanvas,
     this.displayCanvas.style.left = left + 'px';
     this.displayCanvas.style.top = top + 'px';
 
+    // The displayCanvas.height and width are in the source (pre-zoom)
+    // coordinates.
     // clientHeight/Width is not defined in tests.
-    if (this.canvasViewport.clientHeight)
-      this.displayCanvas.height = this.canvasViewport.clientHeight;
-    if (this.canvasViewport.clientWidth)
-      this.displayCanvas.width = this.canvasViewport.clientWidth;
+    if (this.canvasViewport.clientHeight) {
+      this.displayCanvas.style.height = this.canvasViewport.clientHeight + 'px';
+      this.displayCanvas.height = this.canvasViewport.clientHeight / zoom;
+    }
+    if (this.canvasViewport.clientWidth) {
+      this.displayCanvas.style.width = this.canvasViewport.clientWidth + 'px';
+      this.displayCanvas.width = this.canvasViewport.clientWidth / zoom;
+    }
 
     var displayContext = Canvas2DContext(this.displayCanvas);
     // Displays crisp pixels when scaled.
@@ -191,11 +197,13 @@ function ZoomManager(sourceCanvas,
         0, 0, this.displayCanvas.width, this.displayCanvas.height);
 
     // Draw the visible region of the sourceCanvas to the display canvas.
+    // We cannot yet show the sourceCanvas and brushCanvas directly because
+    // there is no way to blend them with 'destination-out'.
     displayContext.drawImage(
         this.sourceCanvas,
         left / zoom, top / zoom,
-        this.displayCanvas.width / zoom,
-        this.displayCanvas.height / zoom,
+        this.displayCanvas.width,
+        this.displayCanvas.height,
         0,
         0,
         this.displayCanvas.width,
@@ -217,8 +225,8 @@ function ZoomManager(sourceCanvas,
     displayContext.drawImage(
         this.brushCanvas,
         left / zoom, top / zoom,
-        this.displayCanvas.width / zoom,
-        this.displayCanvas.height / zoom,
+        this.displayCanvas.width,
+        this.displayCanvas.height,
         0,
         0,
         this.displayCanvas.width,
