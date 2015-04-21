@@ -49,7 +49,7 @@
     // Expect red (#ff0000) rectangle of size 10px by 10px, from coords (1,1).
     expectedContext.fillStyle = 'red';
     expectedContext.fillRect(1, 1, 10, 10);
-    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+    equal(displayCanvas.toDataURL(), expectedCanvas.toDataURL(),
         'Zoomed successfully');
 
     // Zoom Factor 2.
@@ -72,7 +72,7 @@
     expectedContext = Canvas2DContext(expectedCanvas);
     expectedContext.fillStyle = 'red';
     expectedContext.fillRect(1, 1, 10, 10);
-    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+    equal(displayCanvas.toDataURL(), expectedCanvas.toDataURL(),
         'Zoomed successfully');
   });
 
@@ -85,20 +85,20 @@
 
     // No Zoom.
     ok(true, 'No zoom');
-    equal(13, zoomManager.getSourceCoordinate(13), 'Correct X coordinate');
-    equal(13, zoomManager.getSourceCoordinate(13), 'Correct Y coordinate');
+    equal(zoomManager.getSourceCoordinate(13), 13, 'Correct X coordinate');
+    equal(zoomManager.getSourceCoordinate(13), 13, 'Correct Y coordinate');
 
     // Zoom Factor 8.
     zoomManager.setZoomFactor(8, 0, 0);
     ok(true, 'Zoom Factor 8');
-    equal(5, zoomManager.getSourceCoordinate(40), 'Correct X coordinate');
-    equal(32, zoomManager.getSourceCoordinate(256), 'Correct Y coordinate');
+    equal(zoomManager.getSourceCoordinate(40), 5, 'Correct X coordinate');
+    equal(zoomManager.getSourceCoordinate(256), 32, 'Correct Y coordinate');
 
     // Zoom Factor 0.5
     zoomManager.setZoomFactor(0.5, 0, 0);
     ok(true, 'Zoom Factor 0.5');
-    equal(40, zoomManager.getSourceCoordinate(20), 'Correct X coordinate');
-    equal(60, zoomManager.getSourceCoordinate(30), 'Correct Y coordinate');
+    equal(zoomManager.getSourceCoordinate(20), 40, 'Correct X coordinate');
+    equal(zoomManager.getSourceCoordinate(30), 60, 'Correct Y coordinate');
   });
 
 
@@ -120,7 +120,7 @@
     // Expect #000000 rectangle of size 20px by 20px, from coords (40, 40).
     expectedContext.fillRect(40, 40, 20, 20);
 
-    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+    equal(displayCanvas.toDataURL(), expectedCanvas.toDataURL(),
           'Square in center');
 
     // Zoom 2x.
@@ -133,7 +133,7 @@
     // Expect #000000 rectangle of size 20px by 20px, from coords (40, 40).
     expectedContext.fillRect(40, 40, 20, 20);
 
-    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+    equal(displayCanvas.toDataURL(), expectedCanvas.toDataURL(),
           'Square in bottom right');
 
     // Scroll to right.
@@ -144,7 +144,7 @@
     expectedContext.fillRect(0, 40, 10, 20);
     zoomManager.drawDisplayCanvas();
 
-    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+    equal(displayCanvas.toDataURL(), expectedCanvas.toDataURL(),
           'Square in bottom left');
 
     // Scroll to bottom right.
@@ -156,7 +156,7 @@
     expectedContext.fillRect(0, 0, 10, 10);
     zoomManager.drawDisplayCanvas();
 
-    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+    equal(displayCanvas.toDataURL(), expectedCanvas.toDataURL(),
           'Square in top left');
   });
 
@@ -190,7 +190,7 @@
         expectedContext.drawImage(image, 0, 0);
 
         zoomManager.drawDisplayCanvas();
-        equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+        equal(displayCanvas.toDataURL(), expectedCanvas.toDataURL(),
             'Zoomed image successfully');
         start();
       };
@@ -219,7 +219,7 @@
     // Expect empty canvas.
     var expectedCanvas = bitmapper_test.createCanvas(100, 50);
 
-    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL(),
+    equal(displayCanvas.toDataURL(), expectedCanvas.toDataURL(),
         'Clear successful');
 
     // Draw after clear to make sure the cleared drawings doesn't get redrawn.
@@ -234,7 +234,7 @@
     expectedCanvas2Context.fillStyle = 'red';
     expectedCanvas2Context.fillRect(1, 1, 10, 10);
 
-    equal(expectedCanvas2.toDataURL(), displayCanvas.toDataURL(),
+    equal(displayCanvas.toDataURL(), expectedCanvas2.toDataURL(),
         'Redraw after clear successful');
   });
 
@@ -258,7 +258,7 @@
     // Expect #000000 rectangle of size 20px by 20px, from coords (15, 15).
     expectedContext.fillRect(15, 15, 20, 20);
 
-    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL());
+    equal(displayCanvas.toDataURL(), expectedCanvas.toDataURL());
 
     // Zoom 2x more with top right as anchor.
     zoomManager.setZoomFactor(4, 150, 50);
@@ -269,7 +269,7 @@
     // Expect #000000 rectangle of size 10px by 10px, from coords (0, 15).
     expectedContext.fillRect(0, 15, 10, 10);
 
-    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL());
+    equal(displayCanvas.toDataURL(), expectedCanvas.toDataURL());
 
     // Zoom back 2x with top left as anchor.
     zoomManager.setZoomFactor(2, 300, 100);
@@ -280,6 +280,6 @@
     // Expect #000000 rectangle of size 20px by 20px, from coords (15, 15).
     expectedContext.fillRect(15, 15, 20, 20);
 
-    equal(expectedCanvas.toDataURL(), displayCanvas.toDataURL());
+    equal(displayCanvas.toDataURL(), expectedCanvas.toDataURL());
   });
 })();
