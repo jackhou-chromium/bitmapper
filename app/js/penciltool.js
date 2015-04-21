@@ -348,12 +348,19 @@ function PencilTool(toolContext, optionProviders, type) {}
       cursorDiv.style.backgroundColor =
           this.colorPalette.getSelectedColorWithOpacity();
     }
-    // Position with centred pixel alignment.
+    // Position with centered pixel alignment.
     var shift = this.sizeSelector.value / 2;
-    cursorDiv.style.left =
-        (Math.floor(mouseCoordinates.sourceX - shift)) * zoomFactor + 'px';
-    cursorDiv.style.top =
-        (Math.floor(mouseCoordinates.sourceY - shift)) * zoomFactor + 'px';
+    var alignedX = mouseCoordinates.sourceX - shift;
+    var alignedY = mouseCoordinates.sourceY - shift;
+    // The brush tool is freely positioned so do the same with the cursor.
+    // Pencil and eraser are aligned to the pixel, so align their cursors too.
+    if (this.type != PencilTool.ToolType.BRUSH) {
+      alignedX = Math.floor(alignedX);
+      alignedY = Math.floor(alignedY);
+    }
+    // Subtract 1px from both so that the top left borders are outside.
+    cursorDiv.style.left = (alignedX * zoomFactor - 1) + 'px';
+    cursorDiv.style.top = (alignedY * zoomFactor - 1) + 'px';
     return true;
   };
 
